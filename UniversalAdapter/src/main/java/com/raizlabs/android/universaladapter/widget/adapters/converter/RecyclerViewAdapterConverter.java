@@ -1,12 +1,10 @@
 package com.raizlabs.android.universaladapter.widget.adapters.converter;
 
 import android.support.v7.widget.RecyclerView;
-import android.view.GestureDetector;
-import android.view.MotionEvent;
-import android.view.View;
 import android.view.ViewGroup;
 
 import com.raizlabs.android.universaladapter.widget.adapters.ListBasedAdapter;
+import com.raizlabs.android.universaladapter.widget.adapters.RecyclerViewItemClickListener;
 import com.raizlabs.android.universaladapter.widget.adapters.RecyclerViewListObserverListener;
 import com.raizlabs.android.universaladapter.widget.adapters.ViewHolder;
 
@@ -25,7 +23,7 @@ public class RecyclerViewAdapterConverter<Item, Holder extends ViewHolder> exten
     /**
      * Provides more specific information for a click, separate from {@link ItemClickedListener}
      */
-    public interface RecyclerItemClickListener<Holder> {
+    public interface RecyclerItemClickListener<Holder extends ViewHolder> {
 
         /**
          * Called when an item in the {@link RecyclerView} is clicked.
@@ -124,43 +122,17 @@ public class RecyclerViewAdapterConverter<Item, Holder extends ViewHolder> exten
         return listAdapter.createViewHolder(parent, position);
     }
 
-    private final RecyclerView.OnItemTouchListener internalOnItemTouchListener = new RecyclerView.OnItemTouchListener() {
-
-        private GestureDetector gestureDetector;
-
+    private final RecyclerViewItemClickListener internalOnItemTouchListener = new RecyclerViewItemClickListener() {
         @SuppressWarnings("unchecked")
         @Override
-        public boolean onInterceptTouchEvent(RecyclerView view, MotionEvent e) {
-            if (gestureDetector == null) {
-                gestureDetector = new GestureDetector(view.getContext(), new GestureDetector.SimpleOnGestureListener() {
-                    @Override
-                    public boolean onSingleTapUp(MotionEvent e) {
-                        return true;
-                    }
-                });
+        public void onItemClick(ViewHolder viewHolder, RecyclerView parent, int position, float x, float y) {
+            if (recyclerItemClickListener != null) {
+                recyclerItemClickListener.onItemClick((Holder) viewHolder, parent, position, x, y);
             }
 
-            View childView = view.findChildViewUnder(e.getX(), e.getY());
-            if (childView != null && gestureDetector.onTouchEvent(e)) {
-                int position = view.getChildPosition(childView);
-                Holder viewHolder = (Holder) view.getChildViewHolder(childView);
-
-                if(itemClickedListener != null) {
-                    itemClickedListener.onItemClicked(getListAdapter(), getListAdapter().get(position), viewHolder, position);
-                }
-
-                if(recyclerItemClickListener != null) {
-                    recyclerItemClickListener.onItemClick(viewHolder, view, position, e.getX(), e.getY());
-                }
-
+            if (itemClickedListener != null) {
+                itemClickedListener.onItemClicked(getListAdapter(), getListAdapter().get(position), (Holder) viewHolder, position);
             }
-
-            return false;
-        }
-
-        @Override
-        public void onTouchEvent(RecyclerView rv, MotionEvent e) {
-
         }
     };
 
