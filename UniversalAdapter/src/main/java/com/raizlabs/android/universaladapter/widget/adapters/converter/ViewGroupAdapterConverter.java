@@ -199,7 +199,7 @@ public class ViewGroupAdapterConverter<Item, Holder extends ViewHolder> {
                 int index = getViewGroup().indexOfChild(v);
                 Item item = listAdapter.get(index);
                 Holder holder = (Holder) ViewHolderStrategyUtils.getViewHolder(v);
-                itemClickedListener.onItemClicked(ViewGroupAdapterConverter.this, item, holder, index);
+                itemClickedListener.onItemClicked(getListAdapter(), item, holder, index);
             }
         }
     };
@@ -213,7 +213,7 @@ public class ViewGroupAdapterConverter<Item, Holder extends ViewHolder> {
                 int index = getViewGroup().indexOfChild(v);
                 Item item = listAdapter.get(index);
                 Holder holder = (Holder) ViewHolderStrategyUtils.getViewHolder(v);
-                return itemLongClickedListener.onItemLongClicked(ViewGroupAdapterConverter.this, item, holder, index);
+                return itemLongClickedListener.onItemLongClicked(getListAdapter(), item, holder, index);
             }
             return false;
         }

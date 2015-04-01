@@ -1,6 +1,9 @@
 package com.raizlabs.android.universaladapter.widget.adapters.converter;
 
 import android.support.v7.widget.RecyclerView;
+import android.view.GestureDetector;
+import android.view.MotionEvent;
+import android.view.View;
 import android.view.ViewGroup;
 
 import com.raizlabs.android.universaladapter.widget.adapters.ListBasedAdapter;
@@ -18,6 +21,22 @@ import com.raizlabs.android.universaladapter.widget.adapters.ViewHolder;
  *                 views.
  */
 public class RecyclerViewAdapterConverter<Item, Holder extends ViewHolder> extends RecyclerView.Adapter<Holder> {
+
+    /**
+     * Provides more specific information for a click, separate from {@link ItemClickedListener}
+     */
+    public interface RecyclerItemClickListener<Holder> {
+
+        /**
+         * Called when an item in the {@link RecyclerView} is clicked.
+         *
+         * @param viewHolder The view holder of the clicked item.
+         * @param parent     The recycler view which contained the clicked item.
+         * @param position   The position in the adapter of the clicked item.
+         */
+        void onItemClick(Holder viewHolder, RecyclerView parent, int position, float x, float y);
+    }
+
 
     /**
      * Helper for constructing {@link RecyclerViewAdapterConverter}s from
@@ -39,11 +58,45 @@ public class RecyclerViewAdapterConverter<Item, Holder extends ViewHolder> exten
         return listAdapter;
     }
 
+    private ItemClickedListener<Item, Holder> itemClickedListener;
+
+    private RecyclerItemClickListener<Holder> recyclerItemClickListener;
+
     public RecyclerViewAdapterConverter(ListBasedAdapter<Item, Holder> listAdapter) {
         this.listAdapter = listAdapter;
         // Add a listener which will delegate list observer calls back to us
         listAdapter.getListObserver().addListener(new RecyclerViewListObserverListener<Item>(this));
         setHasStableIds(listAdapter.hasStableIds());
+    }
+
+    /**
+     * Sets the listener to be called when an item is clicked.
+     *
+     * @param listener The listener to call.
+     */
+    public void setItemClickedListener(ItemClickedListener<Item, Holder> listener) {
+        this.itemClickedListener = listener;
+    }
+
+    /**
+     * Sets the listener to be called when an item is clicked. This call back provides more
+     * information about the click event of the {@link RecyclerView}
+     *
+     * @param recyclerItemClickListener The listener to call.
+     */
+    public void setRecyclerItemClickListener(RecyclerItemClickListener<Holder> recyclerItemClickListener) {
+        this.recyclerItemClickListener = recyclerItemClickListener;
+    }
+
+    /**
+     * Registers this adapter with the specified {@link RecyclerView}. It also hooks up the {@link RecyclerView.OnItemTouchListener}
+     * to it.
+     *
+     * @param recyclerView The {@link RecyclerView} to register.
+     */
+    public void register(RecyclerView recyclerView) {
+        recyclerView.setAdapter(this);
+        recyclerView.addOnItemTouchListener(internalOnItemTouchListener);
     }
 
     @Override
@@ -70,5 +123,45 @@ public class RecyclerViewAdapterConverter<Item, Holder extends ViewHolder> exten
     public Holder onCreateViewHolder(ViewGroup parent, int position) {
         return listAdapter.createViewHolder(parent, position);
     }
+
+    private final RecyclerView.OnItemTouchListener internalOnItemTouchListener = new RecyclerView.OnItemTouchListener() {
+
+        private GestureDetector gestureDetector;
+
+        @SuppressWarnings("unchecked")
+        @Override
+        public boolean onInterceptTouchEvent(RecyclerView view, MotionEvent e) {
+            if (gestureDetector == null) {
+                gestureDetector = new GestureDetector(view.getContext(), new GestureDetector.SimpleOnGestureListener() {
+                    @Override
+                    public boolean onSingleTapUp(MotionEvent e) {
+                        return true;
+                    }
+                });
+            }
+
+            View childView = view.findChildViewUnder(e.getX(), e.getY());
+            if (childView != null && gestureDetector.onTouchEvent(e)) {
+                int position = view.getChildPosition(childView);
+                Holder viewHolder = (Holder) view.getChildViewHolder(childView);
+
+                if(itemClickedListener != null) {
+                    itemClickedListener.onItemClicked(getListAdapter(), getListAdapter().get(position), viewHolder, position);
+                }
+
+                if(recyclerItemClickListener != null) {
+                    recyclerItemClickListener.onItemClick(viewHolder, view, position, e.getX(), e.getY());
+                }
+
+            }
+
+            return false;
+        }
+
+        @Override
+        public void onTouchEvent(RecyclerView rv, MotionEvent e) {
+
+        }
+    };
 
 }
