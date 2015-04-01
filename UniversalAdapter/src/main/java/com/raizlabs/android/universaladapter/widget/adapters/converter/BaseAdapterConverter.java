@@ -40,13 +40,32 @@ public class BaseAdapterConverter<Item, Holder extends ViewHolder>
         return new BaseAdapterConverter<>(listBasedAdapter);
     }
 
+    /**
+     * Helper for constructing {@link BaseAdapterConverter}s from
+     * {@link ListBasedAdapter}s. Handles generics a little more conveniently
+     * than the equivalent constructor.
+     *
+     * @param listBasedAdapter The list adapter to convert into a BaseAdapter.
+     * @param adapterView      The adapter view to register.
+     * @return A BaseAdapter based on the given list adapter.
+     */
+    public static <Item, Holder extends ViewHolder>
+    BaseAdapterConverter<Item, Holder> from(ListBasedAdapter<Item, Holder> listBasedAdapter, AdapterView<BaseAdapter> adapterView) {
+        return new BaseAdapterConverter<>(listBasedAdapter, adapterView);
+    }
+
     private ListBasedAdapter<Item, Holder> listAdapter;
 
 
     private ItemClickedListener<Item, Holder> itemClickedListener;
 
-    public BaseAdapterConverter(ListBasedAdapter<Item, Holder> listAdapter) {
+    public BaseAdapterConverter(@NonNull ListBasedAdapter<Item, Holder> listAdapter) {
         setAdapter(listAdapter);
+    }
+
+    public BaseAdapterConverter(@NonNull ListBasedAdapter<Item, Holder> listAdapter, AdapterView<BaseAdapter> adapterView) {
+        setAdapter(listAdapter);
+        register(adapterView);
     }
 
     // region Inherited Methods
@@ -65,6 +84,14 @@ public class BaseAdapterConverter<Item, Holder extends ViewHolder>
     public void register(@NonNull AdapterView<BaseAdapter> adapterView) {
         adapterView.setAdapter(this);
         adapterView.setOnItemClickListener(internalItemClickListener);
+        notifyDataSetChanged();
+    }
+
+    @Override
+    public void cleanup() {
+        if (this.listAdapter != null) {
+            this.listAdapter.getListObserver().removeListener(internalListObserverListener);
+        }
     }
 
     @Override
@@ -140,6 +167,16 @@ public class BaseAdapterConverter<Item, Holder extends ViewHolder>
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
         return listAdapter.getView(position, convertView, parent);
+    }
+
+    @Override
+    public boolean isEnabled(int position) {
+        return listAdapter.isEnabled(position);
+    }
+
+    @Override
+    public boolean areAllItemsEnabled() {
+        return listAdapter.areAllItemsEnabled();
     }
 
     private final ListObserverListener<Item> internalListObserverListener = new SimpleListObserverListener<Item>() {

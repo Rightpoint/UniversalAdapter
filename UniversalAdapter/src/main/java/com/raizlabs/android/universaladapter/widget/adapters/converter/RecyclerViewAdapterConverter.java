@@ -51,6 +51,21 @@ public class RecyclerViewAdapterConverter<Item, Holder extends ViewHolder>
         return new RecyclerViewAdapterConverter<>(listAdapter);
     }
 
+    /**
+     * Helper for constructing {@link RecyclerViewAdapterConverter}s from
+     * {@link ListBasedAdapter}s. Handles generics a little more conveniently
+     * than the equivalent constructor.
+     *
+     * @param listAdapter  The list adapter to convert into a RecyclerView
+     *                     adapter.
+     * @param recyclerView The recyclerview to register.
+     * @return A RecyclerView adapter based on the given list adapter.
+     */
+    public static <Item, Holder extends ViewHolder>
+    RecyclerViewAdapterConverter<Item, Holder> from(ListBasedAdapter<Item, Holder> listAdapter, RecyclerView recyclerView) {
+        return new RecyclerViewAdapterConverter<>(listAdapter, recyclerView);
+    }
+
     private ListBasedAdapter<Item, Holder> listAdapter;
 
     private ItemClickedListener<Item, Holder> itemClickedListener;
@@ -61,6 +76,12 @@ public class RecyclerViewAdapterConverter<Item, Holder extends ViewHolder>
     public RecyclerViewAdapterConverter(ListBasedAdapter<Item, Holder> listAdapter) {
         observerListener = new RecyclerViewListObserverListener<>(this);
         setAdapter(listAdapter);
+    }
+
+    public RecyclerViewAdapterConverter(ListBasedAdapter<Item, Holder> listAdapter, RecyclerView recyclerView) {
+        observerListener = new RecyclerViewListObserverListener<>(this);
+        setAdapter(listAdapter);
+        register(recyclerView);
     }
 
     /**
@@ -100,6 +121,14 @@ public class RecyclerViewAdapterConverter<Item, Holder extends ViewHolder>
     public void register(@NonNull RecyclerView recyclerView) {
         recyclerView.setAdapter(this);
         recyclerView.addOnItemTouchListener(internalOnItemTouchListener);
+        listAdapter.notifyDataSetChanged();
+    }
+
+    @Override
+    public void cleanup() {
+        if (this.listAdapter != null) {
+            this.listAdapter.getListObserver().removeListener(observerListener);
+        }
     }
 
     @Override
@@ -145,12 +174,14 @@ public class RecyclerViewAdapterConverter<Item, Holder extends ViewHolder>
         @SuppressWarnings("unchecked")
         @Override
         public void onItemClick(ViewHolder viewHolder, RecyclerView parent, int position, float x, float y) {
-            if (recyclerItemClickListener != null) {
-                recyclerItemClickListener.onItemClick((Holder) viewHolder, parent, position, x, y);
-            }
+            if (getListAdapter().isEnabled(position)) {
+                if (recyclerItemClickListener != null) {
+                    recyclerItemClickListener.onItemClick((Holder) viewHolder, parent, position, x, y);
+                }
 
-            if (itemClickedListener != null) {
-                itemClickedListener.onItemClicked(getListAdapter(), getListAdapter().get(position), (Holder) viewHolder, position);
+                if (itemClickedListener != null) {
+                    itemClickedListener.onItemClicked(getListAdapter(), getListAdapter().get(position), (Holder) viewHolder, position);
+                }
             }
         }
     };

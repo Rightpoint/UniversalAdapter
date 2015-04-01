@@ -11,7 +11,7 @@ import com.raizlabs.android.coreutils.util.observable.lists.ListObserverListener
 import com.raizlabs.android.coreutils.util.observable.lists.SimpleListObserverListener;
 import com.raizlabs.android.universaladapter.widget.adapters.ListBasedAdapter;
 import com.raizlabs.android.universaladapter.widget.adapters.ViewHolder;
-import com.raizlabs.android.universaladapter.widget.adapters.viewholderstrategy.ViewHolderStrategyUtils;
+import com.raizlabs.android.universaladapter.widget.adapters.UniversalAdapterUtils;
 
 /**
  * Class which uses a {@link ListBasedAdapter} to display a set of views in a
@@ -37,7 +37,7 @@ public class ViewGroupAdapterConverter<Item, Holder extends ViewHolder> implemen
      * adapter.
      */
     public static <Item, Holder extends ViewHolder> ViewGroupAdapterConverter<Item, Holder> from(ListBasedAdapter<Item, Holder> adapter, ViewGroup viewGroup) {
-        return new ViewGroupAdapterConverter<>(viewGroup, adapter);
+        return new ViewGroupAdapterConverter<>(adapter, viewGroup);
     }
 
     /**
@@ -45,12 +45,12 @@ public class ViewGroupAdapterConverter<Item, Holder extends ViewHolder> implemen
      * {@link ListBasedAdapter}s. Handles generics a little more conveniently
      * than the equivalent constructor.
      *
-     * @param viewGroup The view group which will be populated with views.
+     * @param adapter   The list adapter to use to populate views.
      * @return An adapter which will populate the view group via the given
      * adapter.
      */
-    public static <Item, Holder extends ViewHolder> ViewGroupAdapterConverter<Item, Holder> from(ViewGroup viewGroup) {
-        return new ViewGroupAdapterConverter<>(viewGroup);
+    public static <Item, Holder extends ViewHolder> ViewGroupAdapterConverter<Item, Holder> from(ListBasedAdapter<Item, Holder> adapter) {
+        return new ViewGroupAdapterConverter<>(adapter);
     }
 
     private ViewGroup viewGroup;
@@ -69,17 +69,13 @@ public class ViewGroupAdapterConverter<Item, Holder extends ViewHolder> implemen
     private ItemLongClickedListener<Item, Holder> itemLongClickedListener;
 
     /**
-     * Constructs a new adapter bound to the given {@link ViewGroup}, but binds
-     * no data.
+     * Constructs a new adapter bound to the given {@link ViewGroup}, and binds
+     * the given adapter.
      *
-     * @param viewGroup The view group which will be populated with views.
-     * @see #setAdapter(ListBasedAdapter)
+     * @param adapter   The list adapter to use to populate views.
      */
-    public ViewGroupAdapterConverter(ViewGroup viewGroup) {
-        if (viewGroup == null)
-            throw new IllegalArgumentException("ViewGroup may not be null.");
-
-        register(viewGroup);
+    public ViewGroupAdapterConverter(ListBasedAdapter<Item, Holder> adapter) {
+        setAdapter(adapter);
     }
 
     /**
@@ -89,8 +85,8 @@ public class ViewGroupAdapterConverter<Item, Holder extends ViewHolder> implemen
      * @param viewGroup The view group which will be populated with views.
      * @param adapter   The list adapter to use to populate views.
      */
-    public ViewGroupAdapterConverter(ViewGroup viewGroup, ListBasedAdapter<Item, Holder> adapter) {
-        this(viewGroup);
+    public ViewGroupAdapterConverter(ListBasedAdapter<Item, Holder> adapter, ViewGroup viewGroup) {
+        register(viewGroup);
         setAdapter(adapter);
     }
 
@@ -125,7 +121,7 @@ public class ViewGroupAdapterConverter<Item, Holder extends ViewHolder> implemen
     }
 
     /**
-     * Sets the adapter to use to populate the {@link ViewGroup} and laods
+     * Sets the adapter to use to populate the {@link ViewGroup} and loads
      * the current data.
      *
      * @param adapter The adapter to use to populate the view group.
@@ -137,10 +133,7 @@ public class ViewGroupAdapterConverter<Item, Holder extends ViewHolder> implemen
         }
 
         this.listAdapter = adapter;
-
-        if (this.listAdapter != null) {
-            this.listAdapter.getListObserver().addListener(listChangeListener);
-        }
+        this.listAdapter.getListObserver().addListener(listChangeListener);
 
         populateAll();
     }
@@ -151,16 +144,15 @@ public class ViewGroupAdapterConverter<Item, Holder extends ViewHolder> implemen
         populateAll();
     }
 
-    // endregion Inherited Methods
-
-    /**
-     * Cleans up this adapter and disconnects it from the {@link ViewGroup} and
-     * {@link ListBasedAdapter}.
-     */
+    @Override
     public void cleanup() {
-        setAdapter(null);
+        if (this.listAdapter != null) {
+            this.listAdapter.getListObserver().removeListener(listChangeListener);
+        }
         this.viewGroup = null;
     }
+
+    // endregion Inherited Methods
 
     private void clear() {
         viewGroup.removeAllViews();
@@ -207,7 +199,7 @@ public class ViewGroupAdapterConverter<Item, Holder extends ViewHolder> implemen
         listAdapter.bindViewHolder(holder, index);
 
         View view = holder.itemView;
-        ViewHolderStrategyUtils.setViewHolder(view, holder);
+        UniversalAdapterUtils.setViewHolder(view, holder);
         view.setOnClickListener(internalItemClickListener);
         view.setOnLongClickListener(internalItemLongClickListener);
 
@@ -225,10 +217,11 @@ public class ViewGroupAdapterConverter<Item, Holder extends ViewHolder> implemen
         @SuppressWarnings("unchecked")
         @Override
         public void onClick(View v) {
-            if (itemClickedListener != null) {
-                int index = getViewGroup().indexOfChild(v);
+            int index = getViewGroup().indexOfChild(v);
+            if (getListAdapter().isEnabled(index) && itemClickedListener != null) {
+
                 Item item = listAdapter.get(index);
-                Holder holder = (Holder) ViewHolderStrategyUtils.getViewHolder(v);
+                Holder holder = (Holder) UniversalAdapterUtils.getViewHolder(v);
                 itemClickedListener.onItemClicked(getListAdapter(), item, holder, index);
             }
         }
@@ -239,10 +232,11 @@ public class ViewGroupAdapterConverter<Item, Holder extends ViewHolder> implemen
         @SuppressWarnings("unchecked")
         @Override
         public boolean onLongClick(View v) {
-            if (itemLongClickedListener != null) {
-                int index = getViewGroup().indexOfChild(v);
+            int index = getViewGroup().indexOfChild(v);
+
+            if (getListAdapter().isEnabled(index) && itemLongClickedListener != null) {
                 Item item = listAdapter.get(index);
-                Holder holder = (Holder) ViewHolderStrategyUtils.getViewHolder(v);
+                Holder holder = (Holder) UniversalAdapterUtils.getViewHolder(v);
                 return itemLongClickedListener.onItemLongClicked(getListAdapter(), item, holder, index);
             }
             return false;

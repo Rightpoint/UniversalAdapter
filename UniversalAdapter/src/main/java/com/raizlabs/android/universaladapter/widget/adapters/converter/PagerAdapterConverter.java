@@ -12,7 +12,7 @@ import com.raizlabs.android.coreutils.util.observable.lists.ListObserverListener
 import com.raizlabs.android.coreutils.util.observable.lists.SimpleListObserverListener;
 import com.raizlabs.android.universaladapter.widget.adapters.ListBasedAdapter;
 import com.raizlabs.android.universaladapter.widget.adapters.ViewHolder;
-import com.raizlabs.android.universaladapter.widget.adapters.viewholderstrategy.ViewHolderStrategyUtils;
+import com.raizlabs.android.universaladapter.widget.adapters.UniversalAdapterUtils;
 
 /**
  * Class which dynamically converts a {@link ListBasedAdapter} into a
@@ -46,13 +46,12 @@ public class PagerAdapterConverter<Item, Holder extends ViewHolder>
      * {@link ListBasedAdapter}s. Handles generics a little more conveniently
      * than the equivalent constructor.
      *
-     * @param adapter   The list adapter to use to populate views.
-     * @param viewPager The view pager which will be populated with views.
+     * @param adapter The list adapter to use to populate views.
      * @return An adapter which will populate the view pager via the given
      * adapter.
      */
-    public static <Item, Holder extends ViewHolder> PagerAdapterConverter<Item, Holder> from(ViewPager viewPager) {
-        return new PagerAdapterConverter<>(viewPager);
+    public static <Item, Holder extends ViewHolder> PagerAdapterConverter<Item, Holder> from(ListBasedAdapter<Item, Holder> adapter) {
+        return new PagerAdapterConverter<>(adapter);
     }
 
     private ListBasedAdapter<Item, Holder> listAdapter;
@@ -67,12 +66,12 @@ public class PagerAdapterConverter<Item, Holder extends ViewHolder>
     }
 
     public PagerAdapterConverter(ListBasedAdapter<Item, Holder> listBasedAdapter, ViewPager viewPager) {
-        this(viewPager);
         setAdapter(listBasedAdapter);
+        register(viewPager);
     }
 
-    public PagerAdapterConverter(ViewPager viewPager) {
-        this.viewPager = viewPager;
+    public PagerAdapterConverter(ListBasedAdapter<Item, Holder> listBasedAdapter) {
+        setAdapter(listBasedAdapter);
     }
 
     /**
@@ -92,7 +91,7 @@ public class PagerAdapterConverter<Item, Holder extends ViewHolder>
 
     @Override
     public void setAdapter(@NonNull ListBasedAdapter<Item, Holder> listAdapter) {
-        if(this.listAdapter != null) {
+        if (this.listAdapter != null) {
             this.listAdapter.getListObserver().removeListener(internalListObserverListener);
         }
         this.listAdapter = listAdapter;
@@ -101,7 +100,17 @@ public class PagerAdapterConverter<Item, Holder extends ViewHolder>
 
     @Override
     public void register(@NonNull ViewPager viewPager) {
+        this.viewPager = viewPager;
+        viewPager.setAdapter(this);
+        superNotifyDataSetChanged();
+    }
 
+    @Override
+    public void cleanup() {
+        if (this.listAdapter != null) {
+            this.listAdapter.getListObserver().removeListener(internalListObserverListener);
+        }
+        this.viewPager = null;
     }
 
     /**
@@ -141,9 +150,10 @@ public class PagerAdapterConverter<Item, Holder extends ViewHolder>
         Holder holder = listAdapter.createViewHolder(container, listAdapter.getItemViewType(position));
         listAdapter.bindViewHolder(holder, position);
         View view = holder.itemView;
-        ViewHolderStrategyUtils.setViewHolder(view, holder);
+        UniversalAdapterUtils.setViewHolder(view, holder);
         view.setOnClickListener(internalItemClickListener);
         view.setOnLongClickListener(internalItemLongClickListener);
+        container.addView(view);
         return holder.itemView;
     }
 
@@ -174,10 +184,11 @@ public class PagerAdapterConverter<Item, Holder extends ViewHolder>
         @SuppressWarnings("unchecked")
         @Override
         public void onClick(View v) {
-            if (itemClickedListener != null) {
-                int index = getViewPager().indexOfChild(v);
+            int index = getViewPager().indexOfChild(v);
+
+            if (getListAdapter().isEnabled(index) && itemClickedListener != null && viewPager != null) {
                 Item item = listAdapter.get(index);
-                Holder holder = (Holder) ViewHolderStrategyUtils.getViewHolder(v);
+                Holder holder = (Holder) UniversalAdapterUtils.getViewHolder(v);
                 itemClickedListener.onItemClicked(getListAdapter(), item, holder, index);
             }
         }
@@ -188,10 +199,11 @@ public class PagerAdapterConverter<Item, Holder extends ViewHolder>
         @SuppressWarnings("unchecked")
         @Override
         public boolean onLongClick(View v) {
-            if (itemLongClickedListener != null) {
-                int index = getViewPager().indexOfChild(v);
+            int index = getViewPager().indexOfChild(v);
+
+            if (getListAdapter().isEnabled(index) && itemLongClickedListener != null && viewPager != null) {
                 Item item = listAdapter.get(index);
-                Holder holder = (Holder) ViewHolderStrategyUtils.getViewHolder(v);
+                Holder holder = (Holder) UniversalAdapterUtils.getViewHolder(v);
                 return itemLongClickedListener.onItemLongClicked(getListAdapter(), item, holder, index);
             }
             return false;

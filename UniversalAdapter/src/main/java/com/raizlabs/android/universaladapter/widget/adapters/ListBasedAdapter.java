@@ -10,9 +10,9 @@ import com.raizlabs.android.coreutils.util.observable.lists.ListObserver;
 import com.raizlabs.android.coreutils.util.observable.lists.ListObserverListener;
 import com.raizlabs.android.coreutils.util.observable.lists.ObservableList;
 import com.raizlabs.android.coreutils.util.observable.lists.SimpleListObserver;
-import com.raizlabs.android.universaladapter.widget.adapters.viewholderstrategy.ViewHolderStrategyUtils;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.Iterator;
 import java.util.LinkedList;
@@ -133,6 +133,18 @@ public abstract class ListBasedAdapter<Item, Holder extends ViewHolder> implemen
     }
 
     /**
+     * Loads the given varg array into a {@link List} into this adapter. This will use the same
+     * reference, so any changes to the source list will be reflected by the
+     * adapter whenever the data is repopulated. See
+     * {@link #notifyDataSetChangedOnUIThread()}.
+     *
+     * @param list The {@link List} to load.
+     */
+    public void loadItemArray(Item...list) {
+        setItemsList(Arrays.asList(list));
+    }
+
+    /**
      * Loads the given {@link List} into this adapter. This will use the same
      * reference, so any changes to the source list will be reflected by the
      * adapter whenever the data is repopulated. See
@@ -250,6 +262,14 @@ public abstract class ListBasedAdapter<Item, Holder extends ViewHolder> implemen
         return viewHolder.itemView;
     }
 
+    public boolean areAllItemsEnabled() {
+        return true;
+    }
+
+    public boolean isEnabled(int position) {
+        return true;
+    }
+
     public int getItemViewType(int position) {
         return 0;
     }
@@ -282,7 +302,7 @@ public abstract class ListBasedAdapter<Item, Holder extends ViewHolder> implemen
     @SuppressWarnings("unchecked")
     protected Holder getViewHolder(View view) {
         try {
-            return (Holder) ViewHolderStrategyUtils.getViewHolder(view);
+            return (Holder) UniversalAdapterUtils.getViewHolder(view);
         } catch (ClassCastException ex) {
             // Don't care. Just don't crash. We'll just ignore convertView.
         }
@@ -291,7 +311,7 @@ public abstract class ListBasedAdapter<Item, Holder extends ViewHolder> implemen
     }
 
     protected void setViewHolder(View view, Holder holder) {
-        ViewHolderStrategyUtils.setViewHolder(view, holder);
+        UniversalAdapterUtils.setViewHolder(view, holder);
     }
 
     public Holder createViewHolder(ViewGroup parent, int itemType) {
@@ -439,6 +459,11 @@ public abstract class ListBasedAdapter<Item, Holder extends ViewHolder> implemen
             onItemRangeChanged(location, 1);
         }
         return result;
+    }
+
+    @Override
+    public boolean isEmpty() {
+        return mList.isEmpty();
     }
 
     @Override
