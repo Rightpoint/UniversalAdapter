@@ -1,0 +1,15 @@
+apply plugin: 'com.android.library'
+apply plugin: 'com.raizlabs.griddle'
+
+apply from: 'https://raw.githubusercontent.com/Raizlabs/maven-releases/master/android_artifacts.gradle'
+apply from: 'https://raw.githubusercontent.com/Raizlabs/maven-releases/master/maven_push.gradle'
+
+android {
+    compileSdkVersion 22
+    buildToolsVersion "22"
+}
+
+dependencies {
+    nsMod 'com.android.support:{recyclerview-v7, support-v4}:22.0.0'
+    mod 'com.raizlabs.android:{CoreUtils}:1.0.0'
+}

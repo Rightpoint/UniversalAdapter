@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd" xmlns="http://maven.apache.org/POM/4.0.0"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <modelVersion>4.0.0</modelVersion>
+  <groupId>com.raizlabs.android</groupId>
+  <artifactId>Adapters</artifactId>
+  <version>1.0.0</version>
+  <packaging>aar</packaging>
+  <name>Adapters</name>
+  <description>BaseUtils</description>
+  <url>https://github.com/Raizlabs/RZAndroidBaseUtils</url>
+  <licenses>
+    <license>
+      <name>The MIT License</name>
+      <url>http://opensource.org/licenses/MIT</url>
+      <distribution>repo</distribution>
+    </license>
+  </licenses>
+  <developers>
+    <developer>
+      <id>agrosner</id>
+      <name>Andrew Grosner</name>
+    </developer>
+  </developers>
+  <scm>
+    <connection>scm:git@github.com:Raizlabs/RZAndroidBaseUtils.git</connection>
+    <developerConnection>scm:git@github.com:Raizlabs/RZAndroidBaseUtils.git</developerConnection>
+    <url>https://github.com/Raizlabs/RZAndroidBaseUtils.git</url>
+  </scm>
+  <dependencies>
+    <dependency>
+      <groupId>com.raizlabs.android</groupId>
+      <artifactId>BaseUtils</artifactId>
+      <version>1.0.0</version>
+      <scope>compile</scope>
+    </dependency>
+    <dependency>
+      <groupId>com.android.support</groupId>
+      <artifactId>recyclerview-v7</artifactId>
+      <version>21.0.+</version>
+      <scope>compile</scope>
+    </dependency>
+    <dependency>
+      <groupId>com.android.support</groupId>
+      <artifactId>support-v4</artifactId>
+      <version>20.+</version>
+      <scope>compile</scope>
+    </dependency>
+  </dependencies>
+</project>

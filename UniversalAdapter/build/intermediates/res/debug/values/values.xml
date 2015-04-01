@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- From: file:/Users/andrewgrosner/Programming/android/UniversalAdapter/UniversalAdapter/src/main/res/values/ids.xml -->
+    <eat-comment/>
+    <item name="com_raizlabs_viewholderTagID" type="id"/>
+</resources>
