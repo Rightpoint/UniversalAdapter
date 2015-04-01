@@ -36,7 +36,7 @@ public class ViewGroupAdapterConverter<Item, Holder extends ViewHolder> {
      * adapter.
      */
     public static <Item, Holder extends ViewHolder> ViewGroupAdapterConverter<Item, Holder> from(ListBasedAdapter<Item, Holder> adapter, ViewGroup viewGroup) {
-        return new ViewGroupAdapterConverter<Item, Holder>(viewGroup, adapter);
+        return new ViewGroupAdapterConverter<>(viewGroup, adapter);
     }
 
     private ViewGroup viewGroup;

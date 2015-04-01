@@ -1,6 +1,7 @@
 package com.raizlabs.android.universaladapter.widget.adapters.converter;
 
 import android.support.v4.view.PagerAdapter;
+import android.support.v4.view.ViewPager;
 import android.view.View;
 import android.view.ViewGroup;
 
@@ -23,6 +24,20 @@ import com.raizlabs.android.universaladapter.widget.adapters.viewholderstrategy.
  */
 public class PagerAdapterConverter<Item, Holder extends ViewHolder> extends PagerAdapter {
 
+    /**
+     * Helper for constructing {@link ViewGroupAdapterConverter}s from
+     * {@link ListBasedAdapter}s. Handles generics a little more conveniently
+     * than the equivalent constructor.
+     *
+     * @param adapter   The list adapter to use to populate views.
+     * @param viewPager The view pager which will be populated with views.
+     * @return An adapter which will populate the view pager via the given
+     * adapter.
+     */
+    public static <Item, Holder extends ViewHolder> PagerAdapterConverter<Item, Holder> from(ListBasedAdapter<Item, Holder> adapter, ViewPager viewPager) {
+        return new PagerAdapterConverter<>(adapter, viewPager);
+    }
+
     private ListBasedAdapter<Item, Holder> listAdapter;
 
     public ListBasedAdapter<Item, Holder> getListAdapter() {
@@ -32,20 +47,39 @@ public class PagerAdapterConverter<Item, Holder extends ViewHolder> extends Page
     private ItemClickedListener<Item, Holder> itemClickedListener;
     private ItemLongClickedListener<Item, Holder> itemLongClickedListener;
 
-    private ViewGroup viewGroup;
+    private ViewPager viewPager;
 
-    public ViewGroup getViewGroup() {
-        return viewGroup;
+    public ViewGroup getViewPager() {
+        return viewPager;
     }
 
-    public PagerAdapterConverter(ListBasedAdapter<Item, Holder> listBasedAdapter) {
+    public PagerAdapterConverter(ListBasedAdapter<Item, Holder> listBasedAdapter, ViewPager viewPager) {
         listAdapter = listBasedAdapter;
+        this.viewPager = viewPager;
         listAdapter.getListObserver().addListener(new SimpleListObserverListener<Item>() {
             @Override
             public void onGenericChange(ListObserver<Item> listObserver) {
                 superNotifyDataSetChangedOnUIThread();
             }
         });
+    }
+
+    /**
+     * Sets the listener to be called when an item is clicked.
+     *
+     * @param listener The listener to call.
+     */
+    public void setItemClickedListener(ItemClickedListener<Item, Holder> listener) {
+        this.itemClickedListener = listener;
+    }
+
+    /**
+     * Sets the listener to be called when an item is long clicked.
+     *
+     * @param listener The listener to call.
+     */
+    public void setItemLongClickedListener(ItemLongClickedListener<Item, Holder> listener) {
+        this.itemLongClickedListener = listener;
     }
 
     @Override
@@ -73,10 +107,6 @@ public class PagerAdapterConverter<Item, Holder extends ViewHolder> extends Page
 
     @Override
     public Object instantiateItem(ViewGroup container, int position) {
-        if (this.viewGroup == null) {
-            this.viewGroup = container;
-        }
-
         Holder holder = listAdapter.createViewHolder(container, listAdapter.getItemViewType(position));
         listAdapter.bindViewHolder(holder, position);
         View view = holder.itemView;
@@ -107,7 +137,7 @@ public class PagerAdapterConverter<Item, Holder extends ViewHolder> extends Page
         @Override
         public void onClick(View v) {
             if (itemClickedListener != null) {
-                int index = getViewGroup().indexOfChild(v);
+                int index = getViewPager().indexOfChild(v);
                 Item item = listAdapter.get(index);
                 Holder holder = (Holder) ViewHolderStrategyUtils.getViewHolder(v);
                 itemClickedListener.onItemClicked(getListAdapter(), item, holder, index);
@@ -121,7 +151,7 @@ public class PagerAdapterConverter<Item, Holder extends ViewHolder> extends Page
         @Override
         public boolean onLongClick(View v) {
             if (itemLongClickedListener != null) {
-                int index = getViewGroup().indexOfChild(v);
+                int index = getViewPager().indexOfChild(v);
                 Item item = listAdapter.get(index);
                 Holder holder = (Holder) ViewHolderStrategyUtils.getViewHolder(v);
                 return itemLongClickedListener.onItemLongClicked(getListAdapter(), item, holder, index);
