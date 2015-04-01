@@ -1,4 +1,4 @@
-package com.raizlabs.widget.adapters.converter;
+package com.raizlabs.android.universaladapter.widget.adapters.converter;
 
 import android.view.View;
 import android.view.ViewGroup;
@@ -7,8 +7,8 @@ import android.widget.BaseAdapter;
 import com.raizlabs.android.coreutils.threading.ThreadingUtils;
 import com.raizlabs.android.coreutils.util.observable.lists.ListObserver;
 import com.raizlabs.android.coreutils.util.observable.lists.SimpleListObserverListener;
-import com.raizlabs.widget.adapters.ListBasedAdapter;
-import com.raizlabs.widget.adapters.ViewHolder;
+import com.raizlabs.android.universaladapter.widget.adapters.ListBasedAdapter;
+import com.raizlabs.android.universaladapter.widget.adapters.ViewHolder;
 
 /**
  * Class which dynamically converts a {@link ListBasedAdapter} into a

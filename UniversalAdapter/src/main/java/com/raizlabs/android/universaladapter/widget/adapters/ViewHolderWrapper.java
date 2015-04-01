@@ -1,4 +1,4 @@
-package com.raizlabs.widget.adapters;
+package com.raizlabs.android.universaladapter.widget.adapters;
 
 import android.view.View;
 
@@ -11,9 +11,9 @@ import android.view.View;
  * @param <InnerHolderType> The type of the contained view holder.
  */
 public class ViewHolderWrapper<InnerHolderType> extends ViewHolder {
-	public InnerHolderType innerHolder;
+    public InnerHolderType innerHolder;
 
-	public ViewHolderWrapper(View itemView) {
-		super(itemView);
-	}
+    public ViewHolderWrapper(View itemView) {
+        super(itemView);
+    }
 }

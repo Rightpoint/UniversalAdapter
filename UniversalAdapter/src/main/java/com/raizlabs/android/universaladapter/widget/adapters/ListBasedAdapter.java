@@ -1,4 +1,4 @@
-package com.raizlabs.widget.adapters;
+package com.raizlabs.android.universaladapter.widget.adapters;
 
 import android.view.LayoutInflater;
 import android.view.View;
@@ -10,7 +10,7 @@ import com.raizlabs.android.coreutils.util.observable.lists.ListObserver;
 import com.raizlabs.android.coreutils.util.observable.lists.ListObserverListener;
 import com.raizlabs.android.coreutils.util.observable.lists.ObservableList;
 import com.raizlabs.android.coreutils.util.observable.lists.SimpleListObserver;
-import com.raizlabs.widget.adapters.viewholderstrategy.ViewHolderStrategyUtils;
+import com.raizlabs.android.universaladapter.widget.adapters.viewholderstrategy.ViewHolderStrategyUtils;
 
 import java.util.ArrayList;
 import java.util.Collection;
