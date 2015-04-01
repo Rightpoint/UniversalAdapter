@@ -1,5 +1,6 @@
 package com.raizlabs.android.universaladapter.widget.adapters.converter;
 
+import android.support.annotation.NonNull;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.View.OnLongClickListener;
@@ -23,7 +24,7 @@ import com.raizlabs.android.universaladapter.widget.adapters.viewholderstrategy.
  * @param <Holder> The type of the {@link ViewHolder} that will be used to hold
  *                 views.
  */
-public class ViewGroupAdapterConverter<Item, Holder extends ViewHolder> {
+public class ViewGroupAdapterConverter<Item, Holder extends ViewHolder> implements UniversalConverter<Item, Holder, ViewGroup> {
 
     /**
      * Helper for constructing {@link ViewGroupAdapterConverter}s from
@@ -39,6 +40,19 @@ public class ViewGroupAdapterConverter<Item, Holder extends ViewHolder> {
         return new ViewGroupAdapterConverter<>(viewGroup, adapter);
     }
 
+    /**
+     * Helper for constructing {@link ViewGroupAdapterConverter}s from
+     * {@link ListBasedAdapter}s. Handles generics a little more conveniently
+     * than the equivalent constructor.
+     *
+     * @param viewGroup The view group which will be populated with views.
+     * @return An adapter which will populate the view group via the given
+     * adapter.
+     */
+    public static <Item, Holder extends ViewHolder> ViewGroupAdapterConverter<Item, Holder> from(ViewGroup viewGroup) {
+        return new ViewGroupAdapterConverter<>(viewGroup);
+    }
+
     private ViewGroup viewGroup;
 
     /**
@@ -50,54 +64,9 @@ public class ViewGroupAdapterConverter<Item, Holder extends ViewHolder> {
 
     private ListBasedAdapter<Item, Holder> listAdapter;
 
-    /**
-     * @return The {@link ListBasedAdapter} that this adapter uses to populate
-     * the view group.
-     */
-    public ListBasedAdapter<Item, Holder> getListAdapter() {
-        return listAdapter;
-    }
 
     private ItemClickedListener<Item, Holder> itemClickedListener;
     private ItemLongClickedListener<Item, Holder> itemLongClickedListener;
-
-    /**
-     * Sets the listener to be called when an item is clicked.
-     *
-     * @param listener The listener to call.
-     */
-    public void setItemClickedListener(ItemClickedListener<Item, Holder> listener) {
-        this.itemClickedListener = listener;
-    }
-
-    /**
-     * Sets the listener to be called when an item is long clicked.
-     *
-     * @param listener The listener to call.
-     */
-    public void setItemLongClickedListener(ItemLongClickedListener<Item, Holder> listener) {
-        this.itemLongClickedListener = listener;
-    }
-
-    /**
-     * Sets the adapter to use to populate the {@link ViewGroup} and laods
-     * the current data.
-     *
-     * @param adapter The adapter to use to populate the view group.
-     */
-    public void setAdapter(ListBasedAdapter<Item, Holder> adapter) {
-        if (this.listAdapter != null) {
-            this.listAdapter.getListObserver().removeListener(listChangeListener);
-        }
-
-        this.listAdapter = adapter;
-
-        if (this.listAdapter != null) {
-            this.listAdapter.getListObserver().addListener(listChangeListener);
-        }
-
-        populateAll();
-    }
 
     /**
      * Constructs a new adapter bound to the given {@link ViewGroup}, but binds
@@ -110,7 +79,7 @@ public class ViewGroupAdapterConverter<Item, Holder extends ViewHolder> {
         if (viewGroup == null)
             throw new IllegalArgumentException("ViewGroup may not be null.");
 
-        this.viewGroup = viewGroup;
+        register(viewGroup);
     }
 
     /**
@@ -126,6 +95,65 @@ public class ViewGroupAdapterConverter<Item, Holder extends ViewHolder> {
     }
 
     /**
+     * Sets the listener to be called when an item is long clicked.
+     *
+     * @param listener The listener to call.
+     */
+    public void setItemLongClickedListener(ItemLongClickedListener<Item, Holder> listener) {
+        this.itemLongClickedListener = listener;
+    }
+
+    // region Inherited Methods
+
+    /**
+     * @return The {@link ListBasedAdapter} that this adapter uses to populate
+     * the view group.
+     */
+    @Override
+    public ListBasedAdapter<Item, Holder> getListAdapter() {
+        return listAdapter;
+    }
+
+    /**
+     * Sets the listener to be called when an item is clicked.
+     *
+     * @param listener The listener to call.
+     */
+    @Override
+    public void setItemClickedListener(ItemClickedListener<Item, Holder> listener) {
+        this.itemClickedListener = listener;
+    }
+
+    /**
+     * Sets the adapter to use to populate the {@link ViewGroup} and laods
+     * the current data.
+     *
+     * @param adapter The adapter to use to populate the view group.
+     */
+    @Override
+    public void setAdapter(@NonNull ListBasedAdapter<Item, Holder> adapter) {
+        if (this.listAdapter != null) {
+            this.listAdapter.getListObserver().removeListener(listChangeListener);
+        }
+
+        this.listAdapter = adapter;
+
+        if (this.listAdapter != null) {
+            this.listAdapter.getListObserver().addListener(listChangeListener);
+        }
+
+        populateAll();
+    }
+
+    @Override
+    public void register(@NonNull ViewGroup viewGroup) {
+        this.viewGroup = viewGroup;
+        populateAll();
+    }
+
+    // endregion Inherited Methods
+
+    /**
      * Cleans up this adapter and disconnects it from the {@link ViewGroup} and
      * {@link ListBasedAdapter}.
      */
@@ -139,18 +167,20 @@ public class ViewGroupAdapterConverter<Item, Holder extends ViewHolder> {
     }
 
     private void populateAll() {
-        clear();
+        if (viewGroup != null) {
+            clear();
 
-        onPrePopulate(viewGroup);
+            onPrePopulate(viewGroup);
 
-        if (listAdapter != null) {
-            final int count = listAdapter.getCount();
-            for (int i = 0; i < count; i++) {
-                addItem(i);
+            if (listAdapter != null) {
+                final int count = listAdapter.getCount();
+                for (int i = 0; i < count; i++) {
+                    addItem(i);
+                }
             }
-        }
 
-        onPostPopulate(viewGroup);
+            onPostPopulate(viewGroup);
+        }
     }
 
     /**

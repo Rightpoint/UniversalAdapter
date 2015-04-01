@@ -1,5 +1,6 @@
 package com.raizlabs.android.universaladapter.widget.adapters.converter;
 
+import android.support.annotation.NonNull;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
@@ -7,6 +8,7 @@ import android.widget.BaseAdapter;
 
 import com.raizlabs.android.coreutils.threading.ThreadingUtils;
 import com.raizlabs.android.coreutils.util.observable.lists.ListObserver;
+import com.raizlabs.android.coreutils.util.observable.lists.ListObserverListener;
 import com.raizlabs.android.coreutils.util.observable.lists.SimpleListObserverListener;
 import com.raizlabs.android.universaladapter.widget.adapters.ListBasedAdapter;
 import com.raizlabs.android.universaladapter.widget.adapters.ViewHolder;
@@ -22,7 +24,8 @@ import com.raizlabs.widget.adapters.R;
  * @param <Holder> The type of the {@link ViewHolder} that will be used to hold
  *                 views.
  */
-public class BaseAdapterConverter<Item, Holder extends ViewHolder> extends BaseAdapter {
+public class BaseAdapterConverter<Item, Holder extends ViewHolder>
+        extends BaseAdapter implements UniversalConverter<Item, Holder, AdapterView<BaseAdapter>> {
 
     /**
      * Helper for constructing {@link BaseAdapterConverter}s from
@@ -39,34 +42,47 @@ public class BaseAdapterConverter<Item, Holder extends ViewHolder> extends BaseA
 
     private ListBasedAdapter<Item, Holder> listAdapter;
 
-    public ListBasedAdapter<Item, Holder> getListAdapter() {
-        return listAdapter;
-    }
 
     private ItemClickedListener<Item, Holder> itemClickedListener;
 
     public BaseAdapterConverter(ListBasedAdapter<Item, Holder> listAdapter) {
-        this.listAdapter = listAdapter;
-        listAdapter.getListObserver().addListener(new SimpleListObserverListener<Item>() {
-            @Override
-            public void onGenericChange(ListObserver<Item> listObserver) {
-                superNotifyDataSetChangedOnUIThread();
-            }
-        });
+        setAdapter(listAdapter);
+    }
+
+    // region Inherited Methods
+
+    @Override
+    public ListBasedAdapter<Item, Holder> getListAdapter() {
+        return listAdapter;
     }
 
     /**
      * Registers thie adapter and {@link AdapterView.OnItemClickListener} with the specified {@link AdapterView}
+     *
      * @param adapterView the adapter view to register this adapter with.
      */
-    public void register(AdapterView<BaseAdapter> adapterView) {
+    @Override
+    public void register(@NonNull AdapterView<BaseAdapter> adapterView) {
         adapterView.setAdapter(this);
         adapterView.setOnItemClickListener(internalItemClickListener);
     }
 
+    @Override
     public void setItemClickedListener(ItemClickedListener<Item, Holder> itemClickedListener) {
         this.itemClickedListener = itemClickedListener;
     }
+
+    @Override
+    public void setAdapter(@NonNull ListBasedAdapter<Item, Holder> listAdapter) {
+        if (this.listAdapter != null) {
+            this.listAdapter.getListObserver().removeListener(internalListObserverListener);
+        }
+
+        this.listAdapter = listAdapter;
+        listAdapter.getListObserver().addListener(internalListObserverListener);
+    }
+
+    // endregion Inherited Methods
 
     @Override
     public void notifyDataSetChanged() {
@@ -126,11 +142,18 @@ public class BaseAdapterConverter<Item, Holder extends ViewHolder> extends BaseA
         return listAdapter.getView(position, convertView, parent);
     }
 
+    private final ListObserverListener<Item> internalListObserverListener = new SimpleListObserverListener<Item>() {
+        @Override
+        public void onGenericChange(ListObserver<Item> listObserver) {
+            superNotifyDataSetChangedOnUIThread();
+        }
+    };
+
     private final AdapterView.OnItemClickListener internalItemClickListener = new AdapterView.OnItemClickListener() {
         @SuppressWarnings("unchecked")
         @Override
         public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-            if(itemClickedListener != null) {
+            if (itemClickedListener != null) {
                 Holder holder = (Holder) view.getTag(R.id.com_raizlabs_viewholderTagID);
                 itemClickedListener.onItemClicked(getListAdapter(), getItem(position), holder, position);
             }

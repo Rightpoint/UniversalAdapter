@@ -1,5 +1,6 @@
 package com.raizlabs.android.universaladapter.widget.adapters.converter;
 
+import android.support.annotation.NonNull;
 import android.support.v4.view.PagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.view.View;
@@ -7,6 +8,7 @@ import android.view.ViewGroup;
 
 import com.raizlabs.android.coreutils.threading.ThreadingUtils;
 import com.raizlabs.android.coreutils.util.observable.lists.ListObserver;
+import com.raizlabs.android.coreutils.util.observable.lists.ListObserverListener;
 import com.raizlabs.android.coreutils.util.observable.lists.SimpleListObserverListener;
 import com.raizlabs.android.universaladapter.widget.adapters.ListBasedAdapter;
 import com.raizlabs.android.universaladapter.widget.adapters.ViewHolder;
@@ -22,7 +24,8 @@ import com.raizlabs.android.universaladapter.widget.adapters.viewholderstrategy.
  * @param <Holder> The type of the {@link ViewHolder} that will be used to hold
  *                 views.
  */
-public class PagerAdapterConverter<Item, Holder extends ViewHolder> extends PagerAdapter {
+public class PagerAdapterConverter<Item, Holder extends ViewHolder>
+        extends PagerAdapter implements UniversalConverter<Item, Holder, ViewPager> {
 
     /**
      * Helper for constructing {@link ViewGroupAdapterConverter}s from
@@ -38,11 +41,21 @@ public class PagerAdapterConverter<Item, Holder extends ViewHolder> extends Page
         return new PagerAdapterConverter<>(adapter, viewPager);
     }
 
-    private ListBasedAdapter<Item, Holder> listAdapter;
-
-    public ListBasedAdapter<Item, Holder> getListAdapter() {
-        return listAdapter;
+    /**
+     * Helper for constructing {@link ViewGroupAdapterConverter}s from
+     * {@link ListBasedAdapter}s. Handles generics a little more conveniently
+     * than the equivalent constructor.
+     *
+     * @param adapter   The list adapter to use to populate views.
+     * @param viewPager The view pager which will be populated with views.
+     * @return An adapter which will populate the view pager via the given
+     * adapter.
+     */
+    public static <Item, Holder extends ViewHolder> PagerAdapterConverter<Item, Holder> from(ViewPager viewPager) {
+        return new PagerAdapterConverter<>(viewPager);
     }
+
+    private ListBasedAdapter<Item, Holder> listAdapter;
 
     private ItemClickedListener<Item, Holder> itemClickedListener;
     private ItemLongClickedListener<Item, Holder> itemLongClickedListener;
@@ -54,14 +67,12 @@ public class PagerAdapterConverter<Item, Holder extends ViewHolder> extends Page
     }
 
     public PagerAdapterConverter(ListBasedAdapter<Item, Holder> listBasedAdapter, ViewPager viewPager) {
-        listAdapter = listBasedAdapter;
+        this(viewPager);
+        setAdapter(listBasedAdapter);
+    }
+
+    public PagerAdapterConverter(ViewPager viewPager) {
         this.viewPager = viewPager;
-        listAdapter.getListObserver().addListener(new SimpleListObserverListener<Item>() {
-            @Override
-            public void onGenericChange(ListObserver<Item> listObserver) {
-                superNotifyDataSetChangedOnUIThread();
-            }
-        });
     }
 
     /**
@@ -69,8 +80,28 @@ public class PagerAdapterConverter<Item, Holder extends ViewHolder> extends Page
      *
      * @param listener The listener to call.
      */
+    @Override
     public void setItemClickedListener(ItemClickedListener<Item, Holder> listener) {
         this.itemClickedListener = listener;
+    }
+
+    @Override
+    public ListBasedAdapter<Item, Holder> getListAdapter() {
+        return listAdapter;
+    }
+
+    @Override
+    public void setAdapter(@NonNull ListBasedAdapter<Item, Holder> listAdapter) {
+        if(this.listAdapter != null) {
+            this.listAdapter.getListObserver().removeListener(internalListObserverListener);
+        }
+        this.listAdapter = listAdapter;
+        this.listAdapter.getListObserver().addListener(internalListObserverListener);
+    }
+
+    @Override
+    public void register(@NonNull ViewPager viewPager) {
+
     }
 
     /**
@@ -130,6 +161,13 @@ public class PagerAdapterConverter<Item, Holder extends ViewHolder> extends Page
     public boolean isViewFromObject(View view, Object object) {
         return view == object;
     }
+
+    private final ListObserverListener<Item> internalListObserverListener = new SimpleListObserverListener<Item>() {
+        @Override
+        public void onGenericChange(ListObserver<Item> listObserver) {
+            superNotifyDataSetChangedOnUIThread();
+        }
+    };
 
     private final View.OnClickListener internalItemClickListener = new View.OnClickListener() {
 

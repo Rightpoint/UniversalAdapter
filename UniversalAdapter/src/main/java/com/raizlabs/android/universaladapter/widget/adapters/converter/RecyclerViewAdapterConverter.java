@@ -1,5 +1,6 @@
 package com.raizlabs.android.universaladapter.widget.adapters.converter;
 
+import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
 import android.view.ViewGroup;
 
@@ -18,7 +19,8 @@ import com.raizlabs.android.universaladapter.widget.adapters.ViewHolder;
  * @param <Holder> The type of the {@link ViewHolder} that will be used to hold
  *                 views.
  */
-public class RecyclerViewAdapterConverter<Item, Holder extends ViewHolder> extends RecyclerView.Adapter<Holder> {
+public class RecyclerViewAdapterConverter<Item, Holder extends ViewHolder>
+        extends RecyclerView.Adapter<Holder> implements UniversalConverter<Item, Holder, RecyclerView> {
 
     /**
      * Provides more specific information for a click, separate from {@link ItemClickedListener}
@@ -34,7 +36,6 @@ public class RecyclerViewAdapterConverter<Item, Holder extends ViewHolder> exten
          */
         void onItemClick(Holder viewHolder, RecyclerView parent, int position, float x, float y);
     }
-
 
     /**
      * Helper for constructing {@link RecyclerViewAdapterConverter}s from
@@ -52,28 +53,14 @@ public class RecyclerViewAdapterConverter<Item, Holder extends ViewHolder> exten
 
     private ListBasedAdapter<Item, Holder> listAdapter;
 
-    public ListBasedAdapter<Item, Holder> getListAdapter() {
-        return listAdapter;
-    }
-
     private ItemClickedListener<Item, Holder> itemClickedListener;
-
     private RecyclerItemClickListener<Holder> recyclerItemClickListener;
 
-    public RecyclerViewAdapterConverter(ListBasedAdapter<Item, Holder> listAdapter) {
-        this.listAdapter = listAdapter;
-        // Add a listener which will delegate list observer calls back to us
-        listAdapter.getListObserver().addListener(new RecyclerViewListObserverListener<Item>(this));
-        setHasStableIds(listAdapter.hasStableIds());
-    }
+    private RecyclerViewListObserverListener<Item> observerListener;
 
-    /**
-     * Sets the listener to be called when an item is clicked.
-     *
-     * @param listener The listener to call.
-     */
-    public void setItemClickedListener(ItemClickedListener<Item, Holder> listener) {
-        this.itemClickedListener = listener;
+    public RecyclerViewAdapterConverter(ListBasedAdapter<Item, Holder> listAdapter) {
+        observerListener = new RecyclerViewListObserverListener<>(this);
+        setAdapter(listAdapter);
     }
 
     /**
@@ -86,15 +73,45 @@ public class RecyclerViewAdapterConverter<Item, Holder extends ViewHolder> exten
         this.recyclerItemClickListener = recyclerItemClickListener;
     }
 
+    // region Inherited Methods
+
+    @Override
+    public ListBasedAdapter<Item, Holder> getListAdapter() {
+        return listAdapter;
+    }
+
+    /**
+     * Sets the listener to be called when an item is clicked.
+     *
+     * @param listener The listener to call.
+     */
+    @Override
+    public void setItemClickedListener(ItemClickedListener<Item, Holder> listener) {
+        this.itemClickedListener = listener;
+    }
+
     /**
      * Registers this adapter with the specified {@link RecyclerView}. It also hooks up the {@link RecyclerView.OnItemTouchListener}
      * to it.
      *
      * @param recyclerView The {@link RecyclerView} to register.
      */
-    public void register(RecyclerView recyclerView) {
+    @Override
+    public void register(@NonNull RecyclerView recyclerView) {
         recyclerView.setAdapter(this);
         recyclerView.addOnItemTouchListener(internalOnItemTouchListener);
+    }
+
+    @Override
+    public void setAdapter(@NonNull ListBasedAdapter<Item, Holder> listAdapter) {
+        if (this.listAdapter != null) {
+            this.listAdapter.getListObserver().removeListener(observerListener);
+        }
+
+        this.listAdapter = listAdapter;
+        // Add a listener which will delegate list observer calls back to us
+        listAdapter.getListObserver().addListener(observerListener);
+        setHasStableIds(listAdapter.hasStableIds());
     }
 
     @Override
@@ -121,6 +138,8 @@ public class RecyclerViewAdapterConverter<Item, Holder extends ViewHolder> exten
     public Holder onCreateViewHolder(ViewGroup parent, int position) {
         return listAdapter.createViewHolder(parent, position);
     }
+
+    // endregion Inherited Methods
 
     private final RecyclerViewItemClickListener internalOnItemTouchListener = new RecyclerViewItemClickListener() {
         @SuppressWarnings("unchecked")
