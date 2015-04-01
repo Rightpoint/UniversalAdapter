@@ -9,12 +9,10 @@ import android.widget.BaseAdapter;
 import com.raizlabs.android.universaladapter.widget.adapters.ListBasedAdapter;
 import com.raizlabs.android.universaladapter.widget.adapters.ViewHolder;
 
-/**
- * Description:
- */
-public class ConverterFactory {
+public class UniversalAdapter {
 
     /**
+     * @param adapter   The list adapter to populate the specified viewgroup with.
      * @param viewGroup The viewgroup to register the adapter with. This populates and registers any click events
      *                  with the viewgroup.
      * @param <Item>

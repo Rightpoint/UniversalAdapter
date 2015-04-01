@@ -3,7 +3,6 @@ package com.raizlabs.android.universaladapter;
 import android.content.Context;
 import android.content.Intent;
 import android.support.v4.app.FragmentActivity;
-import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -15,7 +14,7 @@ import android.widget.TextView;
 
 import com.raizlabs.android.universaladapter.widget.adapters.ListBasedAdapter;
 import com.raizlabs.android.universaladapter.widget.adapters.ViewHolder;
-import com.raizlabs.android.universaladapter.widget.adapters.converter.ConverterFactory;
+import com.raizlabs.android.universaladapter.widget.adapters.converter.UniversalAdapter;
 import com.raizlabs.android.universaladapter.widget.adapters.converter.UniversalConverter;
 
 import java.util.ArrayList;
@@ -65,7 +64,7 @@ public class AdapterActivity extends FragmentActivity {
             ((RecyclerView) viewGroup).setLayoutManager(new LinearLayoutManager(viewGroup.getContext()));
         }
 
-        converter = ConverterFactory.create(adapter, viewGroup);
+        converter = UniversalAdapter.create(adapter, viewGroup);
     }
 
     @Override
