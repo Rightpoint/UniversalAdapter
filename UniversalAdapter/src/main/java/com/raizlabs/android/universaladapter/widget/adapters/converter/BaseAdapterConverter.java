@@ -2,6 +2,7 @@ package com.raizlabs.android.universaladapter.widget.adapters.converter;
 
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.BaseAdapter;
 
 import com.raizlabs.android.coreutils.threading.ThreadingUtils;
@@ -9,6 +10,7 @@ import com.raizlabs.android.coreutils.util.observable.lists.ListObserver;
 import com.raizlabs.android.coreutils.util.observable.lists.SimpleListObserverListener;
 import com.raizlabs.android.universaladapter.widget.adapters.ListBasedAdapter;
 import com.raizlabs.android.universaladapter.widget.adapters.ViewHolder;
+import com.raizlabs.widget.adapters.R;
 
 /**
  * Class which dynamically converts a {@link ListBasedAdapter} into a
@@ -41,6 +43,8 @@ public class BaseAdapterConverter<Item, Holder extends ViewHolder> extends BaseA
         return listAdapter;
     }
 
+    private ItemClickedListener<Item, Holder> itemClickedListener;
+
     public BaseAdapterConverter(ListBasedAdapter<Item, Holder> listAdapter) {
         this.listAdapter = listAdapter;
         listAdapter.getListObserver().addListener(new SimpleListObserverListener<Item>() {
@@ -49,6 +53,19 @@ public class BaseAdapterConverter<Item, Holder extends ViewHolder> extends BaseA
                 superNotifyDataSetChangedOnUIThread();
             }
         });
+    }
+
+    /**
+     * Registers thie adapter and {@link AdapterView.OnItemClickListener} with the specified {@link AdapterView}
+     * @param adapterView the adapter view to register this adapter with.
+     */
+    public void register(AdapterView<BaseAdapter> adapterView) {
+        adapterView.setAdapter(this);
+        adapterView.setOnItemClickListener(internalItemClickListener);
+    }
+
+    public void setItemClickedListener(ItemClickedListener<Item, Holder> itemClickedListener) {
+        this.itemClickedListener = itemClickedListener;
     }
 
     @Override
@@ -108,4 +125,15 @@ public class BaseAdapterConverter<Item, Holder extends ViewHolder> extends BaseA
     public View getView(int position, View convertView, ViewGroup parent) {
         return listAdapter.getView(position, convertView, parent);
     }
+
+    private final AdapterView.OnItemClickListener internalItemClickListener = new AdapterView.OnItemClickListener() {
+        @SuppressWarnings("unchecked")
+        @Override
+        public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+            if(itemClickedListener != null) {
+                Holder holder = (Holder) view.getTag(R.id.com_raizlabs_viewholderTagID);
+                itemClickedListener.onItemClicked(getListAdapter(), getItem(position), holder, position);
+            }
+        }
+    };
 }
