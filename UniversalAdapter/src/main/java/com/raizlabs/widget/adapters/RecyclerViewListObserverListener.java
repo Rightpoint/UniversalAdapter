@@ -20,10 +20,10 @@ public class RecyclerViewListObserverListener<Item> implements ListObserverListe
 	/**
 	 * Constructs a new listener which will delegate its calls back to the
 	 * given adapter.
-	 * @param adpater The adapter to send calls back to.
+	 * @param adapter The adapter to send calls back to.
 	 */
-	public RecyclerViewListObserverListener(RecyclerView.Adapter<?> adpater) {
-		this.adapter = adpater;
+	public RecyclerViewListObserverListener(RecyclerView.Adapter<?> adapter) {
+		this.adapter = adapter;
 	}
 
 	@Override

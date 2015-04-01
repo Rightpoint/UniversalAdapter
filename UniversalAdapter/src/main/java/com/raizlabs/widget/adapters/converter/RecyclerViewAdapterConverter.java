@@ -1,7 +1,11 @@
-package com.raizlabs.widget.adapters;
+package com.raizlabs.widget.adapters.converter;
 
 import android.support.v7.widget.RecyclerView;
 import android.view.ViewGroup;
+
+import com.raizlabs.widget.adapters.ListBasedAdapter;
+import com.raizlabs.widget.adapters.RecyclerViewListObserverListener;
+import com.raizlabs.widget.adapters.ViewHolder;
 
 /**
  * Class which dynamically converts a {@link ListBasedAdapter} into a
@@ -23,12 +27,16 @@ public class RecyclerViewAdapterConverter<Item, Holder extends ViewHolder> exten
 	 * adapter.
 	 * @return A RecyclerView adapter based on the given list adapter.
 	 */
-	public static <Item, Holder extends ViewHolder> RecyclerViewAdapterConverter<Item, Holder> from(ListBasedAdapter<Item, Holder> listAdapter) {
-		return new RecyclerViewAdapterConverter<Item, Holder>(listAdapter);
+	public static <Item, Holder extends ViewHolder>
+		RecyclerViewAdapterConverter<Item, Holder> from(ListBasedAdapter<Item, Holder> listAdapter) {
+		return new RecyclerViewAdapterConverter<>(listAdapter);
 	}
 	
 	private ListBasedAdapter<Item, Holder> listAdapter;
-	public ListBasedAdapter<Item, Holder> getListAdapter() { return listAdapter; }
+
+	public ListBasedAdapter<Item, Holder> getListAdapter() {
+		return listAdapter;
+	}
 	
 	public RecyclerViewAdapterConverter(ListBasedAdapter<Item, Holder> listAdapter) {
 		this.listAdapter = listAdapter;
