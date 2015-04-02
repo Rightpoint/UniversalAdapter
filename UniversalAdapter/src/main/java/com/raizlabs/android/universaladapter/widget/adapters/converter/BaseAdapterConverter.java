@@ -56,8 +56,9 @@ public class BaseAdapterConverter<Item, Holder extends ViewHolder>
 
     private ListBasedAdapter<Item, Holder> listAdapter;
 
-
     private ItemClickedListener<Item, Holder> itemClickedListener;
+
+    private AdapterView<BaseAdapter> adapterView;
 
     public BaseAdapterConverter(@NonNull ListBasedAdapter<Item, Holder> listAdapter) {
         setAdapter(listAdapter);
@@ -88,10 +89,16 @@ public class BaseAdapterConverter<Item, Holder extends ViewHolder>
     }
 
     @Override
+    public AdapterView<BaseAdapter> getViewGroup() {
+        return adapterView;
+    }
+
+    @Override
     public void cleanup() {
         if (this.listAdapter != null) {
             this.listAdapter.getListObserver().removeListener(internalListObserverListener);
         }
+        adapterView = null;
     }
 
     @Override

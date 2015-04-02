@@ -73,6 +73,8 @@ public class RecyclerViewAdapterConverter<Item, Holder extends ViewHolder>
 
     private RecyclerViewListObserverListener<Item> observerListener;
 
+    private RecyclerView recyclerView;
+
     public RecyclerViewAdapterConverter(ListBasedAdapter<Item, Holder> listAdapter) {
         observerListener = new RecyclerViewListObserverListener<>(this);
         setAdapter(listAdapter);
@@ -119,9 +121,15 @@ public class RecyclerViewAdapterConverter<Item, Holder extends ViewHolder>
      */
     @Override
     public void register(@NonNull RecyclerView recyclerView) {
+        this.recyclerView = recyclerView;
         recyclerView.setAdapter(this);
         recyclerView.addOnItemTouchListener(internalOnItemTouchListener);
         listAdapter.notifyDataSetChanged();
+    }
+
+    @Override
+    public RecyclerView getViewGroup() {
+        return recyclerView;
     }
 
     @Override
@@ -129,6 +137,7 @@ public class RecyclerViewAdapterConverter<Item, Holder extends ViewHolder>
         if (this.listAdapter != null) {
             this.listAdapter.getListObserver().removeListener(observerListener);
         }
+        recyclerView = null;
     }
 
     @Override

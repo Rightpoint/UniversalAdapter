@@ -11,8 +11,8 @@ import com.raizlabs.android.coreutils.util.observable.lists.ListObserver;
 import com.raizlabs.android.coreutils.util.observable.lists.ListObserverListener;
 import com.raizlabs.android.coreutils.util.observable.lists.SimpleListObserverListener;
 import com.raizlabs.android.universaladapter.widget.adapters.ListBasedAdapter;
-import com.raizlabs.android.universaladapter.widget.adapters.ViewHolder;
 import com.raizlabs.android.universaladapter.widget.adapters.UniversalAdapterUtils;
+import com.raizlabs.android.universaladapter.widget.adapters.ViewHolder;
 
 /**
  * Class which dynamically converts a {@link ListBasedAdapter} into a
@@ -56,22 +56,19 @@ public class PagerAdapterConverter<Item, Holder extends ViewHolder>
 
     private ListBasedAdapter<Item, Holder> listAdapter;
 
-    private ItemClickedListener<Item, Holder> itemClickedListener;
-    private ItemLongClickedListener<Item, Holder> itemLongClickedListener;
+    private ItemClickWrapper<Item, Holder> itemClickedWrapper;
 
     private ViewPager viewPager;
-
-    public ViewGroup getViewPager() {
-        return viewPager;
-    }
 
     public PagerAdapterConverter(ListBasedAdapter<Item, Holder> listBasedAdapter, ViewPager viewPager) {
         setAdapter(listBasedAdapter);
         register(viewPager);
+        itemClickedWrapper = new ItemClickWrapper<>(this);
     }
 
     public PagerAdapterConverter(ListBasedAdapter<Item, Holder> listBasedAdapter) {
         setAdapter(listBasedAdapter);
+        itemClickedWrapper = new ItemClickWrapper<>(this);
     }
 
     /**
@@ -81,12 +78,17 @@ public class PagerAdapterConverter<Item, Holder extends ViewHolder>
      */
     @Override
     public void setItemClickedListener(ItemClickedListener<Item, Holder> listener) {
-        this.itemClickedListener = listener;
+        itemClickedWrapper.itemClickedListener = listener;
     }
 
     @Override
     public ListBasedAdapter<Item, Holder> getListAdapter() {
         return listAdapter;
+    }
+
+    @Override
+    public ViewPager getViewGroup() {
+        return viewPager;
     }
 
     @Override
@@ -119,7 +121,7 @@ public class PagerAdapterConverter<Item, Holder extends ViewHolder>
      * @param listener The listener to call.
      */
     public void setItemLongClickedListener(ItemLongClickedListener<Item, Holder> listener) {
-        this.itemLongClickedListener = listener;
+        itemClickedWrapper.itemLongClickedListener = listener;
     }
 
     @Override
@@ -151,8 +153,7 @@ public class PagerAdapterConverter<Item, Holder extends ViewHolder>
         listAdapter.bindViewHolder(holder, position);
         View view = holder.itemView;
         UniversalAdapterUtils.setViewHolder(view, holder);
-        view.setOnClickListener(internalItemClickListener);
-        view.setOnLongClickListener(internalItemLongClickListener);
+        itemClickedWrapper.register(view);
         container.addView(view);
         return holder.itemView;
     }
@@ -179,34 +180,4 @@ public class PagerAdapterConverter<Item, Holder extends ViewHolder>
         }
     };
 
-    private final View.OnClickListener internalItemClickListener = new View.OnClickListener() {
-
-        @SuppressWarnings("unchecked")
-        @Override
-        public void onClick(View v) {
-            int index = getViewPager().indexOfChild(v);
-
-            if (getListAdapter().isEnabled(index) && itemClickedListener != null && viewPager != null) {
-                Item item = listAdapter.get(index);
-                Holder holder = (Holder) UniversalAdapterUtils.getViewHolder(v);
-                itemClickedListener.onItemClicked(getListAdapter(), item, holder, index);
-            }
-        }
-    };
-
-    private View.OnLongClickListener internalItemLongClickListener = new View.OnLongClickListener() {
-
-        @SuppressWarnings("unchecked")
-        @Override
-        public boolean onLongClick(View v) {
-            int index = getViewPager().indexOfChild(v);
-
-            if (getListAdapter().isEnabled(index) && itemLongClickedListener != null && viewPager != null) {
-                Item item = listAdapter.get(index);
-                Holder holder = (Holder) UniversalAdapterUtils.getViewHolder(v);
-                return itemLongClickedListener.onItemLongClicked(getListAdapter(), item, holder, index);
-            }
-            return false;
-        }
-    };
 }

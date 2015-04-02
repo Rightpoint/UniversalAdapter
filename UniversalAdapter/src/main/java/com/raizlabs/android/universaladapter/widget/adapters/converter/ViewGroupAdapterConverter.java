@@ -2,16 +2,14 @@ package com.raizlabs.android.universaladapter.widget.adapters.converter;
 
 import android.support.annotation.NonNull;
 import android.view.View;
-import android.view.View.OnClickListener;
-import android.view.View.OnLongClickListener;
 import android.view.ViewGroup;
 
 import com.raizlabs.android.coreutils.util.observable.lists.ListObserver;
 import com.raizlabs.android.coreutils.util.observable.lists.ListObserverListener;
 import com.raizlabs.android.coreutils.util.observable.lists.SimpleListObserverListener;
 import com.raizlabs.android.universaladapter.widget.adapters.ListBasedAdapter;
-import com.raizlabs.android.universaladapter.widget.adapters.ViewHolder;
 import com.raizlabs.android.universaladapter.widget.adapters.UniversalAdapterUtils;
+import com.raizlabs.android.universaladapter.widget.adapters.ViewHolder;
 
 /**
  * Class which uses a {@link ListBasedAdapter} to display a set of views in a
@@ -45,7 +43,7 @@ public class ViewGroupAdapterConverter<Item, Holder extends ViewHolder> implemen
      * {@link ListBasedAdapter}s. Handles generics a little more conveniently
      * than the equivalent constructor.
      *
-     * @param adapter   The list adapter to use to populate views.
+     * @param adapter The list adapter to use to populate views.
      * @return An adapter which will populate the view group via the given
      * adapter.
      */
@@ -65,17 +63,17 @@ public class ViewGroupAdapterConverter<Item, Holder extends ViewHolder> implemen
     private ListBasedAdapter<Item, Holder> listAdapter;
 
 
-    private ItemClickedListener<Item, Holder> itemClickedListener;
-    private ItemLongClickedListener<Item, Holder> itemLongClickedListener;
+    private ItemClickWrapper<Item, Holder> itemClickWrapper;
 
     /**
      * Constructs a new adapter bound to the given {@link ViewGroup}, and binds
      * the given adapter.
      *
-     * @param adapter   The list adapter to use to populate views.
+     * @param adapter The list adapter to use to populate views.
      */
     public ViewGroupAdapterConverter(ListBasedAdapter<Item, Holder> adapter) {
         setAdapter(adapter);
+        itemClickWrapper = new ItemClickWrapper<>(this);
     }
 
     /**
@@ -88,6 +86,7 @@ public class ViewGroupAdapterConverter<Item, Holder extends ViewHolder> implemen
     public ViewGroupAdapterConverter(ListBasedAdapter<Item, Holder> adapter, ViewGroup viewGroup) {
         register(viewGroup);
         setAdapter(adapter);
+        itemClickWrapper = new ItemClickWrapper<>(this);
     }
 
     /**
@@ -96,7 +95,7 @@ public class ViewGroupAdapterConverter<Item, Holder extends ViewHolder> implemen
      * @param listener The listener to call.
      */
     public void setItemLongClickedListener(ItemLongClickedListener<Item, Holder> listener) {
-        this.itemLongClickedListener = listener;
+        itemClickWrapper.itemLongClickedListener = listener;
     }
 
     // region Inherited Methods
@@ -117,7 +116,7 @@ public class ViewGroupAdapterConverter<Item, Holder extends ViewHolder> implemen
      */
     @Override
     public void setItemClickedListener(ItemClickedListener<Item, Holder> listener) {
-        this.itemClickedListener = listener;
+        itemClickWrapper.itemClickedListener = listener;
     }
 
     /**
@@ -200,8 +199,7 @@ public class ViewGroupAdapterConverter<Item, Holder extends ViewHolder> implemen
 
         View view = holder.itemView;
         UniversalAdapterUtils.setViewHolder(view, holder);
-        view.setOnClickListener(internalItemClickListener);
-        view.setOnLongClickListener(internalItemLongClickListener);
+        itemClickWrapper.register(view);
 
         getViewGroup().addView(view, index);
     }
@@ -213,33 +211,4 @@ public class ViewGroupAdapterConverter<Item, Holder extends ViewHolder> implemen
         }
     };
 
-    private OnClickListener internalItemClickListener = new OnClickListener() {
-        @SuppressWarnings("unchecked")
-        @Override
-        public void onClick(View v) {
-            int index = getViewGroup().indexOfChild(v);
-            if (getListAdapter().isEnabled(index) && itemClickedListener != null) {
-
-                Item item = listAdapter.get(index);
-                Holder holder = (Holder) UniversalAdapterUtils.getViewHolder(v);
-                itemClickedListener.onItemClicked(getListAdapter(), item, holder, index);
-            }
-        }
-    };
-
-    private OnLongClickListener internalItemLongClickListener = new OnLongClickListener() {
-
-        @SuppressWarnings("unchecked")
-        @Override
-        public boolean onLongClick(View v) {
-            int index = getViewGroup().indexOfChild(v);
-
-            if (getListAdapter().isEnabled(index) && itemLongClickedListener != null) {
-                Item item = listAdapter.get(index);
-                Holder holder = (Holder) UniversalAdapterUtils.getViewHolder(v);
-                return itemLongClickedListener.onItemLongClicked(getListAdapter(), item, holder, index);
-            }
-            return false;
-        }
-    };
 }
