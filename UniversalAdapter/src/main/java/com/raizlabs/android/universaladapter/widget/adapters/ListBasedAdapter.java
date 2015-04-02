@@ -133,9 +133,7 @@ public abstract class ListBasedAdapter<Item, Holder extends ViewHolder> implemen
     }
 
     /**
-     * Loads the given varg array into a {@link List} into this adapter. This will use the same
-     * reference, so any changes to the source list will be reflected by the
-     * adapter whenever the data is repopulated. See
+     * Loads the given varg array into a {@link List} into this adapter. See
      * {@link #notifyDataSetChangedOnUIThread()}.
      *
      * @param list The {@link List} to load.
