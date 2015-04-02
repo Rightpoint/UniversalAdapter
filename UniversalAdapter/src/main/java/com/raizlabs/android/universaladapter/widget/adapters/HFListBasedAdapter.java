@@ -1,6 +1,6 @@
 package com.raizlabs.android.universaladapter.widget.adapters;
 
-import android.view.View;
+import android.util.Log;
 import android.view.ViewGroup;
 
 import java.util.ArrayList;
@@ -22,62 +22,13 @@ public abstract class HFListBasedAdapter<Item, Holder extends ViewHolder> extend
         this.holderType = holderType;
     }
 
-    @Override
-    public View getView(int position, View convertView, ViewGroup parent) {
-        ViewHolder viewHolder = null;
-        if (convertView != null) {
-            viewHolder = getViewHolder(convertView);
-        }
-
-        if (viewHolder == null) {
-            int viewType = getItemViewType(position);
-            viewHolder = createViewHolder(position, parent, viewType);
-            setViewHolder(viewHolder.itemView, viewHolder);
-        }
-
-        // fix view holder if wrong type.
-        if (!getViewHolderType(position).equals(viewHolder.getClass())) {
-            int viewType = getItemViewType(position);
-            viewHolder = createViewHolder(position, parent, viewType);
-            setViewHolder(viewHolder.itemView, viewHolder);
-        }
-
-        bindViewHolder(viewHolder, position);
-
-        return viewHolder.itemView;
-    }
-
-    public View getDropDownView(int position, View convertView, ViewGroup parent) {
-        ViewHolder viewHolder = null;
-        if (convertView != null) {
-            viewHolder = getViewHolder(convertView);
-        }
-
-        if (viewHolder == null) {
-            int viewType = getItemViewType(position);
-            viewHolder = createDropDownViewHolder(position, parent, viewType);
-            setViewHolder(viewHolder.itemView, viewHolder);
-        }
-
-        // fix view holder if wrong type.
-        if (!getViewHolderType(position).equals(viewHolder.getClass())) {
-            int viewType = getItemViewType(position);
-            viewHolder = createViewHolder(position, parent, viewType);
-            setViewHolder(viewHolder.itemView, viewHolder);
-        }
-
-        bindDropDownViewHolder(viewHolder, position);
-
-        return viewHolder.itemView;
-    }
-
     @SuppressWarnings("unchecked")
     @Override
     protected void onBindViewHolder(ViewHolder viewHolder, Object item, int position) {
         if (position < getHeadersCount()) {
             onBindHeaderViewHolder(viewHolder, position);
-        } else if (position >= getFooterStart()) {
-            onBindFooterViewHolder(viewHolder, position - getHeadersCount() - getItemsList().size());
+        } else if (position > getFooterStartIndex()) {
+            onBindFooterViewHolder(viewHolder, position - getFooterStartIndex() - 1);
         } else {
             onBindItemViewHolder((Holder) viewHolder, (Item) item, position - getHeadersCount());
         }
@@ -85,13 +36,7 @@ public abstract class HFListBasedAdapter<Item, Holder extends ViewHolder> extend
 
     @Override
     protected ViewHolder onCreateViewHolder(int position, ViewGroup parent, int itemType) {
-        if (position < getHeadersCount()) {
-            return headerHolders.get(position);
-        } else if (position >= getFooterStart()) {
-            return footerHolders.get(position - getFooterStart());
-        } else {
-            return onCreateItemViewHolder(parent, itemType);
-        }
+        return getViewHolderForType(parent, itemType);
     }
 
     /**
@@ -133,6 +78,10 @@ public abstract class HFListBasedAdapter<Item, Holder extends ViewHolder> extend
      * not take into account the count of headers and footers.
      */
     protected int getListItemViewTypeCount() {
+        return 1;
+    }
+
+    protected int getListItemViewType(int position) {
         return 0;
     }
 
@@ -146,43 +95,52 @@ public abstract class HFListBasedAdapter<Item, Holder extends ViewHolder> extend
         return getItem(position);
     }
 
+    private ViewHolder getViewHolderForType(ViewGroup parent, int viewType) {
+        ViewHolder viewHolder;
+        if (viewType < getHeadersCount()) {
+            viewHolder = headerHolders.get(viewType);
+        } else if (viewType > (getHeadersCount() + getListItemViewTypeCount() - 1)) {
+            viewHolder = footerHolders.get(viewType - getHeadersCount() - getListItemViewTypeCount());
+        } else {
+            viewHolder = onCreateItemViewHolder(parent, viewType - getHeadersCount() + 1);
+        }
+        Log.e(getClass().getSimpleName(), "ViewHolder: " + (viewHolder.getClass().getSimpleName()) + " for itemType: " + viewType);
+        return viewHolder;
+    }
+
     @Override
     public int getItemViewType(int position) {
+        int viewType;
         if (position < getHeadersCount()) {
-            return position;
-        } else if (position >= getFooterStart()) {
-            return position - getFooterStart();
+            viewType = position;
+        } else if (position >= getFooterStartIndex()) {
+            viewType = position - getFooterStartIndex() + getHeadersCount() + getListItemViewTypeCount() -1;
         } else {
-            return super.getItemViewType(position - getHeadersCount());
+            viewType = getListItemViewType(position - getHeadersCount()) + getHeadersCount();
         }
+
+        Log.e(getClass().getSimpleName(), "ViewType for position:" + viewType + " " + position);
+        return viewType;
     }
 
     @Override
     public int getItemViewTypeCount() {
-        return getListItemViewTypeCount() + getFootersCount() + getHeadersCount();
+        int count = getListItemViewTypeCount() + getFootersCount() + getHeadersCount();
+
+        return count;
     }
 
     @Override
     public Object getItem(int position) {
-        if (position < getHeadersCount() || position >= getFooterStart()) {
+        if (position < getHeadersCount() || position > getFooterStartIndex()) {
             return null;
         } else {
             return super.getItem(position - getHeadersCount());
         }
     }
 
-    private int getFooterStart() {
-        return getHeadersCount() + getItemsList().size();
-    }
-
-    private Class<?> getViewHolderType(int position) {
-        if (position < getHeadersCount()) {
-            return headerHolders.get(position).getClass();
-        } else if (position >= getFooterStart()) {
-            return footerHolders.get(position - getFooterStart()).getClass();
-        } else {
-            return holderType;
-        }
+    private int getFooterStartIndex() {
+        return getHeadersCount() + getItemsList().size() - 1;
     }
 
     /**
@@ -202,7 +160,7 @@ public abstract class HFListBasedAdapter<Item, Holder extends ViewHolder> extend
      */
     public void addFooterHolder(ViewHolder viewHolder) {
         footerHolders.add(viewHolder);
-        onItemRangeChanged(getFooterStart() + getFootersCount() - 1, 1);
+        onItemRangeChanged(getFooterStartIndex() + getFootersCount() - 1, 1);
     }
 
     /**
