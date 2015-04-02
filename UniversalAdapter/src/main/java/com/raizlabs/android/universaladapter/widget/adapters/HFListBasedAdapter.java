@@ -1,6 +1,7 @@
 package com.raizlabs.android.universaladapter.widget.adapters;
 
 import android.util.Log;
+import android.view.View;
 import android.view.ViewGroup;
 
 import java.util.ArrayList;
@@ -34,7 +35,7 @@ public abstract class HFListBasedAdapter<Item, Holder extends ViewHolder> extend
     }
 
     @Override
-    protected ViewHolder onCreateViewHolder(int position, ViewGroup parent, int itemType) {
+    protected ViewHolder onCreateViewHolder(ViewGroup parent, int itemType) {
         return getViewHolderForType(parent, itemType);
     }
 
@@ -108,7 +109,6 @@ public abstract class HFListBasedAdapter<Item, Holder extends ViewHolder> extend
         } else {
             viewHolder = onCreateItemViewHolder(parent, viewType - getHeadersCount() + 1);
         }
-        Log.e(getClass().getSimpleName(), "ViewHolder: " + (viewHolder.getClass().getSimpleName()) + " for itemType: " + viewType);
         return viewHolder;
     }
 
@@ -122,8 +122,6 @@ public abstract class HFListBasedAdapter<Item, Holder extends ViewHolder> extend
         } else {
             viewType = getListItemViewType(position - getHeadersCount()) + getHeadersCount();
         }
-
-        Log.e(getClass().getSimpleName(), "ViewType for position:" + viewType + " " + position);
         return viewType;
     }
 
@@ -146,6 +144,15 @@ public abstract class HFListBasedAdapter<Item, Holder extends ViewHolder> extend
     }
 
     /**
+     * Adds an arbitrary view to the list of headers, wrapping it in a {@link ViewHolder}
+     *
+     * @param headerView The view to add to the list of headers.
+     */
+    public void addHeaderView(View headerView) {
+        addHeaderHolder(new ViewHolder(headerView));
+    }
+
+    /**
      * Adds a header to this adapter.
      *
      * @param viewHolder The view holder to add as a header to this adapter.
@@ -153,6 +160,15 @@ public abstract class HFListBasedAdapter<Item, Holder extends ViewHolder> extend
     public void addHeaderHolder(ViewHolder viewHolder) {
         headerHolders.add(viewHolder);
         onItemRangeChanged(getHeadersCount() - 1, 1);
+    }
+
+    /**
+     * Adds an arbitrary footer view to this adapter.
+     *
+     * @param footerView The view to add to list of headers.
+     */
+    public void addFooterView(View footerView) {
+        addFooterHolder(new ViewHolder(footerView));
     }
 
     /**

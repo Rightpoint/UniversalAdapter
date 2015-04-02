@@ -33,6 +33,9 @@ public class MenuFragment extends Fragment {
 
         public static final String VIEWPAGER = "ViewPager";
 
+        public static final String VIEWPAGER_HOLDERS = "ViewPager with HF Holders";
+
+
     }
 
     private ListBasedAdapter<String, MenuHolder> adapter;
@@ -51,7 +54,8 @@ public class MenuFragment extends Fragment {
 
         adapter = new MenuAdapter();
         adapter.loadItemArray(MenuConstants.RECYCLERVIEW, MenuConstants.RECYCLERVIEW_HOLDERS,
-                MenuConstants.LISTVIEW, MenuConstants.LISTVIEW_HOLDERS, MenuConstants.VIEWPAGER);
+                MenuConstants.LISTVIEW, MenuConstants.LISTVIEW_HOLDERS,
+                MenuConstants.VIEWPAGER, MenuConstants.VIEWPAGER_HOLDERS);
 
         UniversalConverter converter = RecyclerViewAdapterConverter.from(adapter, recyclerView);
         converter.setItemClickedListener(new ItemClickedListener<String, MenuHolder>() {
@@ -62,14 +66,15 @@ public class MenuFragment extends Fragment {
                     startActivity(AdapterActivity.getLaunchIntent(context, R.layout.activity_listview));
                 } else if (s.equals(MenuConstants.VIEWPAGER)) {
                     startActivity(AdapterActivity.getLaunchIntent(context, R.layout.activity_viewpager));
-                } else if (s.equals(MenuConstants.LISTVIEW_HOLDERS)) {
+                } else if(s.equals(MenuConstants.VIEWPAGER_HOLDERS)) {
+                    startActivity(AdapterActivity.getHFLaunchIntent(context, R.layout.activity_viewpager));
+                }  else if (s.equals(MenuConstants.LISTVIEW_HOLDERS)) {
                     startActivity(AdapterActivity.getHFLaunchIntent(context, R.layout.activity_listview));
                 } else if (s.equals(MenuConstants.RECYCLERVIEW_HOLDERS)) {
                     startActivity(AdapterActivity.getHFLaunchIntent(context, R.layout.activity_recyclerview));
                 } else {
                     startActivity(AdapterActivity.getLaunchIntent(context, R.layout.activity_recyclerview));
                 }
-
             }
         });
     }
@@ -82,7 +87,7 @@ public class MenuFragment extends Fragment {
         }
 
         @Override
-        protected MenuHolder onCreateViewHolder(int position, ViewGroup parent, int itemType) {
+        protected MenuHolder onCreateViewHolder(ViewGroup parent, int itemType) {
             return new MenuHolder(inflateView(parent, R.layout.list_item_menu));
         }
     }

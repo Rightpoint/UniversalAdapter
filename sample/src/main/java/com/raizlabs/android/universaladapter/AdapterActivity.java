@@ -53,7 +53,7 @@ public class AdapterActivity extends FragmentActivity {
         setContentView(layout);
 
         if (getIntent().hasExtra(INTENT_USE_HF)) {
-            adapter = new HFListBasedAdapter<String, UniversalHolder>(UniversalHolder.class) {
+            adapter = new HFListBasedAdapter<String, UniversalHolder>() {
 
                 @Override
                 protected UniversalHolder onCreateItemViewHolder(ViewGroup parent, int itemType) {
@@ -95,7 +95,7 @@ public class AdapterActivity extends FragmentActivity {
                 }
 
                 @Override
-                protected UniversalHolder onCreateViewHolder(int position, ViewGroup parent, int itemType) {
+                protected UniversalHolder onCreateViewHolder(ViewGroup parent, int itemType) {
                     return new UniversalHolder(inflateView(parent, R.layout.list_item_adapter));
                 }
             };

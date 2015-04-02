@@ -174,7 +174,7 @@ public class RecyclerViewAdapterConverter<Item, Holder extends ViewHolder>
 
     @Override
     public Holder onCreateViewHolder(ViewGroup parent, int viewType) {
-        return listAdapter.createViewHolder(viewType, parent, viewType);
+        return listAdapter.createViewHolder(parent, viewType);
     }
 
     // endregion Inherited Methods

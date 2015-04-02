@@ -138,7 +138,7 @@ public abstract class ListBasedAdapter<Item, Holder extends ViewHolder> implemen
      *
      * @param list The {@link List} to load.
      */
-    public void loadItemArray(Item...list) {
+    public void loadItemArray(Item... list) {
         setItemsList(Arrays.asList(list));
     }
 
@@ -251,7 +251,7 @@ public abstract class ListBasedAdapter<Item, Holder extends ViewHolder> implemen
 
         if (viewHolder == null) {
             int viewType = getItemViewType(position);
-            viewHolder = createViewHolder(position, parent, viewType);
+            viewHolder = createViewHolder(parent, viewType);
             setViewHolder(viewHolder.itemView, viewHolder);
         }
 
@@ -288,7 +288,7 @@ public abstract class ListBasedAdapter<Item, Holder extends ViewHolder> implemen
 
         if (viewHolder == null) {
             int viewType = getItemViewType(position);
-            viewHolder = createDropDownViewHolder(position, parent, viewType);
+            viewHolder = createDropDownViewHolder(parent, viewType);
             setViewHolder(viewHolder.itemView, viewHolder);
         }
 
@@ -312,18 +312,18 @@ public abstract class ListBasedAdapter<Item, Holder extends ViewHolder> implemen
         UniversalAdapterUtils.setViewHolder(view, holder);
     }
 
-    public Holder createViewHolder(int position, ViewGroup parent, int itemType) {
-        return onCreateViewHolder(position, parent, itemType);
+    public Holder createViewHolder(ViewGroup parent, int itemType) {
+        return onCreateViewHolder(parent, itemType);
     }
 
-    protected abstract Holder onCreateViewHolder(int position, ViewGroup parent, int itemType);
+    protected abstract Holder onCreateViewHolder(ViewGroup parent, int itemType);
 
-    public Holder createDropDownViewHolder(int position, ViewGroup parent, int itemType) {
-        return onCreateDropDownViewHolder(position, parent, itemType);
+    public Holder createDropDownViewHolder(ViewGroup parent, int itemType) {
+        return onCreateDropDownViewHolder(parent, itemType);
     }
 
-    protected Holder onCreateDropDownViewHolder(int position, ViewGroup parent, int itemType) {
-        return onCreateViewHolder(position, parent, itemType);
+    protected Holder onCreateDropDownViewHolder(ViewGroup parent, int itemType) {
+        return onCreateViewHolder(parent, itemType);
     }
 
     public void bindDropDownViewHolder(Holder viewHolder, int position) {
