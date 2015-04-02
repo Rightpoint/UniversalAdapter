@@ -192,6 +192,7 @@ public abstract class HFListBasedAdapter<Item, Holder extends ViewHolder> extend
      */
     public void addHeaderHolder(ViewHolder viewHolder) {
         headerHolders.add(viewHolder);
+        onItemRangeChanged(getHeadersCount() - 1, 1);
     }
 
     /**
@@ -201,6 +202,7 @@ public abstract class HFListBasedAdapter<Item, Holder extends ViewHolder> extend
      */
     public void addFooterHolder(ViewHolder viewHolder) {
         footerHolders.add(viewHolder);
+        onItemRangeChanged(getFooterStart() + getFootersCount() - 1, 1);
     }
 
     /**
