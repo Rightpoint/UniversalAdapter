@@ -149,7 +149,7 @@ public class PagerAdapterConverter<Item, Holder extends ViewHolder>
 
     @Override
     public Object instantiateItem(ViewGroup container, int position) {
-        Holder holder = listAdapter.createViewHolder(container, listAdapter.getItemViewType(position));
+        Holder holder = listAdapter.createViewHolder(position, container, listAdapter.getItemViewType(position));
         listAdapter.bindViewHolder(holder, position);
         View view = holder.itemView;
         UniversalAdapterUtils.setViewHolder(view, holder);

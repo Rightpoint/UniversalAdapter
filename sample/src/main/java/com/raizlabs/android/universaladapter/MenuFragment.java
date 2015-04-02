@@ -1,5 +1,6 @@
 package com.raizlabs.android.universaladapter;
 
+import android.content.Context;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
@@ -20,6 +21,20 @@ import com.raizlabs.android.universaladapter.widget.adapters.converter.Universal
  */
 public class MenuFragment extends Fragment {
 
+    class MenuConstants {
+
+        public static final String RECYCLERVIEW = "RecyclerView";
+
+        public static final String RECYCLERVIEW_HOLDERS = "RecyclerView with HF Holders";
+
+        public static final String LISTVIEW = "ListView";
+
+        public static final String LISTVIEW_HOLDERS = "ListView with HF Holders";
+
+        public static final String VIEWPAGER = "ViewPager";
+
+    }
+
     private ListBasedAdapter<String, MenuHolder> adapter;
 
     @Override
@@ -35,20 +50,25 @@ public class MenuFragment extends Fragment {
         recyclerView.setLayoutManager(new LinearLayoutManager(view.getContext()));
 
         adapter = new MenuAdapter();
-        adapter.loadItemArray("RecyclerView", "ListView", "ViewPager");
+        adapter.loadItemArray(MenuConstants.RECYCLERVIEW, MenuConstants.RECYCLERVIEW_HOLDERS,
+                MenuConstants.LISTVIEW, MenuConstants.LISTVIEW_HOLDERS, MenuConstants.VIEWPAGER);
 
         UniversalConverter converter = RecyclerViewAdapterConverter.from(adapter, recyclerView);
         converter.setItemClickedListener(new ItemClickedListener<String, MenuHolder>() {
             @Override
             public void onItemClicked(ListBasedAdapter<String, MenuHolder> adapter, String s, MenuHolder holder, int position) {
-                int layoutResId = R.layout.activity_recyclerview;
-                if(s.equals("ListView")) {
-                    layoutResId = R.layout.activity_listview;
-                } else if(s.equals("ViewPager")) {
-                    layoutResId = R.layout.activity_viewpager;
+                Context context = holder.Title.getContext();
+                if (s.equals(MenuConstants.LISTVIEW)) {
+                    startActivity(AdapterActivity.getLaunchIntent(context, R.layout.activity_listview));
+                } else if (s.equals(MenuConstants.VIEWPAGER)) {
+                    startActivity(AdapterActivity.getLaunchIntent(context, R.layout.activity_viewpager));
+                } else if (s.equals(MenuConstants.LISTVIEW_HOLDERS)) {
+                    startActivity(AdapterActivity.getHFLaunchIntent(context, R.layout.activity_listview));
+                } else if (s.equals(MenuConstants.RECYCLERVIEW_HOLDERS)) {
+                    startActivity(AdapterActivity.getHFLaunchIntent(context, R.layout.activity_recyclerview));
+                } else {
+                    startActivity(AdapterActivity.getLaunchIntent(context, R.layout.activity_recyclerview));
                 }
-
-                startActivity(AdapterActivity.getLaunchIntent(holder.Title.getContext(), layoutResId));
 
             }
         });
@@ -62,7 +82,7 @@ public class MenuFragment extends Fragment {
         }
 
         @Override
-        protected MenuHolder onCreateViewHolder(ViewGroup parent, int itemType) {
+        protected MenuHolder onCreateViewHolder(int position, ViewGroup parent, int itemType) {
             return new MenuHolder(inflateView(parent, R.layout.list_item_menu));
         }
     }
