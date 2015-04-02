@@ -7,20 +7,19 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Description: An extension on {@link ListBasedAdapter} that adds ability for header
+ * Description: An extension on {@link ListBasedAdapter} that adds ability for an artibitrary header
  * and footer views. Provides a different set of methods to implement.
+ * <p/>
+ * <p></p>
+ * <p/>
+ * We have adjusted each "normal" method from {@link ListBasedAdapter} that deals with the each
+ * adapter to take into account header and footer views. So do not override the "normal" methods.
  */
 public abstract class HFListBasedAdapter<Item, Holder extends ViewHolder> extends ListBasedAdapter<Object, ViewHolder> {
 
     private List<ViewHolder> headerHolders = new ArrayList<>();
 
     private List<ViewHolder> footerHolders = new ArrayList<>();
-
-    private final Class<Holder> holderType;
-
-    public HFListBasedAdapter(Class<Holder> holderType) {
-        this.holderType = holderType;
-    }
 
     @SuppressWarnings("unchecked")
     @Override
@@ -81,6 +80,11 @@ public abstract class HFListBasedAdapter<Item, Holder extends ViewHolder> extend
         return 1;
     }
 
+    /**
+     * @param position The position within the contained {@link ListBasedAdapter} and adjusted
+     *                 for the headers.
+     * @return The normal list item view type you return in {@link #getItemViewType(int)}
+     */
     protected int getListItemViewType(int position) {
         return 0;
     }
@@ -114,7 +118,7 @@ public abstract class HFListBasedAdapter<Item, Holder extends ViewHolder> extend
         if (position < getHeadersCount()) {
             viewType = position;
         } else if (position >= getFooterStartIndex()) {
-            viewType = position - getFooterStartIndex() + getHeadersCount() + getListItemViewTypeCount() -1;
+            viewType = position - getFooterStartIndex() + getHeadersCount() + getListItemViewTypeCount() - 1;
         } else {
             viewType = getListItemViewType(position - getHeadersCount()) + getHeadersCount();
         }
@@ -125,9 +129,7 @@ public abstract class HFListBasedAdapter<Item, Holder extends ViewHolder> extend
 
     @Override
     public int getItemViewTypeCount() {
-        int count = getListItemViewTypeCount() + getFootersCount() + getHeadersCount();
-
-        return count;
+        return getListItemViewTypeCount() + getFootersCount() + getHeadersCount();
     }
 
     @Override
