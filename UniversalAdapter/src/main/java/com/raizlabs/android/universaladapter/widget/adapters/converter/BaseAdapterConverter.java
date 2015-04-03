@@ -50,21 +50,21 @@ public class BaseAdapterConverter<Item, Holder extends ViewHolder>
      * @return A BaseAdapter based on the given list adapter.
      */
     public static <Item, Holder extends ViewHolder>
-    BaseAdapterConverter<Item, Holder> from(ListBasedAdapter<Item, Holder> listBasedAdapter, AdapterView<BaseAdapter> adapterView) {
+    BaseAdapterConverter<Item, Holder> from(UniversalAdapter<Item, Holder> listBasedAdapter, AdapterView<BaseAdapter> adapterView) {
         return new BaseAdapterConverter<>(listBasedAdapter, adapterView);
     }
 
-    private ListBasedAdapter<Item, Holder> listAdapter;
+    private UniversalAdapter<Item, Holder> listAdapter;
 
     private ItemClickedListener<Item, Holder> itemClickedListener;
 
     private AdapterView<BaseAdapter> adapterView;
 
-    public BaseAdapterConverter(@NonNull ListBasedAdapter<Item, Holder> listAdapter) {
+    public BaseAdapterConverter(@NonNull UniversalAdapter<Item, Holder> listAdapter) {
         setAdapter(listAdapter);
     }
 
-    public BaseAdapterConverter(@NonNull ListBasedAdapter<Item, Holder> listAdapter, AdapterView<BaseAdapter> adapterView) {
+    public BaseAdapterConverter(@NonNull UniversalAdapter<Item, Holder> listAdapter, AdapterView<BaseAdapter> adapterView) {
         setAdapter(listAdapter);
         register(adapterView);
     }
@@ -72,7 +72,7 @@ public class BaseAdapterConverter<Item, Holder extends ViewHolder>
     // region Inherited Methods
 
     @Override
-    public ListBasedAdapter<Item, Holder> getListAdapter() {
+    public UniversalAdapter<Item, Holder> getUniversalAdapter() {
         return listAdapter;
     }
 
@@ -107,7 +107,7 @@ public class BaseAdapterConverter<Item, Holder extends ViewHolder>
     }
 
     @Override
-    public void setAdapter(@NonNull ListBasedAdapter<Item, Holder> listAdapter) {
+    public void setAdapter(@NonNull UniversalAdapter<Item, Holder> listAdapter) {
         if (this.listAdapter != null) {
             this.listAdapter.getListObserver().removeListener(internalListObserverListener);
         }
@@ -199,7 +199,7 @@ public class BaseAdapterConverter<Item, Holder extends ViewHolder>
         public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
             if (itemClickedListener != null) {
                 Holder holder = (Holder) view.getTag(R.id.com_raizlabs_viewholderTagID);
-                itemClickedListener.onItemClicked(getListAdapter(), getItem(position), holder, position);
+                itemClickedListener.onItemClicked(getUniversalAdapter(), getItem(position), holder, position);
             }
         }
     };

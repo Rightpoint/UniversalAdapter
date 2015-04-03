@@ -14,6 +14,7 @@ import com.raizlabs.android.universaladapter.widget.adapters.ListBasedAdapter;
 import com.raizlabs.android.universaladapter.widget.adapters.ViewHolder;
 import com.raizlabs.android.universaladapter.widget.adapters.converter.ItemClickedListener;
 import com.raizlabs.android.universaladapter.widget.adapters.converter.RecyclerViewAdapterConverter;
+import com.raizlabs.android.universaladapter.widget.adapters.converter.UniversalAdapter;
 import com.raizlabs.android.universaladapter.widget.adapters.converter.UniversalConverter;
 
 /**
@@ -35,7 +36,7 @@ public class MenuFragment extends Fragment {
 
         public static final String VIEWPAGER_HOLDERS = "ViewPager with HF Holders";
 
-
+        public static final String MERGED = "Merged";
     }
 
     private ListBasedAdapter<String, MenuHolder> adapter;
@@ -55,12 +56,13 @@ public class MenuFragment extends Fragment {
         adapter = new MenuAdapter();
         adapter.loadItemArray(MenuConstants.RECYCLERVIEW, MenuConstants.RECYCLERVIEW_HOLDERS,
                 MenuConstants.LISTVIEW, MenuConstants.LISTVIEW_HOLDERS,
-                MenuConstants.VIEWPAGER, MenuConstants.VIEWPAGER_HOLDERS);
+                MenuConstants.VIEWPAGER, MenuConstants.VIEWPAGER_HOLDERS,
+                MenuConstants.MERGED);
 
         UniversalConverter converter = RecyclerViewAdapterConverter.from(adapter, recyclerView);
         converter.setItemClickedListener(new ItemClickedListener<String, MenuHolder>() {
             @Override
-            public void onItemClicked(ListBasedAdapter<String, MenuHolder> adapter, String s, MenuHolder holder, int position) {
+            public void onItemClicked(UniversalAdapter<String, MenuHolder> adapter, String s, MenuHolder holder, int position) {
                 Context context = holder.Title.getContext();
                 if (s.equals(MenuConstants.LISTVIEW)) {
                     startActivity(AdapterActivity.getLaunchIntent(context, R.layout.activity_listview));
@@ -72,7 +74,10 @@ public class MenuFragment extends Fragment {
                     startActivity(AdapterActivity.getHFLaunchIntent(context, R.layout.activity_listview));
                 } else if (s.equals(MenuConstants.RECYCLERVIEW_HOLDERS)) {
                     startActivity(AdapterActivity.getHFLaunchIntent(context, R.layout.activity_recyclerview));
-                } else {
+                } else if(s.equals(MenuConstants.MERGED)) {
+                    startActivity(MergedActivity.getLaunchIntent(context, R.layout.activity_recyclerview));
+                }
+                else {
                     startActivity(AdapterActivity.getLaunchIntent(context, R.layout.activity_recyclerview));
                 }
             }

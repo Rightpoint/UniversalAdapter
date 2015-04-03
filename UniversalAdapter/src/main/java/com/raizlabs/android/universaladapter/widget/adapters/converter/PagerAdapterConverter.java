@@ -37,7 +37,7 @@ public class PagerAdapterConverter<Item, Holder extends ViewHolder>
      * @return An adapter which will populate the view pager via the given
      * adapter.
      */
-    public static <Item, Holder extends ViewHolder> PagerAdapterConverter<Item, Holder> from(ListBasedAdapter<Item, Holder> adapter, ViewPager viewPager) {
+    public static <Item, Holder extends ViewHolder> PagerAdapterConverter<Item, Holder> from(UniversalAdapter<Item, Holder> adapter, ViewPager viewPager) {
         return new PagerAdapterConverter<>(adapter, viewPager);
     }
 
@@ -50,23 +50,23 @@ public class PagerAdapterConverter<Item, Holder extends ViewHolder>
      * @return An adapter which will populate the view pager via the given
      * adapter.
      */
-    public static <Item, Holder extends ViewHolder> PagerAdapterConverter<Item, Holder> from(ListBasedAdapter<Item, Holder> adapter) {
+    public static <Item, Holder extends ViewHolder> PagerAdapterConverter<Item, Holder> from(UniversalAdapter<Item, Holder> adapter) {
         return new PagerAdapterConverter<>(adapter);
     }
 
-    private ListBasedAdapter<Item, Holder> listAdapter;
+    private UniversalAdapter<Item, Holder> listAdapter;
 
     private ItemClickWrapper<Item, Holder> itemClickedWrapper;
 
     private ViewPager viewPager;
 
-    public PagerAdapterConverter(ListBasedAdapter<Item, Holder> listBasedAdapter, ViewPager viewPager) {
+    public PagerAdapterConverter(UniversalAdapter<Item, Holder> listBasedAdapter, ViewPager viewPager) {
         setAdapter(listBasedAdapter);
         register(viewPager);
         itemClickedWrapper = new ItemClickWrapper<>(this);
     }
 
-    public PagerAdapterConverter(ListBasedAdapter<Item, Holder> listBasedAdapter) {
+    public PagerAdapterConverter(UniversalAdapter<Item, Holder> listBasedAdapter) {
         setAdapter(listBasedAdapter);
         itemClickedWrapper = new ItemClickWrapper<>(this);
     }
@@ -82,7 +82,7 @@ public class PagerAdapterConverter<Item, Holder extends ViewHolder>
     }
 
     @Override
-    public ListBasedAdapter<Item, Holder> getListAdapter() {
+    public UniversalAdapter<Item, Holder> getUniversalAdapter() {
         return listAdapter;
     }
 
@@ -92,7 +92,7 @@ public class PagerAdapterConverter<Item, Holder extends ViewHolder>
     }
 
     @Override
-    public void setAdapter(@NonNull ListBasedAdapter<Item, Holder> listAdapter) {
+    public void setAdapter(@NonNull UniversalAdapter<Item, Holder> listAdapter) {
         if (this.listAdapter != null) {
             this.listAdapter.getListObserver().removeListener(internalListObserverListener);
         }

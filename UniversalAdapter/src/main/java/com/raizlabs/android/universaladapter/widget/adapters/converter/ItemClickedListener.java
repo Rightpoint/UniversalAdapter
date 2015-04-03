@@ -1,6 +1,5 @@
 package com.raizlabs.android.universaladapter.widget.adapters.converter;
 
-import com.raizlabs.android.universaladapter.widget.adapters.ListBasedAdapter;
 import com.raizlabs.android.universaladapter.widget.adapters.ViewHolder;
 
 /**
@@ -16,5 +15,5 @@ public interface ItemClickedListener<Item, Holder extends ViewHolder> {
      * @param holder   The view holder for the clicked item.
      * @param position The index of the clicked item in the adpater.
      */
-    void onItemClicked(ListBasedAdapter<Item, Holder> adapter, Item item, Holder holder, int position);
+    void onItemClicked(UniversalAdapter<Item, Holder> adapter, Item item, Holder holder, int position);
 }

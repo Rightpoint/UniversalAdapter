@@ -60,7 +60,7 @@ public class ViewGroupAdapterConverter<Item, Holder extends ViewHolder> implemen
         return viewGroup;
     }
 
-    private ListBasedAdapter<Item, Holder> listAdapter;
+    private UniversalAdapter<Item, Holder> listAdapter;
 
     private ItemClickWrapper<Item, Holder> itemClickWrapper;
 
@@ -70,7 +70,7 @@ public class ViewGroupAdapterConverter<Item, Holder extends ViewHolder> implemen
      *
      * @param adapter The list adapter to use to populate views.
      */
-    public ViewGroupAdapterConverter(ListBasedAdapter<Item, Holder> adapter) {
+    public ViewGroupAdapterConverter(UniversalAdapter<Item, Holder> adapter) {
         setAdapter(adapter);
         itemClickWrapper = new ItemClickWrapper<>(this);
     }
@@ -82,7 +82,7 @@ public class ViewGroupAdapterConverter<Item, Holder extends ViewHolder> implemen
      * @param viewGroup The view group which will be populated with views.
      * @param adapter   The list adapter to use to populate views.
      */
-    public ViewGroupAdapterConverter(ListBasedAdapter<Item, Holder> adapter, ViewGroup viewGroup) {
+    public ViewGroupAdapterConverter(@NonNull UniversalAdapter<Item, Holder> adapter, @NonNull ViewGroup viewGroup) {
         register(viewGroup);
         setAdapter(adapter);
         itemClickWrapper = new ItemClickWrapper<>(this);
@@ -104,7 +104,7 @@ public class ViewGroupAdapterConverter<Item, Holder extends ViewHolder> implemen
      * the view group.
      */
     @Override
-    public ListBasedAdapter<Item, Holder> getListAdapter() {
+    public UniversalAdapter<Item, Holder> getUniversalAdapter() {
         return listAdapter;
     }
 
@@ -125,7 +125,7 @@ public class ViewGroupAdapterConverter<Item, Holder extends ViewHolder> implemen
      * @param adapter The adapter to use to populate the view group.
      */
     @Override
-    public void setAdapter(@NonNull ListBasedAdapter<Item, Holder> adapter) {
+    public void setAdapter(@NonNull UniversalAdapter<Item, Holder> adapter) {
         if (this.listAdapter != null) {
             this.listAdapter.getListObserver().removeListener(listChangeListener);
         }

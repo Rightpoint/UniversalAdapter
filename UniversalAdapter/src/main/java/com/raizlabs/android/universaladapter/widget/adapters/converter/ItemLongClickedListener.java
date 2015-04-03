@@ -1,6 +1,5 @@
 package com.raizlabs.android.universaladapter.widget.adapters.converter;
 
-import com.raizlabs.android.universaladapter.widget.adapters.ListBasedAdapter;
 import com.raizlabs.android.universaladapter.widget.adapters.ViewHolder;
 
 /**
@@ -17,5 +16,5 @@ public interface ItemLongClickedListener<Item, Holder extends ViewHolder> {
      * @param position The index of the long clicked item in the adapter.
      * @return true if the callback consumed the long click, false otherwise.
      */
-    boolean onItemLongClicked(ListBasedAdapter<Item, Holder> adapter, Item item, Holder holder, int position);
+    boolean onItemLongClicked(UniversalAdapter<Item, Holder> adapter, Item item, Holder holder, int position);
 }

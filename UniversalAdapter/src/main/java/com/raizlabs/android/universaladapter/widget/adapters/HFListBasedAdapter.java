@@ -1,6 +1,5 @@
 package com.raizlabs.android.universaladapter.widget.adapters;
 
-import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 

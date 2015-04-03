@@ -66,7 +66,7 @@ public class RecyclerViewAdapterConverter<Item, Holder extends ViewHolder>
         return new RecyclerViewAdapterConverter<>(listAdapter, recyclerView);
     }
 
-    private ListBasedAdapter<Item, Holder> listAdapter;
+    private UniversalAdapter<Item, Holder> listAdapter;
 
     private ItemClickedListener<Item, Holder> itemClickedListener;
     private RecyclerItemClickListener<Holder> recyclerItemClickListener;
@@ -75,12 +75,12 @@ public class RecyclerViewAdapterConverter<Item, Holder extends ViewHolder>
 
     private RecyclerView recyclerView;
 
-    public RecyclerViewAdapterConverter(ListBasedAdapter<Item, Holder> listAdapter) {
+    public RecyclerViewAdapterConverter(UniversalAdapter<Item, Holder> listAdapter) {
         observerListener = new RecyclerViewListObserverListener<>(this);
         setAdapter(listAdapter);
     }
 
-    public RecyclerViewAdapterConverter(ListBasedAdapter<Item, Holder> listAdapter, RecyclerView recyclerView) {
+    public RecyclerViewAdapterConverter(UniversalAdapter<Item, Holder> listAdapter, RecyclerView recyclerView) {
         observerListener = new RecyclerViewListObserverListener<>(this);
         setAdapter(listAdapter);
         register(recyclerView);
@@ -99,7 +99,7 @@ public class RecyclerViewAdapterConverter<Item, Holder extends ViewHolder>
     // region Inherited Methods
 
     @Override
-    public ListBasedAdapter<Item, Holder> getListAdapter() {
+    public UniversalAdapter<Item, Holder> getUniversalAdapter() {
         return listAdapter;
     }
 
@@ -141,7 +141,7 @@ public class RecyclerViewAdapterConverter<Item, Holder extends ViewHolder>
     }
 
     @Override
-    public void setAdapter(@NonNull ListBasedAdapter<Item, Holder> listAdapter) {
+    public void setAdapter(@NonNull UniversalAdapter<Item, Holder> listAdapter) {
         if (this.listAdapter != null) {
             this.listAdapter.getListObserver().removeListener(observerListener);
         }
@@ -183,13 +183,13 @@ public class RecyclerViewAdapterConverter<Item, Holder extends ViewHolder>
         @SuppressWarnings("unchecked")
         @Override
         public void onItemClick(ViewHolder viewHolder, RecyclerView parent, int position, float x, float y) {
-            if (getListAdapter().isEnabled(position)) {
+            if (getUniversalAdapter().isEnabled(position)) {
                 if (recyclerItemClickListener != null) {
                     recyclerItemClickListener.onItemClick((Holder) viewHolder, parent, position, x, y);
                 }
 
                 if (itemClickedListener != null) {
-                    itemClickedListener.onItemClicked(getListAdapter(), getListAdapter().get(position), (Holder) viewHolder, position);
+                    itemClickedListener.onItemClicked(getUniversalAdapter(), getUniversalAdapter().get(position), (Holder) viewHolder, position);
                 }
             }
         }

@@ -20,6 +20,10 @@
             android:name=".AdapterActivity"
             android:label="@string/title_activity_adapter" >
         </activity>
+        <activity
+            android:name=".MergedActivity"
+            android:label="@string/title_activity_merged" >
+        </activity>
     </application>
 
 </manifest>
