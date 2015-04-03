@@ -10,14 +10,13 @@ import com.raizlabs.android.coreutils.threading.ThreadingUtils;
 import com.raizlabs.android.coreutils.util.observable.lists.ListObserver;
 import com.raizlabs.android.coreutils.util.observable.lists.ListObserverListener;
 import com.raizlabs.android.coreutils.util.observable.lists.SimpleListObserverListener;
-import com.raizlabs.android.universaladapter.widget.adapters.ListBasedAdapter;
 import com.raizlabs.android.universaladapter.widget.adapters.UniversalAdapterUtils;
 import com.raizlabs.android.universaladapter.widget.adapters.ViewHolder;
 
 /**
- * Class which dynamically converts a {@link ListBasedAdapter} into a
+ * Class which dynamically converts a {@link UniversalAdapter} into a
  * {@link PagerAdapter}. This keeps a binding to the
- * {@link ListBasedAdapter} so it will be notified of data changes made to the
+ * {@link UniversalAdapter} so it will be notified of data changes made to the
  * outer adapter.
  *
  * @param <Item>   The type of item that views will represent.
@@ -29,7 +28,7 @@ public class PagerAdapterConverter<Item, Holder extends ViewHolder>
 
     /**
      * Helper for constructing {@link ViewGroupAdapterConverter}s from
-     * {@link ListBasedAdapter}s. Handles generics a little more conveniently
+     * {@link UniversalAdapter}s. Handles generics a little more conveniently
      * than the equivalent constructor.
      *
      * @param adapter   The list adapter to use to populate views.
@@ -43,7 +42,7 @@ public class PagerAdapterConverter<Item, Holder extends ViewHolder>
 
     /**
      * Helper for constructing {@link ViewGroupAdapterConverter}s from
-     * {@link ListBasedAdapter}s. Handles generics a little more conveniently
+     * {@link UniversalAdapter}s. Handles generics a little more conveniently
      * than the equivalent constructor.
      *
      * @param adapter The list adapter to use to populate views.
@@ -54,7 +53,7 @@ public class PagerAdapterConverter<Item, Holder extends ViewHolder>
         return new PagerAdapterConverter<>(adapter);
     }
 
-    private UniversalAdapter<Item, Holder> listAdapter;
+    private UniversalAdapter<Item, Holder> universalAdapter;
 
     private ItemClickWrapper<Item, Holder> itemClickedWrapper;
 
@@ -83,7 +82,7 @@ public class PagerAdapterConverter<Item, Holder extends ViewHolder>
 
     @Override
     public UniversalAdapter<Item, Holder> getUniversalAdapter() {
-        return listAdapter;
+        return universalAdapter;
     }
 
     @Override
@@ -93,11 +92,11 @@ public class PagerAdapterConverter<Item, Holder extends ViewHolder>
 
     @Override
     public void setAdapter(@NonNull UniversalAdapter<Item, Holder> listAdapter) {
-        if (this.listAdapter != null) {
-            this.listAdapter.getListObserver().removeListener(internalListObserverListener);
+        if (this.universalAdapter != null) {
+            this.universalAdapter.getListObserver().removeListener(internalListObserverListener);
         }
-        this.listAdapter = listAdapter;
-        this.listAdapter.getListObserver().addListener(internalListObserverListener);
+        this.universalAdapter = listAdapter;
+        this.universalAdapter.getListObserver().addListener(internalListObserverListener);
     }
 
     @Override
@@ -109,8 +108,8 @@ public class PagerAdapterConverter<Item, Holder extends ViewHolder>
 
     @Override
     public void cleanup() {
-        if (this.listAdapter != null) {
-            this.listAdapter.getListObserver().removeListener(internalListObserverListener);
+        if (this.universalAdapter != null) {
+            this.universalAdapter.getListObserver().removeListener(internalListObserverListener);
         }
         this.viewPager = null;
     }
@@ -126,7 +125,7 @@ public class PagerAdapterConverter<Item, Holder extends ViewHolder>
 
     @Override
     public void notifyDataSetChanged() {
-        listAdapter.notifyDataSetChanged();
+        universalAdapter.notifyDataSetChanged();
     }
 
     protected void superNotifyDataSetChanged() {
@@ -149,8 +148,8 @@ public class PagerAdapterConverter<Item, Holder extends ViewHolder>
 
     @Override
     public Object instantiateItem(ViewGroup container, int position) {
-        Holder holder = listAdapter.createViewHolder(container, listAdapter.getItemViewType(position));
-        listAdapter.bindViewHolder(holder, position);
+        Holder holder = universalAdapter.createViewHolder(container, universalAdapter.getItemViewType(position));
+        universalAdapter.bindViewHolder(holder, position);
         View view = holder.itemView;
         UniversalAdapterUtils.setViewHolder(view, holder);
         itemClickedWrapper.register(view);
@@ -165,7 +164,7 @@ public class PagerAdapterConverter<Item, Holder extends ViewHolder>
 
     @Override
     public int getCount() {
-        return listAdapter.getCount();
+        return universalAdapter.getCount();
     }
 
     @Override

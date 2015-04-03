@@ -4,15 +4,14 @@ import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
 import android.view.ViewGroup;
 
-import com.raizlabs.android.universaladapter.widget.adapters.ListBasedAdapter;
 import com.raizlabs.android.universaladapter.widget.adapters.RecyclerViewItemClickListener;
 import com.raizlabs.android.universaladapter.widget.adapters.RecyclerViewListObserverListener;
 import com.raizlabs.android.universaladapter.widget.adapters.ViewHolder;
 
 /**
- * Class which dynamically converts a {@link ListBasedAdapter} into a
+ * Class which dynamically converts a {@link UniversalAdapter} into a
  * {@link RecyclerView.Adapter}. This keeps a binding to the
- * {@link ListBasedAdapter} so it will be notified of data changes made to the
+ * {@link UniversalAdapter} so it will be notified of data changes made to the
  * outer adapter.
  *
  * @param <Item>   The type of item that views will represent.
@@ -39,34 +38,34 @@ public class RecyclerViewAdapterConverter<Item, Holder extends ViewHolder>
 
     /**
      * Helper for constructing {@link RecyclerViewAdapterConverter}s from
-     * {@link ListBasedAdapter}s. Handles generics a little more conveniently
+     * {@link UniversalAdapter}s. Handles generics a little more conveniently
      * than the equivalent constructor.
      *
-     * @param listAdapter The list adapter to convert into a RecyclerView
-     *                    adapter.
+     * @param universalAdapter The adapter to convert into a RecyclerView
+     *                         adapter.
      * @return A RecyclerView adapter based on the given list adapter.
      */
     public static <Item, Holder extends ViewHolder>
-    RecyclerViewAdapterConverter<Item, Holder> from(ListBasedAdapter<Item, Holder> listAdapter) {
-        return new RecyclerViewAdapterConverter<>(listAdapter);
+    RecyclerViewAdapterConverter<Item, Holder> from(UniversalAdapter<Item, Holder> universalAdapter) {
+        return new RecyclerViewAdapterConverter<>(universalAdapter);
     }
 
     /**
      * Helper for constructing {@link RecyclerViewAdapterConverter}s from
-     * {@link ListBasedAdapter}s. Handles generics a little more conveniently
+     * {@link UniversalAdapter}s. Handles generics a little more conveniently
      * than the equivalent constructor.
      *
-     * @param listAdapter  The list adapter to convert into a RecyclerView
-     *                     adapter.
-     * @param recyclerView The recyclerview to register.
+     * @param universalAdapter The adapter to convert into a RecyclerView
+     *                         adapter.
+     * @param recyclerView     The recyclerview to register.
      * @return A RecyclerView adapter based on the given list adapter.
      */
     public static <Item, Holder extends ViewHolder>
-    RecyclerViewAdapterConverter<Item, Holder> from(ListBasedAdapter<Item, Holder> listAdapter, RecyclerView recyclerView) {
-        return new RecyclerViewAdapterConverter<>(listAdapter, recyclerView);
+    RecyclerViewAdapterConverter<Item, Holder> from(UniversalAdapter<Item, Holder> universalAdapter, RecyclerView recyclerView) {
+        return new RecyclerViewAdapterConverter<>(universalAdapter, recyclerView);
     }
 
-    private UniversalAdapter<Item, Holder> listAdapter;
+    private UniversalAdapter<Item, Holder> universalAdapter;
 
     private ItemClickedListener<Item, Holder> itemClickedListener;
     private RecyclerItemClickListener<Holder> recyclerItemClickListener;
@@ -75,14 +74,14 @@ public class RecyclerViewAdapterConverter<Item, Holder extends ViewHolder>
 
     private RecyclerView recyclerView;
 
-    public RecyclerViewAdapterConverter(UniversalAdapter<Item, Holder> listAdapter) {
+    public RecyclerViewAdapterConverter(UniversalAdapter<Item, Holder> universalAdapter) {
         observerListener = new RecyclerViewListObserverListener<>(this);
-        setAdapter(listAdapter);
+        setAdapter(universalAdapter);
     }
 
-    public RecyclerViewAdapterConverter(UniversalAdapter<Item, Holder> listAdapter, RecyclerView recyclerView) {
+    public RecyclerViewAdapterConverter(UniversalAdapter<Item, Holder> universalAdapter, RecyclerView recyclerView) {
         observerListener = new RecyclerViewListObserverListener<>(this);
-        setAdapter(listAdapter);
+        setAdapter(universalAdapter);
         register(recyclerView);
     }
 
@@ -100,7 +99,7 @@ public class RecyclerViewAdapterConverter<Item, Holder extends ViewHolder>
 
     @Override
     public UniversalAdapter<Item, Holder> getUniversalAdapter() {
-        return listAdapter;
+        return universalAdapter;
     }
 
     /**
@@ -124,7 +123,7 @@ public class RecyclerViewAdapterConverter<Item, Holder extends ViewHolder>
         this.recyclerView = recyclerView;
         recyclerView.setAdapter(this);
         recyclerView.addOnItemTouchListener(internalOnItemTouchListener);
-        listAdapter.notifyDataSetChanged();
+        universalAdapter.notifyDataSetChanged();
     }
 
     @Override
@@ -134,19 +133,19 @@ public class RecyclerViewAdapterConverter<Item, Holder extends ViewHolder>
 
     @Override
     public void cleanup() {
-        if (this.listAdapter != null) {
-            this.listAdapter.getListObserver().removeListener(observerListener);
+        if (this.universalAdapter != null) {
+            this.universalAdapter.getListObserver().removeListener(observerListener);
         }
         recyclerView = null;
     }
 
     @Override
     public void setAdapter(@NonNull UniversalAdapter<Item, Holder> listAdapter) {
-        if (this.listAdapter != null) {
-            this.listAdapter.getListObserver().removeListener(observerListener);
+        if (this.universalAdapter != null) {
+            this.universalAdapter.getListObserver().removeListener(observerListener);
         }
 
-        this.listAdapter = listAdapter;
+        this.universalAdapter = listAdapter;
         // Add a listener which will delegate list observer calls back to us
         listAdapter.getListObserver().addListener(observerListener);
         setHasStableIds(listAdapter.hasStableIds());
@@ -154,27 +153,27 @@ public class RecyclerViewAdapterConverter<Item, Holder extends ViewHolder>
 
     @Override
     public long getItemId(int position) {
-        return listAdapter.getItemId(position);
+        return universalAdapter.getItemId(position);
     }
 
     @Override
     public int getItemViewType(int position) {
-        return listAdapter.getItemViewType(position);
+        return universalAdapter.getItemViewType(position);
     }
 
     @Override
     public int getItemCount() {
-        return listAdapter.getCount();
+        return universalAdapter.getCount();
     }
 
     @Override
     public void onBindViewHolder(Holder viewHolder, int position) {
-        listAdapter.bindViewHolder(viewHolder, position);
+        universalAdapter.bindViewHolder(viewHolder, position);
     }
 
     @Override
     public Holder onCreateViewHolder(ViewGroup parent, int viewType) {
-        return listAdapter.createViewHolder(parent, viewType);
+        return universalAdapter.createViewHolder(parent, viewType);
     }
 
     // endregion Inherited Methods

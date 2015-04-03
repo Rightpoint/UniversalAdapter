@@ -7,14 +7,13 @@ import android.view.ViewGroup;
 import com.raizlabs.android.coreutils.util.observable.lists.ListObserver;
 import com.raizlabs.android.coreutils.util.observable.lists.ListObserverListener;
 import com.raizlabs.android.coreutils.util.observable.lists.SimpleListObserverListener;
-import com.raizlabs.android.universaladapter.widget.adapters.ListBasedAdapter;
 import com.raizlabs.android.universaladapter.widget.adapters.UniversalAdapterUtils;
 import com.raizlabs.android.universaladapter.widget.adapters.ViewHolder;
 
 /**
- * Class which uses a {@link ListBasedAdapter} to display a set of views in a
+ * Class which uses a {@link UniversalAdapter} to display a set of views in a
  * {@link ViewGroup}. This class keeps a reference to the {@link ViewGroup} and
- * lives inside the {@link ListBasedAdapter}, so you should call
+ * lives inside the {@link UniversalAdapter}, so you should call
  * {@link #cleanup()} when you are done with it or the {@link ViewGroup} will
  * be detached.
  *
@@ -26,28 +25,28 @@ public class ViewGroupAdapterConverter<Item, Holder extends ViewHolder> implemen
 
     /**
      * Helper for constructing {@link ViewGroupAdapterConverter}s from
-     * {@link ListBasedAdapter}s. Handles generics a little more conveniently
+     * {@link UniversalAdapter}s. Handles generics a little more conveniently
      * than the equivalent constructor.
      *
-     * @param adapter   The list adapter to use to populate views.
+     * @param adapter   The adapter to use to populate views.
      * @param viewGroup The view group which will be populated with views.
      * @return An adapter which will populate the view group via the given
      * adapter.
      */
-    public static <Item, Holder extends ViewHolder> ViewGroupAdapterConverter<Item, Holder> from(ListBasedAdapter<Item, Holder> adapter, ViewGroup viewGroup) {
+    public static <Item, Holder extends ViewHolder> ViewGroupAdapterConverter<Item, Holder> from(UniversalAdapter<Item, Holder> adapter, ViewGroup viewGroup) {
         return new ViewGroupAdapterConverter<>(adapter, viewGroup);
     }
 
     /**
      * Helper for constructing {@link ViewGroupAdapterConverter}s from
-     * {@link ListBasedAdapter}s. Handles generics a little more conveniently
+     * {@link UniversalAdapter}s. Handles generics a little more conveniently
      * than the equivalent constructor.
      *
-     * @param adapter The list adapter to use to populate views.
+     * @param adapter The adapter to use to populate views.
      * @return An adapter which will populate the view group via the given
      * adapter.
      */
-    public static <Item, Holder extends ViewHolder> ViewGroupAdapterConverter<Item, Holder> from(ListBasedAdapter<Item, Holder> adapter) {
+    public static <Item, Holder extends ViewHolder> ViewGroupAdapterConverter<Item, Holder> from(UniversalAdapter<Item, Holder> adapter) {
         return new ViewGroupAdapterConverter<>(adapter);
     }
 
@@ -60,7 +59,7 @@ public class ViewGroupAdapterConverter<Item, Holder extends ViewHolder> implemen
         return viewGroup;
     }
 
-    private UniversalAdapter<Item, Holder> listAdapter;
+    private UniversalAdapter<Item, Holder> universalAdapter;
 
     private ItemClickWrapper<Item, Holder> itemClickWrapper;
 
@@ -100,12 +99,12 @@ public class ViewGroupAdapterConverter<Item, Holder extends ViewHolder> implemen
     // region Inherited Methods
 
     /**
-     * @return The {@link ListBasedAdapter} that this adapter uses to populate
+     * @return The {@link UniversalAdapter} that this adapter uses to populate
      * the view group.
      */
     @Override
     public UniversalAdapter<Item, Holder> getUniversalAdapter() {
-        return listAdapter;
+        return universalAdapter;
     }
 
     /**
@@ -126,12 +125,12 @@ public class ViewGroupAdapterConverter<Item, Holder extends ViewHolder> implemen
      */
     @Override
     public void setAdapter(@NonNull UniversalAdapter<Item, Holder> adapter) {
-        if (this.listAdapter != null) {
-            this.listAdapter.getListObserver().removeListener(listChangeListener);
+        if (this.universalAdapter != null) {
+            this.universalAdapter.getListObserver().removeListener(listChangeListener);
         }
 
-        this.listAdapter = adapter;
-        this.listAdapter.getListObserver().addListener(listChangeListener);
+        this.universalAdapter = adapter;
+        this.universalAdapter.getListObserver().addListener(listChangeListener);
 
         populateAll();
     }
@@ -144,8 +143,8 @@ public class ViewGroupAdapterConverter<Item, Holder extends ViewHolder> implemen
 
     @Override
     public void cleanup() {
-        if (this.listAdapter != null) {
-            this.listAdapter.getListObserver().removeListener(listChangeListener);
+        if (this.universalAdapter != null) {
+            this.universalAdapter.getListObserver().removeListener(listChangeListener);
         }
         this.viewGroup = null;
     }
@@ -160,41 +159,19 @@ public class ViewGroupAdapterConverter<Item, Holder extends ViewHolder> implemen
         if (viewGroup != null) {
             clear();
 
-            onPrePopulate(viewGroup);
-
-            if (listAdapter != null) {
-                final int count = listAdapter.getCount();
+            if (universalAdapter != null) {
+                final int count = universalAdapter.getCount();
                 for (int i = 0; i < count; i++) {
                     addItem(i);
                 }
             }
 
-            onPostPopulate(viewGroup);
         }
     }
 
-    /**
-     * Useful when adding header views outside of the adapter to the underlying {@link ViewGroup}
-     *
-     * @param viewGroup The view group that this adapter loads into.
-     */
-    protected void onPrePopulate(ViewGroup viewGroup) {
-
-    }
-
-    /**
-     * Useful to know when the {@link ViewGroup} is done populating. Its useful for adding footer
-     * views to the underlying {@link ViewGroup}
-     *
-     * @param viewGroup The view group that this adapter loads into.
-     */
-    protected void onPostPopulate(ViewGroup viewGroup) {
-
-    }
-
     private void addItem(int position) {
-        Holder holder = listAdapter.createViewHolder(getViewGroup(), listAdapter.getItemViewType(position));
-        listAdapter.bindViewHolder(holder, position);
+        Holder holder = universalAdapter.createViewHolder(getViewGroup(), universalAdapter.getItemViewType(position));
+        universalAdapter.bindViewHolder(holder, position);
 
         View view = holder.itemView;
         UniversalAdapterUtils.setViewHolder(view, holder);

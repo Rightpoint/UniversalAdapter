@@ -13,7 +13,7 @@ import java.util.List;
 import java.util.Set;
 
 /**
- * Description: Merges adapters together into one large {@link ListBasedAdapter}.
+ * Description: Merges adapters together into one large {@link UniversalAdapter}.
  */
 public class MergedUniversalAdapter extends UniversalAdapter {
 
@@ -47,7 +47,7 @@ public class MergedUniversalAdapter extends UniversalAdapter {
         notifyDataSetChanged();
     }
 
-    public void removeAdapter(ListBasedAdapter adapter) {
+    public void removeAdapter(UniversalAdapter adapter) {
         for (int i = 0; i < listPieces.size(); i++) {
             if (listPieces.get(i).adapter.equals(adapter)) {
                 listPieces.remove(i);

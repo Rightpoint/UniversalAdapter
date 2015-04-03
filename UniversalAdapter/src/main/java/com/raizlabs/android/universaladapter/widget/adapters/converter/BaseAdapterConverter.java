@@ -10,14 +10,13 @@ import com.raizlabs.android.coreutils.threading.ThreadingUtils;
 import com.raizlabs.android.coreutils.util.observable.lists.ListObserver;
 import com.raizlabs.android.coreutils.util.observable.lists.ListObserverListener;
 import com.raizlabs.android.coreutils.util.observable.lists.SimpleListObserverListener;
-import com.raizlabs.android.universaladapter.widget.adapters.ListBasedAdapter;
 import com.raizlabs.android.universaladapter.widget.adapters.ViewHolder;
 import com.raizlabs.widget.adapters.R;
 
 /**
- * Class which dynamically converts a {@link ListBasedAdapter} into a
+ * Class which dynamically converts a {@link UniversalAdapter} into a
  * {@link BaseAdapterConverter}. This keeps a binding to the
- * {@link ListBasedAdapter} so it will be notified of data changes made to the
+ * {@link UniversalAdapter} so it will be notified of data changes made to the
  * outer adapter.
  *
  * @param <Item>   The type of item that views will represent.
@@ -29,43 +28,43 @@ public class BaseAdapterConverter<Item, Holder extends ViewHolder>
 
     /**
      * Helper for constructing {@link BaseAdapterConverter}s from
-     * {@link ListBasedAdapter}s. Handles generics a little more conveniently
+     * {@link UniversalAdapter}s. Handles generics a little more conveniently
      * than the equivalent constructor.
      *
-     * @param listBasedAdapter The list adapter to convert into a BaseAdapter.
+     * @param universalAdapter The adapter to convert into a BaseAdapter.
      * @return A BaseAdapter based on the given list adapter.
      */
     public static <Item, Holder extends ViewHolder>
-    BaseAdapterConverter<Item, Holder> from(ListBasedAdapter<Item, Holder> listBasedAdapter) {
-        return new BaseAdapterConverter<>(listBasedAdapter);
+    BaseAdapterConverter<Item, Holder> from(UniversalAdapter<Item, Holder> universalAdapter) {
+        return new BaseAdapterConverter<>(universalAdapter);
     }
 
     /**
      * Helper for constructing {@link BaseAdapterConverter}s from
-     * {@link ListBasedAdapter}s. Handles generics a little more conveniently
+     * {@link UniversalAdapter}s. Handles generics a little more conveniently
      * than the equivalent constructor.
      *
-     * @param listBasedAdapter The list adapter to convert into a BaseAdapter.
+     * @param universalAdapter The list adapter to convert into a BaseAdapter.
      * @param adapterView      The adapter view to register.
      * @return A BaseAdapter based on the given list adapter.
      */
     public static <Item, Holder extends ViewHolder>
-    BaseAdapterConverter<Item, Holder> from(UniversalAdapter<Item, Holder> listBasedAdapter, AdapterView<BaseAdapter> adapterView) {
-        return new BaseAdapterConverter<>(listBasedAdapter, adapterView);
+    BaseAdapterConverter<Item, Holder> from(UniversalAdapter<Item, Holder> universalAdapter, AdapterView<BaseAdapter> adapterView) {
+        return new BaseAdapterConverter<>(universalAdapter, adapterView);
     }
 
-    private UniversalAdapter<Item, Holder> listAdapter;
+    private UniversalAdapter<Item, Holder> universalAdapter;
 
     private ItemClickedListener<Item, Holder> itemClickedListener;
 
     private AdapterView<BaseAdapter> adapterView;
 
-    public BaseAdapterConverter(@NonNull UniversalAdapter<Item, Holder> listAdapter) {
-        setAdapter(listAdapter);
+    public BaseAdapterConverter(@NonNull UniversalAdapter<Item, Holder> universalAdapter) {
+        setAdapter(universalAdapter);
     }
 
-    public BaseAdapterConverter(@NonNull UniversalAdapter<Item, Holder> listAdapter, AdapterView<BaseAdapter> adapterView) {
-        setAdapter(listAdapter);
+    public BaseAdapterConverter(@NonNull UniversalAdapter<Item, Holder> universalAdapter, AdapterView<BaseAdapter> adapterView) {
+        setAdapter(universalAdapter);
         register(adapterView);
     }
 
@@ -73,7 +72,7 @@ public class BaseAdapterConverter<Item, Holder extends ViewHolder>
 
     @Override
     public UniversalAdapter<Item, Holder> getUniversalAdapter() {
-        return listAdapter;
+        return universalAdapter;
     }
 
     /**
@@ -95,8 +94,8 @@ public class BaseAdapterConverter<Item, Holder extends ViewHolder>
 
     @Override
     public void cleanup() {
-        if (this.listAdapter != null) {
-            this.listAdapter.getListObserver().removeListener(internalListObserverListener);
+        if (this.universalAdapter != null) {
+            this.universalAdapter.getListObserver().removeListener(internalListObserverListener);
         }
         adapterView = null;
     }
@@ -108,11 +107,11 @@ public class BaseAdapterConverter<Item, Holder extends ViewHolder>
 
     @Override
     public void setAdapter(@NonNull UniversalAdapter<Item, Holder> listAdapter) {
-        if (this.listAdapter != null) {
-            this.listAdapter.getListObserver().removeListener(internalListObserverListener);
+        if (this.universalAdapter != null) {
+            this.universalAdapter.getListObserver().removeListener(internalListObserverListener);
         }
 
-        this.listAdapter = listAdapter;
+        this.universalAdapter = listAdapter;
         listAdapter.getListObserver().addListener(internalListObserverListener);
     }
 
@@ -120,7 +119,7 @@ public class BaseAdapterConverter<Item, Holder extends ViewHolder>
 
     @Override
     public void notifyDataSetChanged() {
-        listAdapter.notifyDataSetChanged();
+        universalAdapter.notifyDataSetChanged();
     }
 
     protected void superNotifyDataSetChanged() {
@@ -143,47 +142,47 @@ public class BaseAdapterConverter<Item, Holder extends ViewHolder>
 
     @Override
     public View getDropDownView(int position, View convertView, ViewGroup parent) {
-        return listAdapter.getDropDownView(position, convertView, parent);
+        return universalAdapter.getDropDownView(position, convertView, parent);
     }
 
     @Override
     public int getViewTypeCount() {
-        return listAdapter.getItemViewTypeCount();
+        return universalAdapter.getItemViewTypeCount();
     }
 
     @Override
     public int getItemViewType(int position) {
-        return listAdapter.getItemViewType(position);
+        return universalAdapter.getItemViewType(position);
     }
 
     @Override
     public int getCount() {
-        return listAdapter.getCount();
+        return universalAdapter.getCount();
     }
 
     @Override
     public Item getItem(int position) {
-        return listAdapter.get(position);
+        return universalAdapter.get(position);
     }
 
     @Override
     public long getItemId(int position) {
-        return listAdapter.getItemId(position);
+        return universalAdapter.getItemId(position);
     }
 
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
-        return listAdapter.getView(position, convertView, parent);
+        return universalAdapter.getView(position, convertView, parent);
     }
 
     @Override
     public boolean isEnabled(int position) {
-        return listAdapter.isEnabled(position);
+        return universalAdapter.isEnabled(position);
     }
 
     @Override
     public boolean areAllItemsEnabled() {
-        return listAdapter.areAllItemsEnabled();
+        return universalAdapter.areAllItemsEnabled();
     }
 
     private final ListObserverListener<Item> internalListObserverListener = new SimpleListObserverListener<Item>() {

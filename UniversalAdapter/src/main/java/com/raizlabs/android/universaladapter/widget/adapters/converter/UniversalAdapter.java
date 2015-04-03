@@ -12,7 +12,6 @@ import com.raizlabs.android.coreutils.threading.ThreadingUtils;
 import com.raizlabs.android.coreutils.util.observable.lists.ListObserver;
 import com.raizlabs.android.coreutils.util.observable.lists.ListObserverListener;
 import com.raizlabs.android.coreutils.util.observable.lists.SimpleListObserver;
-import com.raizlabs.android.universaladapter.widget.adapters.ListBasedAdapter;
 import com.raizlabs.android.universaladapter.widget.adapters.UniversalAdapterUtils;
 import com.raizlabs.android.universaladapter.widget.adapters.ViewHolder;
 
@@ -24,7 +23,7 @@ public abstract class UniversalAdapter<Item, Holder extends ViewHolder> {
      *                  with the viewgroup.
      * @param <Item>
      * @param <Holder>
-     * @return The appropriate converter from a specific {@link ListBasedAdapter} and {@link ViewGroup}.
+     * @return The appropriate converter from a specific {@link UniversalAdapter} and {@link ViewGroup}.
      * If it can't understand the {@link ViewGroup} more specifically, a {@link ViewGroupAdapterConverter}
      * is returned.
      */

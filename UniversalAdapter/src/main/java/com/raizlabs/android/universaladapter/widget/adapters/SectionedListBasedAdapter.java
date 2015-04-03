@@ -41,7 +41,7 @@ public abstract class SectionedListBasedAdapter<Item, Holder extends ViewHolder,
 
     private int getSectionIdForPosition(int position) {
         Integer id = sectionHeaders.get(position);
-        if(id == null) {
+        if (id == null) {
             id = getSectionId(position, get(position));
             sectionHeaders.put(position, id);
         }

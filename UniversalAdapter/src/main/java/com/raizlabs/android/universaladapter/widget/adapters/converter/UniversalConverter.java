@@ -3,7 +3,6 @@ package com.raizlabs.android.universaladapter.widget.adapters.converter;
 import android.support.annotation.NonNull;
 import android.view.ViewGroup;
 
-import com.raizlabs.android.universaladapter.widget.adapters.ListBasedAdapter;
 import com.raizlabs.android.universaladapter.widget.adapters.ViewHolder;
 
 /**
