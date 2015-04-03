@@ -58,10 +58,10 @@ or by standard Gradle use (without linking sources support):
 ## Usage
 
 This library comes packed with some notable features:
-1. Unified adapter binding
-2. List observability: when an adapter's inner content changes, notifications to the parent adapter view happen automatically
-3. Merged adapter: add an arbitrary amount of `UniversalAdapter` together to enable diverse view-data sets!
-4. Unified header and footer support: add an arbitrary number of headers and footers to a `HFListBasedAdapter` and let the library handle it for you, no matter the parent view!
+  1. Unified adapter binding
+  2. List observability: when an adapter's inner content changes, notifications to the parent adapter view happen automatically
+  3. Merged adapter: add an arbitrary amount of `UniversalAdapter` together to enable diverse view-data sets!
+  4. Unified header and footer support: add an arbitrary number of headers and footers to a `HFListBasedAdapter` and let the library handle it for you, no matter the parent view!
 
 
 ### Define an adapter
