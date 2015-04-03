@@ -11,7 +11,6 @@ import android.widget.BaseAdapter;
 import com.raizlabs.android.coreutils.threading.ThreadingUtils;
 import com.raizlabs.android.coreutils.util.observable.lists.ListObserver;
 import com.raizlabs.android.coreutils.util.observable.lists.ListObserverListener;
-import com.raizlabs.android.coreutils.util.observable.lists.ObservableList;
 import com.raizlabs.android.coreutils.util.observable.lists.SimpleListObserver;
 import com.raizlabs.android.universaladapter.widget.adapters.ListBasedAdapter;
 import com.raizlabs.android.universaladapter.widget.adapters.UniversalAdapterUtils;

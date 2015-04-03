@@ -2,16 +2,20 @@ package com.raizlabs.android.universaladapter.widget.adapters;
 
 import android.view.ViewGroup;
 
+import com.raizlabs.android.coreutils.util.observable.lists.ListObserver;
+import com.raizlabs.android.coreutils.util.observable.lists.ListObserverListener;
+import com.raizlabs.android.coreutils.util.observable.lists.SimpleListObserverListener;
 import com.raizlabs.android.universaladapter.widget.adapters.converter.UniversalAdapter;
 
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 /**
  * Description: Merges adapters together into one large {@link ListBasedAdapter}.
  */
-public class MergedListBasedAdapter extends UniversalAdapter {
+public class MergedUniversalAdapter extends UniversalAdapter {
 
     private List<ListPiece> listPieces = new ArrayList<>();
 
@@ -19,17 +23,27 @@ public class MergedListBasedAdapter extends UniversalAdapter {
         addAdapter(listPieces.size(), adapter);
     }
 
+    @SuppressWarnings("unchecked")
     public void addAdapter(int position, UniversalAdapter adapter) {
         int count = getCount();
+
+        // create reference piece
         ListPiece piece = new ListPiece(adapter);
+        piece.adapter.getListObserver().addListener(cascadingListObserver);
         listPieces.add(position, piece);
-        piece.setPositionRange(count);
+
+        // set the starting point for it
+        piece.setStartPosition(count);
+
+        // know what kind of item types the piece contains for faster item view type.
+        piece.initializeItemViewTypes();
         notifyDataSetChanged();
     }
 
+    @SuppressWarnings("unchecked")
     public void removeAdapter(int position) {
-        listPieces.remove(position);
-        // TODO: remove all positions in between
+        listPieces.remove(position)
+                .adapter.getListObserver().removeListener(cascadingListObserver);
         notifyDataSetChanged();
     }
 
@@ -40,15 +54,12 @@ public class MergedListBasedAdapter extends UniversalAdapter {
                 break;
             }
         }
-        // TODO: remove all positions in between
         notifyDataSetChanged();
     }
 
     @Override
     public void notifyDataSetChanged() {
-        for (ListPiece piece : listPieces) {
-            piece.adapter.notifyDataSetChanged();
-        }
+        onGenericChange();
     }
 
     @SuppressWarnings("unchecked")
@@ -68,7 +79,7 @@ public class MergedListBasedAdapter extends UniversalAdapter {
                 viewHolder = piece.adapter.createViewHolder(parent, typeOffset - itemType);
                 break;
             }
-            typeOffset+=piece.adapter.getItemViewTypeCount();
+            typeOffset += piece.adapter.getItemViewTypeCount();
         }
         return viewHolder;
     }
@@ -76,8 +87,8 @@ public class MergedListBasedAdapter extends UniversalAdapter {
     @Override
     public int getItemViewTypeCount() {
         int count = 0;
-        for(ListPiece listPiece: listPieces) {
-            count+=listPiece.adapter.getItemViewTypeCount();
+        for (ListPiece listPiece : listPieces) {
+            count += listPiece.adapter.getItemViewTypeCount();
         }
         return count;
     }
@@ -112,9 +123,9 @@ public class MergedListBasedAdapter extends UniversalAdapter {
     }
 
     /**
-     * Works down the position until it finds the position the adapter starts at.
+     * Retrieves the adapter that is for the specified position within the whole merged adapter.
      *
-     * @param position The position of item in the {@link ListBasedAdapter}
+     * @param position The position of item in the {@link MergedUniversalAdapter}
      * @return The adapter that displays the specified position.
      */
     public ListPiece getPieceAt(int position) {
@@ -141,31 +152,50 @@ public class MergedListBasedAdapter extends UniversalAdapter {
         return getItem(location);
     }
 
+    /**
+     * Whenever a singular {@link ListPiece} changes, we refresh the adapter and notify content
+     * changed.
+     */
+    private final ListObserverListener cascadingListObserver = new SimpleListObserverListener() {
+        @Override
+        public void onGenericChange(ListObserver listObserver) {
+            notifyDataSetChanged();
+        }
+    };
+
+    /**
+     * Struct that keeps track of each {@link UniversalAdapter} in this merged adapter.
+     */
     private static class ListPiece {
 
-        HashSet<Integer> itemViewTypes = new HashSet<>();
+        Set<Integer> itemViewTypes = new HashSet<>();
 
         final UniversalAdapter adapter;
 
+        /**
+         * Position it starts at
+         */
         int startPosition;
-
-        int endPosition;
 
         ListPiece(UniversalAdapter adapter) {
             this.adapter = adapter;
         }
 
-        void setPositionRange(int start) {
-            startPosition = start;
-            endPosition = startPosition + getCount();
+        void setStartPosition(int position) {
+            startPosition = position;
+        }
 
+        /**
+         * Tracks the item view types of each adapter.
+         */
+        void initializeItemViewTypes() {
             for (int i = 0; i < getCount(); i++) {
                 itemViewTypes.add(adapter.getItemViewType(i));
             }
         }
 
         boolean isPositionWithinAdapter(int position) {
-            return position >= startPosition && position < endPosition;
+            return position >= startPosition && position < (startPosition + getCount());
         }
 
         int getCount() {
@@ -183,5 +213,6 @@ public class MergedListBasedAdapter extends UniversalAdapter {
         int getAdjustedItemPosition(int position) {
             return position - startPosition;
         }
+
     }
 }

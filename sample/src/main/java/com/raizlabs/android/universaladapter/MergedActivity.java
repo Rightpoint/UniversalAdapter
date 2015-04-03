@@ -12,7 +12,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.raizlabs.android.universaladapter.widget.adapters.ListBasedAdapter;
-import com.raizlabs.android.universaladapter.widget.adapters.MergedListBasedAdapter;
+import com.raizlabs.android.universaladapter.widget.adapters.MergedUniversalAdapter;
 import com.raizlabs.android.universaladapter.widget.adapters.ViewHolder;
 import com.raizlabs.android.universaladapter.widget.adapters.converter.UniversalAdapter;
 
@@ -37,7 +37,7 @@ public class MergedActivity extends ActionBarActivity {
             ((RecyclerView) viewGroup).setLayoutManager(new LinearLayoutManager(this));
         }
 
-        MergedListBasedAdapter adapter = new MergedListBasedAdapter();
+        MergedUniversalAdapter adapter = new MergedUniversalAdapter();
 
         ListBasedAdapter<String, TextItemHolder> firstAdapter = new ListBasedAdapter<String, TextItemHolder>() {
             @Override
