@@ -1,12 +1,8 @@
 package com.raizlabs.android.universaladapter.widget.adapters.converter;
 
-import android.support.v4.view.ViewPager;
-import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.AdapterView;
-import android.widget.BaseAdapter;
 
 import com.raizlabs.android.coreutils.threading.ThreadingUtils;
 import com.raizlabs.android.coreutils.util.observable.lists.ListObserver;
@@ -16,30 +12,6 @@ import com.raizlabs.android.universaladapter.widget.adapters.UniversalAdapterUti
 import com.raizlabs.android.universaladapter.widget.adapters.ViewHolder;
 
 public abstract class UniversalAdapter<Item, Holder extends ViewHolder> {
-
-    /**
-     * @param adapter   The list adapter to  populate the specified viewgroup with.
-     * @param viewGroup The viewgroup to register the adapter with. This populates and registers any click events
-     *                  with the viewgroup.
-     * @param <Item>
-     * @param <Holder>
-     * @return The appropriate converter from a specific {@link UniversalAdapter} and {@link ViewGroup}.
-     * If it can't understand the {@link ViewGroup} more specifically, a {@link ViewGroupAdapterConverter}
-     * is returned.
-     */
-    @SuppressWarnings("unchecked")
-    public static <Item, Holder extends ViewHolder>
-    UniversalConverter<Item, Holder, ?> create(UniversalAdapter<Item, Holder> adapter, ViewGroup viewGroup) {
-        if (viewGroup instanceof RecyclerView) {
-            return new RecyclerViewAdapterConverter<>(adapter, (RecyclerView) viewGroup);
-        } else if (viewGroup instanceof ViewPager) {
-            return new PagerAdapterConverter<>(adapter, (ViewPager) viewGroup);
-        } else if (viewGroup instanceof AdapterView) {
-            return new BaseAdapterConverter<>(adapter, (AdapterView<BaseAdapter>) viewGroup);
-        } else {
-            return new ViewGroupAdapterConverter<>(adapter, viewGroup);
-        }
-    }
 
     private boolean runningTransaction;
     private boolean transactionModified;

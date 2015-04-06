@@ -24,7 +24,7 @@ import com.raizlabs.widget.adapters.R;
  *                 views.
  */
 public class BaseAdapterConverter<Item, Holder extends ViewHolder>
-        extends BaseAdapter implements UniversalConverter<Item, Holder, AdapterView<BaseAdapter>> {
+        extends BaseAdapter implements UniversalConverter<Item, Holder, AdapterView<? super BaseAdapter>> {
 
     /**
      * Helper for constructing {@link BaseAdapterConverter}s from
@@ -49,7 +49,7 @@ public class BaseAdapterConverter<Item, Holder extends ViewHolder>
      * @return A BaseAdapter based on the given list adapter.
      */
     public static <Item, Holder extends ViewHolder>
-    BaseAdapterConverter<Item, Holder> from(UniversalAdapter<Item, Holder> universalAdapter, AdapterView<BaseAdapter> adapterView) {
+    BaseAdapterConverter<Item, Holder> from(UniversalAdapter<Item, Holder> universalAdapter, AdapterView<? super BaseAdapter> adapterView) {
         return new BaseAdapterConverter<>(universalAdapter, adapterView);
     }
 
@@ -63,7 +63,7 @@ public class BaseAdapterConverter<Item, Holder extends ViewHolder>
         setAdapter(universalAdapter);
     }
 
-    public BaseAdapterConverter(@NonNull UniversalAdapter<Item, Holder> universalAdapter, AdapterView<BaseAdapter> adapterView) {
+    public BaseAdapterConverter(@NonNull UniversalAdapter<Item, Holder> universalAdapter, AdapterView<? super BaseAdapter> adapterView) {
         setAdapter(universalAdapter);
         register(adapterView);
     }
@@ -81,7 +81,7 @@ public class BaseAdapterConverter<Item, Holder extends ViewHolder>
      * @param adapterView the adapter view to register this adapter with.
      */
     @Override
-    public void register(@NonNull AdapterView<BaseAdapter> adapterView) {
+    public void register(@NonNull AdapterView<? super BaseAdapter> adapterView) {
         adapterView.setAdapter(this);
         adapterView.setOnItemClickListener(internalItemClickListener);
         notifyDataSetChanged();
