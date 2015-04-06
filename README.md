@@ -108,7 +108,7 @@ Now to connect it to a `ListView`, `RecyclerView`, `ViewPager`, or `ViewGroup`:
 
 ```java
 
-UniversalConverter<Item, Holder> universalConverter = UniversalAdapter.create(adapter, someViewGroup);
+UniversalConverter<Item, Holder> universalConverter = UniversalConverterFactory.create(adapter, someViewGroup);
 
 // each UniversalConverter determines how the click events works
 // you just worry about the callback!
@@ -136,19 +136,19 @@ merged.addAdapter(listAdapter);
 merged.addAdapter(anotherAdapter);
 
 // bind the adapter to the ViewGroup you want to use.
-UniversalAdapter.create(merged, viewGroup);
+UniversalConverterFactory.create(merged, viewGroup);
 
 ```
 
 ### Header and Footers
 
-One of the paint points of `RecyclerView` is that it does _not_ natively support header and footer views. Also, `ListView` does, but does it internally. We created `HFListBasedAdapter` to merge the two concepts together at the `Adapter` level.
+One of the paint points of `RecyclerView` is that it does _not_ natively support header and footer views. Also, `ListView` does, but does it internally. We add header and footer support to `UniversalAdapter` to merge the two concepts together at the `Adapter` level.
 
 To use it:
 
 ```java
 
-HFListBasedAdapter<Item, Holder adapter = new HFListBasedAdapter<>();
+ListBasedAdapter<Item, Holder adapter = new ListBasedAdapter<>();
 
 // add items you want to display
 adapter.loadItemList(someList);
@@ -164,7 +164,7 @@ adapter.addFooterView(myFooter);
 adapter.addFooterHolder(myFooterHolder);
 
 // bind to ViewGroup of your choice:
-UniversalAdapter.create(adapter, viewGroup);
+UniversalConverterFactory.create(adapter, viewGroup);
 
 ```
 
@@ -180,7 +180,7 @@ LinearLayout layout = (LinearLayout) findViewById(R.id.my_list);
 
 // ties the adapter to this layout
 // any changes to the adapter will refresh the content on this layout
-UniversalAdapter.create(myListAdapter, layout);
+UniversalConverterFactory.create(myListAdapter, layout);
 
 ```
 
