@@ -71,7 +71,7 @@ public class BaseAdapterConverter<Item, Holder extends ViewHolder>
     // region Inherited Methods
 
     @Override
-    public UniversalAdapter<Item, Holder> getUniversalAdapter() {
+    public UniversalAdapter<Item, Holder> getAdapter() {
         return universalAdapter;
     }
 
@@ -198,7 +198,7 @@ public class BaseAdapterConverter<Item, Holder extends ViewHolder>
         public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
             if (itemClickedListener != null) {
                 Holder holder = (Holder) view.getTag(R.id.com_raizlabs_viewholderTagID);
-                itemClickedListener.onItemClicked(getUniversalAdapter(), getItem(position), holder, position);
+                itemClickedListener.onItemClicked(getAdapter(), getItem(position), holder, position);
             }
         }
     };

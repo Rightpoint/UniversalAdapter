@@ -30,10 +30,10 @@ class ItemClickWrapper<Item, Holder extends ViewHolder> implements View.OnClickL
         if (universalConverter.getViewGroup() != null) {
             int index = universalConverter.getViewGroup().indexOfChild(v);
 
-            if (universalConverter.getUniversalAdapter().isEnabled(index) && itemClickedListener != null) {
-                Item item = universalConverter.getUniversalAdapter().get(index);
+            if (universalConverter.getAdapter().isEnabled(index) && itemClickedListener != null) {
+                Item item = universalConverter.getAdapter().get(index);
                 Holder holder = (Holder) UniversalAdapterUtils.getViewHolder(v);
-                itemClickedListener.onItemClicked(universalConverter.getUniversalAdapter(), item, holder, index);
+                itemClickedListener.onItemClicked(universalConverter.getAdapter(), item, holder, index);
             }
         }
     }
@@ -43,10 +43,10 @@ class ItemClickWrapper<Item, Holder extends ViewHolder> implements View.OnClickL
         if (universalConverter.getViewGroup() != null) {
             int index = universalConverter.getViewGroup().indexOfChild(v);
 
-            if (universalConverter.getUniversalAdapter().isEnabled(index) && itemLongClickedListener != null) {
-                Item item = universalConverter.getUniversalAdapter().get(index);
+            if (universalConverter.getAdapter().isEnabled(index) && itemLongClickedListener != null) {
+                Item item = universalConverter.getAdapter().get(index);
                 Holder holder = (Holder) UniversalAdapterUtils.getViewHolder(v);
-                return itemLongClickedListener.onItemLongClicked(universalConverter.getUniversalAdapter(), item, holder, index);
+                return itemLongClickedListener.onItemLongClicked(universalConverter.getAdapter(), item, holder, index);
             }
         }
         return false;

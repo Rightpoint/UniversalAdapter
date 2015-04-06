@@ -81,7 +81,7 @@ public class PagerAdapterConverter<Item, Holder extends ViewHolder>
     }
 
     @Override
-    public UniversalAdapter<Item, Holder> getUniversalAdapter() {
+    public UniversalAdapter<Item, Holder> getAdapter() {
         return universalAdapter;
     }
 
