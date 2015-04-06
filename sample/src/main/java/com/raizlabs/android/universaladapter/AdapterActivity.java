@@ -12,7 +12,6 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.raizlabs.android.universaladapter.widget.adapters.HFListBasedAdapter;
 import com.raizlabs.android.universaladapter.widget.adapters.ListBasedAdapter;
 import com.raizlabs.android.universaladapter.widget.adapters.ViewHolder;
 import com.raizlabs.android.universaladapter.widget.adapters.converter.UniversalConverter;
@@ -50,53 +49,40 @@ public class AdapterActivity extends FragmentActivity {
         int layout = getIntent().getIntExtra(INTENT_LAYOUT_RESOURCE, R.layout.activity_viewpager);
         setContentView(layout);
 
+        adapter = new ListBasedAdapter<Object, UniversalHolder>() {
+            @Override
+            protected void onBindViewHolder(UniversalHolder viewHolder, Object s, int position) {
+                viewHolder.Gibberish.setText(s.toString());
+            }
+
+            @Override
+            protected UniversalHolder onCreateViewHolder(ViewGroup parent, int itemType) {
+                return new UniversalHolder(inflateView(parent, R.layout.list_item_adapter));
+            }
+
+            @Override
+            protected void onBindHeaderViewHolder(ViewHolder holder, int position) {
+                HeaderHolder headerHolder = (HeaderHolder) holder;
+                headerHolder.Image.setImageResource(R.drawable.abc_ic_ab_back_mtrl_am_alpha);
+            }
+
+            @Override
+            protected void onBindFooterViewHolder(ViewHolder holder, int position) {
+                FooterHolder footerHolder = (FooterHolder) holder;
+                footerHolder.Dummy.setText("Footer: " + position);
+            }
+        };
+
         if (getIntent().hasExtra(INTENT_USE_HF)) {
-            adapter = new HFListBasedAdapter<String, UniversalHolder>() {
-
-                @Override
-                protected UniversalHolder onCreateItemViewHolder(ViewGroup parent, int itemType) {
-                    return new UniversalHolder(inflateView(parent, R.layout.list_item_adapter));
-                }
-
-                @Override
-                protected void onBindItemViewHolder(UniversalHolder holder, String s, int position) {
-                    holder.Gibberish.setText(s);
-                }
-
-                @Override
-                protected void onBindHeaderViewHolder(ViewHolder holder, int position) {
-                    HeaderHolder headerHolder = (HeaderHolder) holder;
-                    headerHolder.Image.setImageResource(R.drawable.abc_ic_ab_back_mtrl_am_alpha);
-                }
-
-                @Override
-                protected void onBindFooterViewHolder(ViewHolder holder, int position) {
-                    FooterHolder footerHolder = (FooterHolder) holder;
-                    footerHolder.Dummy.setText("Footer: " + position);
-                }
-            };
-
             for (int i = 0; i < 5; i++) {
                 HeaderHolder headerHolder = new HeaderHolder(LayoutInflater.from(this).inflate(R.layout.list_item_image, null));
-                ((HFListBasedAdapter) adapter).addHeaderHolder(headerHolder);
+                adapter.addHeaderHolder(headerHolder);
             }
 
             for (int i = 0; i < 5; i++) {
                 FooterHolder footerHolder = new FooterHolder(LayoutInflater.from(this).inflate(R.layout.list_item_text, null));
-                ((HFListBasedAdapter) adapter).addFooterHolder(footerHolder);
+                adapter.addFooterHolder(footerHolder);
             }
-        } else {
-            adapter = new ListBasedAdapter<Object, UniversalHolder>() {
-                @Override
-                protected void onBindViewHolder(UniversalHolder viewHolder, Object s, int position) {
-                    viewHolder.Gibberish.setText(s.toString());
-                }
-
-                @Override
-                protected UniversalHolder onCreateViewHolder(ViewGroup parent, int itemType) {
-                    return new UniversalHolder(inflateView(parent, R.layout.list_item_adapter));
-                }
-            };
         }
 
         List<Object> dummyTitles = new ArrayList<>();

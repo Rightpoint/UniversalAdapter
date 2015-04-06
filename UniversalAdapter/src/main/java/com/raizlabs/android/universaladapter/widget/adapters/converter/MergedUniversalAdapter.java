@@ -1,11 +1,11 @@
-package com.raizlabs.android.universaladapter.widget.adapters;
+package com.raizlabs.android.universaladapter.widget.adapters.converter;
 
 import android.view.ViewGroup;
 
 import com.raizlabs.android.coreutils.util.observable.lists.ListObserver;
 import com.raizlabs.android.coreutils.util.observable.lists.ListObserverListener;
 import com.raizlabs.android.coreutils.util.observable.lists.SimpleListObserverListener;
-import com.raizlabs.android.universaladapter.widget.adapters.converter.UniversalAdapter;
+import com.raizlabs.android.universaladapter.widget.adapters.ViewHolder;
 
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -73,13 +73,13 @@ public class MergedUniversalAdapter extends UniversalAdapter {
     @Override
     protected ViewHolder onCreateViewHolder(ViewGroup parent, int itemType) {
         ViewHolder viewHolder = null;
-        int typeOffset = 0;
+        int typeOffset = 1;
         for (ListPiece piece : listPieces) {
             if (piece.hasViewType(typeOffset - itemType)) {
                 viewHolder = piece.adapter.createViewHolder(parent, typeOffset - itemType);
                 break;
             }
-            typeOffset += piece.adapter.getItemViewTypeCount();
+            typeOffset += piece.adapter.getInternalItemViewTypeCount();
         }
         return viewHolder;
     }
@@ -88,7 +88,7 @@ public class MergedUniversalAdapter extends UniversalAdapter {
     public int getItemViewTypeCount() {
         int count = 0;
         for (ListPiece listPiece : listPieces) {
-            count += listPiece.adapter.getItemViewTypeCount();
+            count += listPiece.adapter.getInternalItemViewTypeCount();
         }
         return count;
     }
@@ -102,12 +102,12 @@ public class MergedUniversalAdapter extends UniversalAdapter {
             int size = piece.getCount();
 
             if (position < size) {
-                result = typeOffset + piece.adapter.getItemViewType(position);
+                result = typeOffset + piece.adapter.getItemViewTypeInternal(position);
                 break;
             }
 
             position -= size;
-            typeOffset += piece.adapter.getItemViewTypeCount();
+            typeOffset += piece.adapter.getInternalItemViewTypeCount();
         }
 
         return result;
@@ -185,7 +185,7 @@ public class MergedUniversalAdapter extends UniversalAdapter {
          */
         void initializeItemViewTypes() {
             for (int i = 0; i < getCount(); i++) {
-                itemViewTypes.add(adapter.getItemViewType(i));
+                itemViewTypes.add(adapter.getItemViewTypeInternal(i));
             }
         }
 
@@ -194,7 +194,7 @@ public class MergedUniversalAdapter extends UniversalAdapter {
         }
 
         int getCount() {
-            return adapter.getCount();
+            return adapter.getInternalCount();
         }
 
         public boolean hasViewType(int itemType) {
@@ -202,7 +202,7 @@ public class MergedUniversalAdapter extends UniversalAdapter {
         }
 
         Object getAdjustedItem(int position) {
-            return adapter.getItem(getAdjustedItemPosition(position));
+            return adapter.get(getAdjustedItemPosition(position));
         }
 
         int getAdjustedItemPosition(int position) {

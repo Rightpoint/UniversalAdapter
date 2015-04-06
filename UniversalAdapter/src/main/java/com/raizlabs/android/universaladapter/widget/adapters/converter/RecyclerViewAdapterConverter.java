@@ -19,7 +19,7 @@ import com.raizlabs.android.universaladapter.widget.adapters.ViewHolder;
  *                 views.
  */
 public class RecyclerViewAdapterConverter<Item, Holder extends ViewHolder>
-        extends RecyclerView.Adapter<Holder> implements UniversalConverter<Item, Holder, RecyclerView> {
+        extends RecyclerView.Adapter implements UniversalConverter<Item, Holder, RecyclerView> {
 
     /**
      * Provides more specific information for a click, separate from {@link ItemClickedListener}
@@ -158,21 +158,21 @@ public class RecyclerViewAdapterConverter<Item, Holder extends ViewHolder>
 
     @Override
     public int getItemViewType(int position) {
-        return universalAdapter.getItemViewType(position);
+        return universalAdapter.getItemViewTypeInternal(position);
     }
 
     @Override
     public int getItemCount() {
-        return universalAdapter.getCount();
+        return universalAdapter.getInternalCount();
     }
 
     @Override
-    public void onBindViewHolder(Holder viewHolder, int position) {
-        universalAdapter.bindViewHolder(viewHolder, position);
+    public void onBindViewHolder(RecyclerView.ViewHolder viewHolder, int position) {
+        universalAdapter.bindViewHolder((ViewHolder) viewHolder, position);
     }
 
     @Override
-    public Holder onCreateViewHolder(ViewGroup parent, int viewType) {
+    public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         return universalAdapter.createViewHolder(parent, viewType);
     }
 

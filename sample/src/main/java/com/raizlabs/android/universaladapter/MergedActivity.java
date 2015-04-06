@@ -12,7 +12,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.raizlabs.android.universaladapter.widget.adapters.ListBasedAdapter;
-import com.raizlabs.android.universaladapter.widget.adapters.MergedUniversalAdapter;
+import com.raizlabs.android.universaladapter.widget.adapters.converter.MergedUniversalAdapter;
 import com.raizlabs.android.universaladapter.widget.adapters.ViewHolder;
 import com.raizlabs.android.universaladapter.widget.adapters.converter.UniversalConverterFactory;
 

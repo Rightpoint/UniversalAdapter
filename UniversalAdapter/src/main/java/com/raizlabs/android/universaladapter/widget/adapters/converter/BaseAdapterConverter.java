@@ -143,17 +143,17 @@ public class BaseAdapterConverter<Item, Holder extends ViewHolder>
 
     @Override
     public int getViewTypeCount() {
-        return universalAdapter.getItemViewTypeCount();
+        return universalAdapter.getInternalItemViewTypeCount();
     }
 
     @Override
     public int getItemViewType(int position) {
-        return universalAdapter.getItemViewType(position);
+        return universalAdapter.getItemViewTypeInternal(position);
     }
 
     @Override
     public int getCount() {
-        return universalAdapter.getCount();
+        return universalAdapter.getInternalCount();
     }
 
     @Override
@@ -168,7 +168,7 @@ public class BaseAdapterConverter<Item, Holder extends ViewHolder>
 
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
-        Holder viewHolder = null;
+        ViewHolder viewHolder = null;
         if (convertView != null) {
             viewHolder = getViewHolder(convertView);
         }
@@ -186,7 +186,7 @@ public class BaseAdapterConverter<Item, Holder extends ViewHolder>
 
     @Override
     public View getDropDownView(int position, View convertView, ViewGroup parent) {
-        Holder viewHolder = null;
+        ViewHolder viewHolder = null;
         if (convertView != null) {
             viewHolder = getViewHolder(convertView);
         }
@@ -223,7 +223,7 @@ public class BaseAdapterConverter<Item, Holder extends ViewHolder>
         return null;
     }
 
-    protected void setViewHolder(View view, Holder holder) {
+    protected void setViewHolder(View view, ViewHolder holder) {
         UniversalAdapterUtils.setViewHolder(view, holder);
     }
 

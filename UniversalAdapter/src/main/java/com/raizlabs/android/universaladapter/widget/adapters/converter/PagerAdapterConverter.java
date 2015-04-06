@@ -148,7 +148,7 @@ public class PagerAdapterConverter<Item, Holder extends ViewHolder>
 
     @Override
     public Object instantiateItem(ViewGroup container, int position) {
-        Holder holder = universalAdapter.createViewHolder(container, universalAdapter.getItemViewType(position));
+        ViewHolder holder = universalAdapter.createViewHolder(container, universalAdapter.getItemViewTypeInternal(position));
         universalAdapter.bindViewHolder(holder, position);
         View view = holder.itemView;
         UniversalAdapterUtils.setViewHolder(view, holder);
@@ -164,7 +164,7 @@ public class PagerAdapterConverter<Item, Holder extends ViewHolder>
 
     @Override
     public int getCount() {
-        return universalAdapter.getCount();
+        return universalAdapter.getInternalCount();
     }
 
     @Override

@@ -160,7 +160,7 @@ public class ViewGroupAdapterConverter<Item, Holder extends ViewHolder> implemen
             clear();
 
             if (universalAdapter != null) {
-                final int count = universalAdapter.getCount();
+                final int count = universalAdapter.getInternalCount();
                 for (int i = 0; i < count; i++) {
                     addItem(i);
                 }
@@ -170,7 +170,7 @@ public class ViewGroupAdapterConverter<Item, Holder extends ViewHolder> implemen
     }
 
     private void addItem(int position) {
-        Holder holder = universalAdapter.createViewHolder(getViewGroup(), universalAdapter.getItemViewType(position));
+        ViewHolder holder = universalAdapter.createViewHolder(getViewGroup(), universalAdapter.getItemViewTypeInternal(position));
         universalAdapter.bindViewHolder(holder, position);
 
         View view = holder.itemView;
