@@ -10,6 +10,7 @@ import com.raizlabs.android.coreutils.threading.ThreadingUtils;
 import com.raizlabs.android.coreutils.util.observable.lists.ListObserver;
 import com.raizlabs.android.coreutils.util.observable.lists.ListObserverListener;
 import com.raizlabs.android.coreutils.util.observable.lists.SimpleListObserverListener;
+import com.raizlabs.android.universaladapter.widget.adapters.UniversalAdapterUtils;
 import com.raizlabs.android.universaladapter.widget.adapters.ViewHolder;
 import com.raizlabs.widget.adapters.R;
 
@@ -141,11 +142,6 @@ public class BaseAdapterConverter<Item, Holder extends ViewHolder>
     }
 
     @Override
-    public View getDropDownView(int position, View convertView, ViewGroup parent) {
-        return universalAdapter.getDropDownView(position, convertView, parent);
-    }
-
-    @Override
     public int getViewTypeCount() {
         return universalAdapter.getItemViewTypeCount();
     }
@@ -172,7 +168,38 @@ public class BaseAdapterConverter<Item, Holder extends ViewHolder>
 
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
-        return universalAdapter.getView(position, convertView, parent);
+        Holder viewHolder = null;
+        if (convertView != null) {
+            viewHolder = getViewHolder(convertView);
+        }
+
+        if (viewHolder == null) {
+            int viewType = getItemViewType(position);
+            viewHolder = universalAdapter.createViewHolder(parent, viewType);
+            setViewHolder(viewHolder.itemView, viewHolder);
+        }
+
+        universalAdapter.bindViewHolder(viewHolder, position);
+
+        return viewHolder.itemView;
+    }
+
+    @Override
+    public View getDropDownView(int position, View convertView, ViewGroup parent) {
+        Holder viewHolder = null;
+        if (convertView != null) {
+            viewHolder = getViewHolder(convertView);
+        }
+
+        if (viewHolder == null) {
+            int viewType = getItemViewType(position);
+            viewHolder = universalAdapter.createDropDownViewHolder(parent, viewType);
+            setViewHolder(viewHolder.itemView, viewHolder);
+        }
+
+        universalAdapter.bindDropDownViewHolder(viewHolder, position);
+
+        return viewHolder.itemView;
     }
 
     @Override
@@ -183,6 +210,21 @@ public class BaseAdapterConverter<Item, Holder extends ViewHolder>
     @Override
     public boolean areAllItemsEnabled() {
         return universalAdapter.areAllItemsEnabled();
+    }
+
+    @SuppressWarnings("unchecked")
+    protected Holder getViewHolder(View view) {
+        try {
+            return (Holder) UniversalAdapterUtils.getViewHolder(view);
+        } catch (ClassCastException ex) {
+            // Don't care. Just don't crash. We'll just ignore convertView.
+        }
+
+        return null;
+    }
+
+    protected void setViewHolder(View view, Holder holder) {
+        UniversalAdapterUtils.setViewHolder(view, holder);
     }
 
     private final ListObserverListener<Item> internalListObserverListener = new SimpleListObserverListener<Item>() {
