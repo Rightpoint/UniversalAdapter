@@ -7,8 +7,6 @@ import android.support.v4.app.FragmentActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
-import android.view.Menu;
-import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
@@ -17,8 +15,8 @@ import android.widget.TextView;
 import com.raizlabs.android.universaladapter.widget.adapters.HFListBasedAdapter;
 import com.raizlabs.android.universaladapter.widget.adapters.ListBasedAdapter;
 import com.raizlabs.android.universaladapter.widget.adapters.ViewHolder;
-import com.raizlabs.android.universaladapter.widget.adapters.converter.UniversalAdapter;
 import com.raizlabs.android.universaladapter.widget.adapters.converter.UniversalConverter;
+import com.raizlabs.android.universaladapter.widget.adapters.converter.UniversalConverterFactory;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -42,7 +40,7 @@ public class AdapterActivity extends FragmentActivity {
         return intent;
     }
 
-    private UniversalConverter<Object, UniversalHolder, ?> converter;
+    private UniversalConverter<Object, ? extends ViewHolder, ?> converter;
 
     private ListBasedAdapter<Object, ? extends ViewHolder> adapter;
 
@@ -113,7 +111,7 @@ public class AdapterActivity extends FragmentActivity {
             ((RecyclerView) viewGroup).setLayoutManager(new LinearLayoutManager(viewGroup.getContext()));
         }
 
-        converter = (UniversalConverter<Object, UniversalHolder, ?>) UniversalAdapter.create(adapter, viewGroup);
+        converter = UniversalConverterFactory.createGeneric(adapter, viewGroup);
     }
 
     private static class UniversalHolder extends ViewHolder {

@@ -10,6 +10,7 @@ import com.raizlabs.android.coreutils.threading.ThreadingUtils;
 import com.raizlabs.android.coreutils.util.observable.lists.ListObserver;
 import com.raizlabs.android.coreutils.util.observable.lists.ListObserverListener;
 import com.raizlabs.android.coreutils.util.observable.lists.SimpleListObserverListener;
+import com.raizlabs.android.universaladapter.widget.adapters.UniversalAdapterUtils;
 import com.raizlabs.android.universaladapter.widget.adapters.ViewHolder;
 import com.raizlabs.widget.adapters.R;
 
@@ -24,7 +25,7 @@ import com.raizlabs.widget.adapters.R;
  *                 views.
  */
 public class BaseAdapterConverter<Item, Holder extends ViewHolder>
-        extends BaseAdapter implements UniversalConverter<Item, Holder, AdapterView<BaseAdapter>> {
+        extends BaseAdapter implements UniversalConverter<Item, Holder, AdapterView<? super BaseAdapter>> {
 
     /**
      * Helper for constructing {@link BaseAdapterConverter}s from
@@ -49,7 +50,7 @@ public class BaseAdapterConverter<Item, Holder extends ViewHolder>
      * @return A BaseAdapter based on the given list adapter.
      */
     public static <Item, Holder extends ViewHolder>
-    BaseAdapterConverter<Item, Holder> from(UniversalAdapter<Item, Holder> universalAdapter, AdapterView<BaseAdapter> adapterView) {
+    BaseAdapterConverter<Item, Holder> from(UniversalAdapter<Item, Holder> universalAdapter, AdapterView<? super BaseAdapter> adapterView) {
         return new BaseAdapterConverter<>(universalAdapter, adapterView);
     }
 
@@ -63,7 +64,7 @@ public class BaseAdapterConverter<Item, Holder extends ViewHolder>
         setAdapter(universalAdapter);
     }
 
-    public BaseAdapterConverter(@NonNull UniversalAdapter<Item, Holder> universalAdapter, AdapterView<BaseAdapter> adapterView) {
+    public BaseAdapterConverter(@NonNull UniversalAdapter<Item, Holder> universalAdapter, AdapterView<? super BaseAdapter> adapterView) {
         setAdapter(universalAdapter);
         register(adapterView);
     }
@@ -71,7 +72,7 @@ public class BaseAdapterConverter<Item, Holder extends ViewHolder>
     // region Inherited Methods
 
     @Override
-    public UniversalAdapter<Item, Holder> getUniversalAdapter() {
+    public UniversalAdapter<Item, Holder> getAdapter() {
         return universalAdapter;
     }
 
@@ -81,7 +82,7 @@ public class BaseAdapterConverter<Item, Holder extends ViewHolder>
      * @param adapterView the adapter view to register this adapter with.
      */
     @Override
-    public void register(@NonNull AdapterView<BaseAdapter> adapterView) {
+    public void register(@NonNull AdapterView<? super BaseAdapter> adapterView) {
         adapterView.setAdapter(this);
         adapterView.setOnItemClickListener(internalItemClickListener);
         notifyDataSetChanged();
@@ -141,11 +142,6 @@ public class BaseAdapterConverter<Item, Holder extends ViewHolder>
     }
 
     @Override
-    public View getDropDownView(int position, View convertView, ViewGroup parent) {
-        return universalAdapter.getDropDownView(position, convertView, parent);
-    }
-
-    @Override
     public int getViewTypeCount() {
         return universalAdapter.getItemViewTypeCount();
     }
@@ -172,7 +168,38 @@ public class BaseAdapterConverter<Item, Holder extends ViewHolder>
 
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
-        return universalAdapter.getView(position, convertView, parent);
+        Holder viewHolder = null;
+        if (convertView != null) {
+            viewHolder = getViewHolder(convertView);
+        }
+
+        if (viewHolder == null) {
+            int viewType = getItemViewType(position);
+            viewHolder = universalAdapter.createViewHolder(parent, viewType);
+            setViewHolder(viewHolder.itemView, viewHolder);
+        }
+
+        universalAdapter.bindViewHolder(viewHolder, position);
+
+        return viewHolder.itemView;
+    }
+
+    @Override
+    public View getDropDownView(int position, View convertView, ViewGroup parent) {
+        Holder viewHolder = null;
+        if (convertView != null) {
+            viewHolder = getViewHolder(convertView);
+        }
+
+        if (viewHolder == null) {
+            int viewType = getItemViewType(position);
+            viewHolder = universalAdapter.createDropDownViewHolder(parent, viewType);
+            setViewHolder(viewHolder.itemView, viewHolder);
+        }
+
+        universalAdapter.bindDropDownViewHolder(viewHolder, position);
+
+        return viewHolder.itemView;
     }
 
     @Override
@@ -183,6 +210,21 @@ public class BaseAdapterConverter<Item, Holder extends ViewHolder>
     @Override
     public boolean areAllItemsEnabled() {
         return universalAdapter.areAllItemsEnabled();
+    }
+
+    @SuppressWarnings("unchecked")
+    protected Holder getViewHolder(View view) {
+        try {
+            return (Holder) UniversalAdapterUtils.getViewHolder(view);
+        } catch (ClassCastException ex) {
+            // Don't care. Just don't crash. We'll just ignore convertView.
+        }
+
+        return null;
+    }
+
+    protected void setViewHolder(View view, Holder holder) {
+        UniversalAdapterUtils.setViewHolder(view, holder);
     }
 
     private final ListObserverListener<Item> internalListObserverListener = new SimpleListObserverListener<Item>() {
@@ -198,7 +240,7 @@ public class BaseAdapterConverter<Item, Holder extends ViewHolder>
         public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
             if (itemClickedListener != null) {
                 Holder holder = (Holder) view.getTag(R.id.com_raizlabs_viewholderTagID);
-                itemClickedListener.onItemClicked(getUniversalAdapter(), getItem(position), holder, position);
+                itemClickedListener.onItemClicked(getAdapter(), getItem(position), holder, position);
             }
         }
     };

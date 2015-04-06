@@ -129,15 +129,6 @@ public abstract class HFListBasedAdapter<Item, Holder extends ViewHolder> extend
         return getListItemViewTypeCount() + getFootersCount() + getHeadersCount();
     }
 
-    @Override
-    public Object getItem(int position) {
-        if (position < getHeadersCount() || position > getFooterStartIndex()) {
-            return null;
-        } else {
-            return super.getItem(position - getHeadersCount());
-        }
-    }
-
     private int getFooterStartIndex() {
         return getHeadersCount() + getItemsList().size() - 1;
     }

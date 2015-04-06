@@ -14,7 +14,7 @@ import android.widget.TextView;
 import com.raizlabs.android.universaladapter.widget.adapters.ListBasedAdapter;
 import com.raizlabs.android.universaladapter.widget.adapters.MergedUniversalAdapter;
 import com.raizlabs.android.universaladapter.widget.adapters.ViewHolder;
-import com.raizlabs.android.universaladapter.widget.adapters.converter.UniversalAdapter;
+import com.raizlabs.android.universaladapter.widget.adapters.converter.UniversalConverterFactory;
 
 
 public class MergedActivity extends ActionBarActivity {
@@ -84,7 +84,7 @@ public class MergedActivity extends ActionBarActivity {
         thirdAdapter.loadItemArray("Footer", "Here", "This", "Is", "The", "Third", "Adapter");
         adapter.addAdapter(thirdAdapter);
 
-        UniversalAdapter.create(adapter, viewGroup);
+        UniversalConverterFactory.createGeneric(adapter, viewGroup);
     }
 
 

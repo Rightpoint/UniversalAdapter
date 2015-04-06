@@ -138,18 +138,13 @@ public class MergedUniversalAdapter extends UniversalAdapter {
     }
 
     @Override
-    public Object getItem(int position) {
+    public Object get(int position) {
         for (ListPiece piece : listPieces) {
             if (piece.isPositionWithinAdapter(position)) {
                 return piece.getAdjustedItem(position);
             }
         }
         return null;
-    }
-
-    @Override
-    public Object get(int location) {
-        return getItem(location);
     }
 
     /**

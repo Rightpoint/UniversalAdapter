@@ -13,6 +13,7 @@ public interface UniversalConverter<Item, Holder extends ViewHolder, Register ex
     void setItemClickedListener(ItemClickedListener<Item, Holder> listener);
 
     void setAdapter(@NonNull UniversalAdapter<Item, Holder> listAdapter);
+    UniversalAdapter<Item, Holder> getAdapter();
 
     void register(@NonNull Register register);
 
@@ -20,5 +21,4 @@ public interface UniversalConverter<Item, Holder extends ViewHolder, Register ex
 
     void cleanup();
 
-    UniversalAdapter<Item, Holder> getUniversalAdapter();
 }

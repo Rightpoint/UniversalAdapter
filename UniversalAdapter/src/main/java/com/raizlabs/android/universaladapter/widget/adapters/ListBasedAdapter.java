@@ -144,11 +144,6 @@ public abstract class ListBasedAdapter<Item, Holder extends ViewHolder> extends 
     }
 
     @Override
-    public Object getItem(int position) {
-        return mList.get(position);
-    }
-
-    @Override
     public void add(int location, Item object) {
         mList.add(location, object);
         onItemRangeInserted(location, 1);

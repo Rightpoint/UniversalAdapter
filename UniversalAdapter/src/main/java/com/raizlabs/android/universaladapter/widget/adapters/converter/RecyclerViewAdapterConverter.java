@@ -98,7 +98,7 @@ public class RecyclerViewAdapterConverter<Item, Holder extends ViewHolder>
     // region Inherited Methods
 
     @Override
-    public UniversalAdapter<Item, Holder> getUniversalAdapter() {
+    public UniversalAdapter<Item, Holder> getAdapter() {
         return universalAdapter;
     }
 
@@ -182,13 +182,13 @@ public class RecyclerViewAdapterConverter<Item, Holder extends ViewHolder>
         @SuppressWarnings("unchecked")
         @Override
         public void onItemClick(ViewHolder viewHolder, RecyclerView parent, int position, float x, float y) {
-            if (getUniversalAdapter().isEnabled(position)) {
+            if (getAdapter().isEnabled(position)) {
                 if (recyclerItemClickListener != null) {
                     recyclerItemClickListener.onItemClick((Holder) viewHolder, parent, position, x, y);
                 }
 
                 if (itemClickedListener != null) {
-                    itemClickedListener.onItemClicked(getUniversalAdapter(), getUniversalAdapter().get(position), (Holder) viewHolder, position);
+                    itemClickedListener.onItemClicked(getAdapter(), getAdapter().get(position), (Holder) viewHolder, position);
                 }
             }
         }

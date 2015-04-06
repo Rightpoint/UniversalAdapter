@@ -1,45 +1,16 @@
 package com.raizlabs.android.universaladapter.widget.adapters.converter;
 
-import android.support.v4.view.ViewPager;
-import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.AdapterView;
-import android.widget.BaseAdapter;
 
 import com.raizlabs.android.coreutils.threading.ThreadingUtils;
 import com.raizlabs.android.coreutils.util.observable.lists.ListObserver;
 import com.raizlabs.android.coreutils.util.observable.lists.ListObserverListener;
 import com.raizlabs.android.coreutils.util.observable.lists.SimpleListObserver;
-import com.raizlabs.android.universaladapter.widget.adapters.UniversalAdapterUtils;
 import com.raizlabs.android.universaladapter.widget.adapters.ViewHolder;
 
 public abstract class UniversalAdapter<Item, Holder extends ViewHolder> {
-
-    /**
-     * @param adapter   The list adapter to  populate the specified viewgroup with.
-     * @param viewGroup The viewgroup to register the adapter with. This populates and registers any click events
-     *                  with the viewgroup.
-     * @param <Item>
-     * @param <Holder>
-     * @return The appropriate converter from a specific {@link UniversalAdapter} and {@link ViewGroup}.
-     * If it can't understand the {@link ViewGroup} more specifically, a {@link ViewGroupAdapterConverter}
-     * is returned.
-     */
-    @SuppressWarnings("unchecked")
-    public static <Item, Holder extends ViewHolder>
-    UniversalConverter<Item, Holder, ?> create(UniversalAdapter<Item, Holder> adapter, ViewGroup viewGroup) {
-        if (viewGroup instanceof RecyclerView) {
-            return new RecyclerViewAdapterConverter<>(adapter, (RecyclerView) viewGroup);
-        } else if (viewGroup instanceof ViewPager) {
-            return new PagerAdapterConverter<>(adapter, (ViewPager) viewGroup);
-        } else if (viewGroup instanceof AdapterView) {
-            return new BaseAdapterConverter<>(adapter, (AdapterView<BaseAdapter>) viewGroup);
-        } else {
-            return new ViewGroupAdapterConverter<>(adapter, viewGroup);
-        }
-    }
 
     private boolean runningTransaction;
     private boolean transactionModified;
@@ -160,26 +131,7 @@ public abstract class UniversalAdapter<Item, Holder extends ViewHolder> {
 
     public abstract int getCount();
 
-    public abstract Object getItem(int position);
-
     public abstract Item get(int position);
-
-    public View getView(int position, View convertView, ViewGroup parent) {
-        Holder viewHolder = null;
-        if (convertView != null) {
-            viewHolder = getViewHolder(convertView);
-        }
-
-        if (viewHolder == null) {
-            int viewType = getItemViewType(position);
-            viewHolder = createViewHolder(parent, viewType);
-            setViewHolder(viewHolder.itemView, viewHolder);
-        }
-
-        bindViewHolder(viewHolder, position);
-
-        return viewHolder.itemView;
-    }
 
     public boolean areAllItemsEnabled() {
         return true;
@@ -199,38 +151,6 @@ public abstract class UniversalAdapter<Item, Holder extends ViewHolder> {
 
     public boolean hasStableIds() {
         return false;
-    }
-
-    public View getDropDownView(int position, View convertView, ViewGroup parent) {
-        Holder viewHolder = null;
-        if (convertView != null) {
-            viewHolder = getViewHolder(convertView);
-        }
-
-        if (viewHolder == null) {
-            int viewType = getItemViewType(position);
-            viewHolder = createDropDownViewHolder(parent, viewType);
-            setViewHolder(viewHolder.itemView, viewHolder);
-        }
-
-        bindDropDownViewHolder(viewHolder, position);
-
-        return viewHolder.itemView;
-    }
-
-    @SuppressWarnings("unchecked")
-    protected Holder getViewHolder(View view) {
-        try {
-            return (Holder) UniversalAdapterUtils.getViewHolder(view);
-        } catch (ClassCastException ex) {
-            // Don't care. Just don't crash. We'll just ignore convertView.
-        }
-
-        return null;
-    }
-
-    protected void setViewHolder(View view, Holder holder) {
-        UniversalAdapterUtils.setViewHolder(view, holder);
     }
 
     public Holder createViewHolder(ViewGroup parent, int itemType) {

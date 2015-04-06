@@ -103,7 +103,7 @@ public class ViewGroupAdapterConverter<Item, Holder extends ViewHolder> implemen
      * the view group.
      */
     @Override
-    public UniversalAdapter<Item, Holder> getUniversalAdapter() {
+    public UniversalAdapter<Item, Holder> getAdapter() {
         return universalAdapter;
     }
 
