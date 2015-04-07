@@ -27,46 +27,18 @@ import com.raizlabs.widget.adapters.R;
 public class BaseAdapterConverter<Item, Holder extends ViewHolder>
         extends BaseAdapter implements UniversalConverter<Item, Holder, AdapterView<? super BaseAdapter>> {
 
-    /**
-     * Helper for constructing {@link BaseAdapterConverter}s from
-     * {@link UniversalAdapter}s. Handles generics a little more conveniently
-     * than the equivalent constructor.
-     *
-     * @param universalAdapter The adapter to convert into a BaseAdapter.
-     * @return A BaseAdapter based on the given list adapter.
-     */
-    public static <Item, Holder extends ViewHolder>
-    BaseAdapterConverter<Item, Holder> from(UniversalAdapter<Item, Holder> universalAdapter) {
-        return new BaseAdapterConverter<>(universalAdapter);
-    }
-
-    /**
-     * Helper for constructing {@link BaseAdapterConverter}s from
-     * {@link UniversalAdapter}s. Handles generics a little more conveniently
-     * than the equivalent constructor.
-     *
-     * @param universalAdapter The list adapter to convert into a BaseAdapter.
-     * @param adapterView      The adapter view to register.
-     * @return A BaseAdapter based on the given list adapter.
-     */
-    public static <Item, Holder extends ViewHolder>
-    BaseAdapterConverter<Item, Holder> from(UniversalAdapter<Item, Holder> universalAdapter, AdapterView<? super BaseAdapter> adapterView) {
-        return new BaseAdapterConverter<>(universalAdapter, adapterView);
-    }
-
     private UniversalAdapter<Item, Holder> universalAdapter;
 
     private ItemClickedListener<Item, Holder> itemClickedListener;
 
-    private AdapterView<BaseAdapter> adapterView;
+    private AdapterView<? super BaseAdapter> adapterView;
 
-    public BaseAdapterConverter(@NonNull UniversalAdapter<Item, Holder> universalAdapter) {
+    BaseAdapterConverter(@NonNull UniversalAdapter<Item, Holder> universalAdapter, AdapterView<? super BaseAdapter> adapterView) {
         setAdapter(universalAdapter);
-    }
-
-    public BaseAdapterConverter(@NonNull UniversalAdapter<Item, Holder> universalAdapter, AdapterView<? super BaseAdapter> adapterView) {
-        setAdapter(universalAdapter);
-        register(adapterView);
+        this.adapterView = adapterView;
+        adapterView.setAdapter(this);
+        adapterView.setOnItemClickListener(internalItemClickListener);
+        notifyDataSetChanged();
     }
 
     // region Inherited Methods
@@ -74,23 +46,6 @@ public class BaseAdapterConverter<Item, Holder extends ViewHolder>
     @Override
     public UniversalAdapter<Item, Holder> getAdapter() {
         return universalAdapter;
-    }
-
-    /**
-     * Registers thie adapter and {@link AdapterView.OnItemClickListener} with the specified {@link AdapterView}
-     *
-     * @param adapterView the adapter view to register this adapter with.
-     */
-    @Override
-    public void register(@NonNull AdapterView<? super BaseAdapter> adapterView) {
-        adapterView.setAdapter(this);
-        adapterView.setOnItemClickListener(internalItemClickListener);
-        notifyDataSetChanged();
-    }
-
-    @Override
-    public AdapterView<BaseAdapter> getViewGroup() {
-        return adapterView;
     }
 
     @Override
@@ -104,6 +59,11 @@ public class BaseAdapterConverter<Item, Holder extends ViewHolder>
     @Override
     public void setItemClickedListener(ItemClickedListener<Item, Holder> itemClickedListener) {
         this.itemClickedListener = itemClickedListener;
+    }
+
+    @Override
+    public AdapterView<? super BaseAdapter> getViewGroup() {
+        return adapterView;
     }
 
     @Override

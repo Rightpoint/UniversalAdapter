@@ -16,6 +16,7 @@ import com.raizlabs.android.universaladapter.widget.adapters.converter.ItemClick
 import com.raizlabs.android.universaladapter.widget.adapters.converter.RecyclerViewAdapterConverter;
 import com.raizlabs.android.universaladapter.widget.adapters.converter.UniversalAdapter;
 import com.raizlabs.android.universaladapter.widget.adapters.converter.UniversalConverter;
+import com.raizlabs.android.universaladapter.widget.adapters.converter.UniversalConverterFactory;
 
 /**
  * Description:
@@ -65,7 +66,7 @@ public class MenuFragment extends Fragment {
                 MenuConstants.VIEWPAGER, MenuConstants.VIEWPAGER_HOLDERS,
                 MenuConstants.MERGED, MenuConstants.MERGED_LISTVIEW, MenuConstants.MERGED_VIEWPAGER);
 
-        UniversalConverter converter = RecyclerViewAdapterConverter.from(adapter, recyclerView);
+        UniversalConverter converter = UniversalConverterFactory.create(adapter, recyclerView);
         converter.setItemClickedListener(new ItemClickedListener<String, MenuHolder>() {
             @Override
             public void onItemClicked(UniversalAdapter<String, MenuHolder> adapter, String s, MenuHolder holder, int position) {

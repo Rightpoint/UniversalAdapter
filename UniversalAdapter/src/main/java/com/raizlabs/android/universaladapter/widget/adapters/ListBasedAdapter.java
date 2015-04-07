@@ -1,7 +1,5 @@
 package com.raizlabs.android.universaladapter.widget.adapters;
 
-import android.view.View;
-import android.view.ViewGroup;
 import android.widget.Adapter;
 
 import com.raizlabs.android.coreutils.util.observable.lists.ObservableList;
@@ -135,7 +133,7 @@ public abstract class ListBasedAdapter<Item, Holder extends ViewHolder> extends 
         setItemsList((List<Item>) list);
     }
 
-    
+
     @Override
     public void notifyDataSetChanged() {
         onGenericChange();

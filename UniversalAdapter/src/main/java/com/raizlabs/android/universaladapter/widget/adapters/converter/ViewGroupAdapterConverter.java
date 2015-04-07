@@ -23,33 +23,6 @@ import com.raizlabs.android.universaladapter.widget.adapters.ViewHolder;
  */
 public class ViewGroupAdapterConverter<Item, Holder extends ViewHolder> implements UniversalConverter<Item, Holder, ViewGroup> {
 
-    /**
-     * Helper for constructing {@link ViewGroupAdapterConverter}s from
-     * {@link UniversalAdapter}s. Handles generics a little more conveniently
-     * than the equivalent constructor.
-     *
-     * @param adapter   The adapter to use to populate views.
-     * @param viewGroup The view group which will be populated with views.
-     * @return An adapter which will populate the view group via the given
-     * adapter.
-     */
-    public static <Item, Holder extends ViewHolder> ViewGroupAdapterConverter<Item, Holder> from(UniversalAdapter<Item, Holder> adapter, ViewGroup viewGroup) {
-        return new ViewGroupAdapterConverter<>(adapter, viewGroup);
-    }
-
-    /**
-     * Helper for constructing {@link ViewGroupAdapterConverter}s from
-     * {@link UniversalAdapter}s. Handles generics a little more conveniently
-     * than the equivalent constructor.
-     *
-     * @param adapter The adapter to use to populate views.
-     * @return An adapter which will populate the view group via the given
-     * adapter.
-     */
-    public static <Item, Holder extends ViewHolder> ViewGroupAdapterConverter<Item, Holder> from(UniversalAdapter<Item, Holder> adapter) {
-        return new ViewGroupAdapterConverter<>(adapter);
-    }
-
     private ViewGroup viewGroup;
 
     /**
@@ -67,23 +40,13 @@ public class ViewGroupAdapterConverter<Item, Holder extends ViewHolder> implemen
      * Constructs a new adapter bound to the given {@link ViewGroup}, and binds
      * the given adapter.
      *
-     * @param adapter The list adapter to use to populate views.
-     */
-    public ViewGroupAdapterConverter(UniversalAdapter<Item, Holder> adapter) {
-        setAdapter(adapter);
-        itemClickWrapper = new ItemClickWrapper<>(this);
-    }
-
-    /**
-     * Constructs a new adapter bound to the given {@link ViewGroup}, and binds
-     * the given adapter.
-     *
      * @param viewGroup The view group which will be populated with views.
      * @param adapter   The list adapter to use to populate views.
      */
-    public ViewGroupAdapterConverter(@NonNull UniversalAdapter<Item, Holder> adapter, @NonNull ViewGroup viewGroup) {
-        register(viewGroup);
+    ViewGroupAdapterConverter(@NonNull UniversalAdapter<Item, Holder> adapter, @NonNull ViewGroup viewGroup) {
         setAdapter(adapter);
+        this.viewGroup = viewGroup;
+        populateAll();
         itemClickWrapper = new ItemClickWrapper<>(this);
     }
 
@@ -132,12 +95,6 @@ public class ViewGroupAdapterConverter<Item, Holder extends ViewHolder> implemen
         this.universalAdapter = adapter;
         this.universalAdapter.getListObserver().addListener(listChangeListener);
 
-        populateAll();
-    }
-
-    @Override
-    public void register(@NonNull ViewGroup viewGroup) {
-        this.viewGroup = viewGroup;
         populateAll();
     }
 

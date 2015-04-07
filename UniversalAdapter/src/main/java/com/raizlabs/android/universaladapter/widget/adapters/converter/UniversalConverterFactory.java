@@ -68,7 +68,7 @@ public class UniversalConverterFactory {
      */
     public static <Item, Holder extends ViewHolder>
     RecyclerViewAdapterConverter<Item, Holder> create(UniversalAdapter<Item, Holder> adapter, RecyclerView recyclerView) {
-        return RecyclerViewAdapterConverter.from(adapter, recyclerView);
+        return new RecyclerViewAdapterConverter<>(adapter, recyclerView);
     }
 
     /**
@@ -82,7 +82,7 @@ public class UniversalConverterFactory {
      */
     public static <Item, Holder extends ViewHolder>
     PagerAdapterConverter<Item, Holder> create(UniversalAdapter<Item, Holder> adapter, ViewPager viewPager) {
-        return PagerAdapterConverter.from(adapter, viewPager);
+        return new PagerAdapterConverter<>(adapter, viewPager);
     }
 
     /**
@@ -96,6 +96,6 @@ public class UniversalConverterFactory {
      */
     public static <Item, Holder extends ViewHolder>
     BaseAdapterConverter<Item, Holder> create(UniversalAdapter<Item, Holder> adapter, AdapterView<? super BaseAdapter> adapterView) {
-        return BaseAdapterConverter.from(adapter, adapterView);
+        return new BaseAdapterConverter<>(adapter, adapterView);
     }
 }

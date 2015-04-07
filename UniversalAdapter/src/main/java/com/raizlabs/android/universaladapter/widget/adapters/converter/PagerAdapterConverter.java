@@ -26,47 +26,17 @@ import com.raizlabs.android.universaladapter.widget.adapters.ViewHolder;
 public class PagerAdapterConverter<Item, Holder extends ViewHolder>
         extends PagerAdapter implements UniversalConverter<Item, Holder, ViewPager> {
 
-    /**
-     * Helper for constructing {@link ViewGroupAdapterConverter}s from
-     * {@link UniversalAdapter}s. Handles generics a little more conveniently
-     * than the equivalent constructor.
-     *
-     * @param adapter   The list adapter to use to populate views.
-     * @param viewPager The view pager which will be populated with views.
-     * @return An adapter which will populate the view pager via the given
-     * adapter.
-     */
-    public static <Item, Holder extends ViewHolder> PagerAdapterConverter<Item, Holder> from(UniversalAdapter<Item, Holder> adapter, ViewPager viewPager) {
-        return new PagerAdapterConverter<>(adapter, viewPager);
-    }
-
-    /**
-     * Helper for constructing {@link ViewGroupAdapterConverter}s from
-     * {@link UniversalAdapter}s. Handles generics a little more conveniently
-     * than the equivalent constructor.
-     *
-     * @param adapter The list adapter to use to populate views.
-     * @return An adapter which will populate the view pager via the given
-     * adapter.
-     */
-    public static <Item, Holder extends ViewHolder> PagerAdapterConverter<Item, Holder> from(UniversalAdapter<Item, Holder> adapter) {
-        return new PagerAdapterConverter<>(adapter);
-    }
-
     private UniversalAdapter<Item, Holder> universalAdapter;
 
     private ItemClickWrapper<Item, Holder> itemClickedWrapper;
 
     private ViewPager viewPager;
 
-    public PagerAdapterConverter(UniversalAdapter<Item, Holder> listBasedAdapter, ViewPager viewPager) {
+    PagerAdapterConverter(UniversalAdapter<Item, Holder> listBasedAdapter, ViewPager viewPager) {
         setAdapter(listBasedAdapter);
-        register(viewPager);
-        itemClickedWrapper = new ItemClickWrapper<>(this);
-    }
-
-    public PagerAdapterConverter(UniversalAdapter<Item, Holder> listBasedAdapter) {
-        setAdapter(listBasedAdapter);
+        this.viewPager = viewPager;
+        viewPager.setAdapter(this);
+        superNotifyDataSetChanged();
         itemClickedWrapper = new ItemClickWrapper<>(this);
     }
 
@@ -97,13 +67,6 @@ public class PagerAdapterConverter<Item, Holder extends ViewHolder>
         }
         this.universalAdapter = listAdapter;
         this.universalAdapter.getListObserver().addListener(internalListObserverListener);
-    }
-
-    @Override
-    public void register(@NonNull ViewPager viewPager) {
-        this.viewPager = viewPager;
-        viewPager.setAdapter(this);
-        superNotifyDataSetChanged();
     }
 
     @Override
