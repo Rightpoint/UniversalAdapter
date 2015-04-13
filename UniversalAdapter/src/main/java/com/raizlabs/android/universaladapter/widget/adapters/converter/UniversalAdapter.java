@@ -329,9 +329,11 @@ public abstract class UniversalAdapter<Item, Holder extends ViewHolder> {
     }
 
     /**
-     * Called when an item is clicked. This consolidates and delegates the call to this adapter
+     * Called when an item is clicked. This consolidates and delegates the call to this adapter. We retrieve the {@link Holder}
+     * from the view and call {@link #onItemClicked(int, ViewHolder)}
      *
-     * @param position
+     * @param position The position of the item in the whole list, including headers and footers
+     * @param view     The view that was clicked.
      */
     @SuppressWarnings("unchecked")
     void onItemClicked(int position, View view) {
@@ -339,6 +341,12 @@ public abstract class UniversalAdapter<Item, Holder extends ViewHolder> {
         onItemClicked(position, holder);
     }
 
+    /**
+     * Called when an item is clicked. This consolidates and delegates the call to this adapter.
+     *
+     * @param position The position of the item in the whole list, including headers and footers
+     * @param holder   The holder of the clicked item.
+     */
     void onItemClicked(int position, ViewHolder holder) {
         if (isEnabled(position)) {
             if (position < getHeadersCount()) {
@@ -357,7 +365,6 @@ public abstract class UniversalAdapter<Item, Holder extends ViewHolder> {
             }
         }
     }
-
 
     /**
      * {@link ListObserverListener} which listens to underlying list changes and calls the appropriate methods.
