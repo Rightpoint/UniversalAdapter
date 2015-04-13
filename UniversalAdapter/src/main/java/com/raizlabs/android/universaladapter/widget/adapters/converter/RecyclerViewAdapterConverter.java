@@ -38,17 +38,13 @@ public class RecyclerViewAdapterConverter<Item, Holder extends ViewHolder>
 
     private UniversalAdapter<Item, Holder> universalAdapter;
 
-    private ItemClickedListener<Item, Holder> itemClickedListener;
     private RecyclerItemClickListener<Holder> recyclerItemClickListener;
 
     private RecyclerViewListObserverListener<Item> observerListener;
 
-    private RecyclerView recyclerView;
-
     RecyclerViewAdapterConverter(UniversalAdapter<Item, Holder> universalAdapter, RecyclerView recyclerView) {
         observerListener = new RecyclerViewListObserverListener<>(this);
         setAdapter(universalAdapter);
-        this.recyclerView = recyclerView;
         recyclerView.setAdapter(this);
         recyclerView.addOnItemTouchListener(internalOnItemTouchListener);
         universalAdapter.notifyDataSetChanged();
@@ -78,12 +74,7 @@ public class RecyclerViewAdapterConverter<Item, Holder extends ViewHolder>
      */
     @Override
     public void setItemClickedListener(ItemClickedListener<Item, Holder> listener) {
-        this.itemClickedListener = listener;
-    }
-
-    @Override
-    public RecyclerView getViewGroup() {
-        return recyclerView;
+        universalAdapter.setItemClickedListener(listener);
     }
 
     @Override
@@ -91,7 +82,6 @@ public class RecyclerViewAdapterConverter<Item, Holder extends ViewHolder>
         if (this.universalAdapter != null) {
             this.universalAdapter.getListObserver().removeListener(observerListener);
         }
-        recyclerView = null;
     }
 
     @Override
@@ -142,9 +132,7 @@ public class RecyclerViewAdapterConverter<Item, Holder extends ViewHolder>
                     recyclerItemClickListener.onItemClick((Holder) viewHolder, parent, position, x, y);
                 }
 
-                if (itemClickedListener != null) {
-                    itemClickedListener.onItemClicked(getAdapter(), getAdapter().get(position), (Holder) viewHolder, position);
-                }
+                getAdapter().onItemClicked(position, viewHolder);
             }
         }
     };

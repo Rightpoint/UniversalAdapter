@@ -9,6 +9,7 @@ import com.raizlabs.android.coreutils.util.observable.lists.ListObserver;
 import com.raizlabs.android.coreutils.util.observable.lists.ListObserverListener;
 import com.raizlabs.android.coreutils.util.observable.lists.SimpleListObserver;
 import com.raizlabs.android.universaladapter.widget.adapters.ViewHolder;
+import com.raizlabs.widget.adapters.R;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -24,6 +25,10 @@ public abstract class UniversalAdapter<Item, Holder extends ViewHolder> {
 
     private List<ViewHolder> footerHolders = new ArrayList<>();
 
+    private ItemClickedListener<Item, Holder> itemClickedListener;
+    private FooterClickedListener footerClickedListener;
+    private HeaderClickedListener headerClickedListener;
+
     public UniversalAdapter() {
         listObserver = new SimpleListObserver<>();
     }
@@ -31,32 +36,6 @@ public abstract class UniversalAdapter<Item, Holder extends ViewHolder> {
     public ListObserver<Item> getListObserver() {
         return listObserver;
     }
-
-    /**
-     * {@link ListObserverListener} which listens to underlying list changes and calls the appropriate methods.
-     */
-    protected ListObserverListener<Item> observableListener = new ListObserverListener<Item>() {
-
-        @Override
-        public void onItemRangeChanged(ListObserver<Item> observer, int startPosition, int itemCount) {
-            UniversalAdapter.this.onItemRangeChanged(startPosition, itemCount);
-        }
-
-        @Override
-        public void onItemRangeInserted(ListObserver<Item> observer, int startPosition, int itemCount) {
-            UniversalAdapter.this.onItemRangeInserted(startPosition, itemCount);
-        }
-
-        @Override
-        public void onItemRangeRemoved(ListObserver<Item> observer, int startPosition, int itemCount) {
-            UniversalAdapter.this.onItemRangeRemoved(startPosition, itemCount);
-        }
-
-        @Override
-        public void onGenericChange(ListObserver<Item> observer) {
-            UniversalAdapter.this.onGenericChange();
-        }
-    };
 
     public abstract void notifyDataSetChanged();
 
@@ -98,6 +77,18 @@ public abstract class UniversalAdapter<Item, Holder extends ViewHolder> {
         ThreadingUtils.runOnUIThread(dataSetChangedRunnable);
     }
 
+    public void setItemClickedListener(ItemClickedListener<Item, Holder> itemClickedListener) {
+        this.itemClickedListener = itemClickedListener;
+    }
+
+    public void setFooterClickedListener(FooterClickedListener footerClickedListener) {
+        this.footerClickedListener = footerClickedListener;
+    }
+
+    public void setHeaderClickedListener(HeaderClickedListener headerClickedListener) {
+        this.headerClickedListener = headerClickedListener;
+    }
+
     public long getItemId(int position) {
         return 0;
     }
@@ -121,13 +112,14 @@ public abstract class UniversalAdapter<Item, Holder extends ViewHolder> {
      * @param viewHolder The view holder to populate.
      * @param position   The position of the data in the list.
      */
-    public void bindViewHolder(ViewHolder viewHolder, int position) {
+    void bindViewHolder(ViewHolder viewHolder, int position) {
         if (position < getHeadersCount()) {
             onBindHeaderViewHolder(viewHolder, position);
         } else if (position > getFooterStartIndex()) {
             onBindFooterViewHolder(viewHolder, position - getFooterStartIndex() - 1);
         } else {
             int adjusted = position - getHeadersCount();
+            viewHolder.itemView.setTag(R.id.com_raizlabs_viewholderIndexID, adjusted);
             onBindViewHolder((Holder) viewHolder, get(adjusted), adjusted);
         }
     }
@@ -207,7 +199,7 @@ public abstract class UniversalAdapter<Item, Holder extends ViewHolder> {
         return false;
     }
 
-    public ViewHolder createViewHolder(ViewGroup parent, int viewType) {
+    ViewHolder createViewHolder(ViewGroup parent, int viewType) {
         ViewHolder viewHolder;
         if (viewType < getHeadersCount()) {
             viewHolder = headerHolders.get(viewType);
@@ -216,12 +208,13 @@ public abstract class UniversalAdapter<Item, Holder extends ViewHolder> {
         } else {
             viewHolder = onCreateViewHolder(parent, viewType - getHeadersCount() + 1);
         }
+        viewHolder.itemView.setTag(R.id.com_raizlabs_viewholderTagID, viewHolder);
         return viewHolder;
     }
 
     protected abstract Holder onCreateViewHolder(ViewGroup parent, int itemType);
 
-    public ViewHolder createDropDownViewHolder(ViewGroup parent, int itemType) {
+    ViewHolder createDropDownViewHolder(ViewGroup parent, int itemType) {
         return onCreateDropDownViewHolder(parent, itemType);
     }
 
@@ -230,7 +223,7 @@ public abstract class UniversalAdapter<Item, Holder extends ViewHolder> {
     }
 
     @SuppressWarnings("unchecked")
-    public void bindDropDownViewHolder(ViewHolder viewHolder, int position) {
+    void bindDropDownViewHolder(ViewHolder viewHolder, int position) {
         if (position < getHeadersCount()) {
             onBindHeaderViewHolder(viewHolder, position);
         } else if (position > getFooterStartIndex()) {
@@ -334,5 +327,62 @@ public abstract class UniversalAdapter<Item, Holder extends ViewHolder> {
             throw new IllegalStateException("Tried to end a transaction when no transaction was running!");
         }
     }
+
+    /**
+     * Called when an item is clicked. This consolidates and delegates the call to this adapter
+     *
+     * @param position
+     */
+    @SuppressWarnings("unchecked")
+    void onItemClicked(int position, View view) {
+        ViewHolder holder = (ViewHolder) view.getTag(R.id.com_raizlabs_viewholderTagID);
+        onItemClicked(position, holder);
+    }
+
+    void onItemClicked(int position, ViewHolder holder) {
+        if (isEnabled(position)) {
+            if (position < getHeadersCount()) {
+                if (footerClickedListener != null) {
+                    footerClickedListener.onFooterClicked(this, holder, position);
+                }
+            } else if (position >= getFooterStartIndex()) {
+                if (headerClickedListener != null) {
+                    headerClickedListener.onHeaderClicked(this, holder, position - getFooterStartIndex() - 1);
+                }
+            } else {
+                if (itemClickedListener != null) {
+                    int adjusted = position - getHeadersCount();
+                    itemClickedListener.onItemClicked(this, get(adjusted), (Holder) holder, adjusted);
+                }
+            }
+        }
+    }
+
+
+    /**
+     * {@link ListObserverListener} which listens to underlying list changes and calls the appropriate methods.
+     */
+    protected final ListObserverListener<Item> observableListener = new ListObserverListener<Item>() {
+
+        @Override
+        public void onItemRangeChanged(ListObserver<Item> observer, int startPosition, int itemCount) {
+            UniversalAdapter.this.onItemRangeChanged(startPosition, itemCount);
+        }
+
+        @Override
+        public void onItemRangeInserted(ListObserver<Item> observer, int startPosition, int itemCount) {
+            UniversalAdapter.this.onItemRangeInserted(startPosition, itemCount);
+        }
+
+        @Override
+        public void onItemRangeRemoved(ListObserver<Item> observer, int startPosition, int itemCount) {
+            UniversalAdapter.this.onItemRangeRemoved(startPosition, itemCount);
+        }
+
+        @Override
+        public void onGenericChange(ListObserver<Item> observer) {
+            UniversalAdapter.this.onGenericChange();
+        }
+    };
 
 }

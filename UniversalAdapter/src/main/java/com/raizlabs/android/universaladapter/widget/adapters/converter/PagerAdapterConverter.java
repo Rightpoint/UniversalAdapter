@@ -30,11 +30,8 @@ public class PagerAdapterConverter<Item, Holder extends ViewHolder>
 
     private ItemClickWrapper<Item, Holder> itemClickedWrapper;
 
-    private ViewPager viewPager;
-
     PagerAdapterConverter(UniversalAdapter<Item, Holder> listBasedAdapter, ViewPager viewPager) {
         setAdapter(listBasedAdapter);
-        this.viewPager = viewPager;
         viewPager.setAdapter(this);
         superNotifyDataSetChanged();
         itemClickedWrapper = new ItemClickWrapper<>(this);
@@ -47,17 +44,12 @@ public class PagerAdapterConverter<Item, Holder extends ViewHolder>
      */
     @Override
     public void setItemClickedListener(ItemClickedListener<Item, Holder> listener) {
-        itemClickedWrapper.itemClickedListener = listener;
+        getAdapter().setItemClickedListener(listener);
     }
 
     @Override
     public UniversalAdapter<Item, Holder> getAdapter() {
         return universalAdapter;
-    }
-
-    @Override
-    public ViewPager getViewGroup() {
-        return viewPager;
     }
 
     @Override
@@ -74,7 +66,6 @@ public class PagerAdapterConverter<Item, Holder extends ViewHolder>
         if (this.universalAdapter != null) {
             this.universalAdapter.getListObserver().removeListener(internalListObserverListener);
         }
-        this.viewPager = null;
     }
 
     /**

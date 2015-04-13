@@ -77,7 +77,7 @@ public class ViewGroupAdapterConverter<Item, Holder extends ViewHolder> implemen
      */
     @Override
     public void setItemClickedListener(ItemClickedListener<Item, Holder> listener) {
-        itemClickWrapper.itemClickedListener = listener;
+        getAdapter().setItemClickedListener(listener);
     }
 
     /**

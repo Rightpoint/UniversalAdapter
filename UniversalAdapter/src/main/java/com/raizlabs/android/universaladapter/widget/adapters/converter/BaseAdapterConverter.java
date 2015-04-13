@@ -29,13 +29,9 @@ public class BaseAdapterConverter<Item, Holder extends ViewHolder>
 
     private UniversalAdapter<Item, Holder> universalAdapter;
 
-    private ItemClickedListener<Item, Holder> itemClickedListener;
-
-    private AdapterView<? super BaseAdapter> adapterView;
 
     BaseAdapterConverter(@NonNull UniversalAdapter<Item, Holder> universalAdapter, AdapterView<? super BaseAdapter> adapterView) {
         setAdapter(universalAdapter);
-        this.adapterView = adapterView;
         adapterView.setAdapter(this);
         adapterView.setOnItemClickListener(internalItemClickListener);
         notifyDataSetChanged();
@@ -53,17 +49,11 @@ public class BaseAdapterConverter<Item, Holder extends ViewHolder>
         if (this.universalAdapter != null) {
             this.universalAdapter.getListObserver().removeListener(internalListObserverListener);
         }
-        adapterView = null;
     }
 
     @Override
     public void setItemClickedListener(ItemClickedListener<Item, Holder> itemClickedListener) {
-        this.itemClickedListener = itemClickedListener;
-    }
-
-    @Override
-    public AdapterView<? super BaseAdapter> getViewGroup() {
-        return adapterView;
+        universalAdapter.setItemClickedListener(itemClickedListener);
     }
 
     @Override
@@ -198,10 +188,7 @@ public class BaseAdapterConverter<Item, Holder extends ViewHolder>
         @SuppressWarnings("unchecked")
         @Override
         public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-            if (itemClickedListener != null) {
-                Holder holder = (Holder) view.getTag(R.id.com_raizlabs_viewholderTagID);
-                itemClickedListener.onItemClicked(getAdapter(), getItem(position), holder, position);
-            }
+            getAdapter().onItemClicked(position, view);
         }
     };
 }

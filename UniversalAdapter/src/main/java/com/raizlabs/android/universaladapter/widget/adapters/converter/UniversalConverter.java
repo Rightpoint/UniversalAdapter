@@ -15,8 +15,6 @@ public interface UniversalConverter<Item, Holder extends ViewHolder, Register ex
     void setAdapter(@NonNull UniversalAdapter<Item, Holder> listAdapter);
     UniversalAdapter<Item, Holder> getAdapter();
 
-    Register getViewGroup();
-
     void cleanup();
 
 }

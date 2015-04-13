@@ -4,6 +4,7 @@ import android.view.View;
 
 import com.raizlabs.android.universaladapter.widget.adapters.UniversalAdapterUtils;
 import com.raizlabs.android.universaladapter.widget.adapters.ViewHolder;
+import com.raizlabs.widget.adapters.R;
 
 /**
  * Description: Wraps conversion for {@link View.OnClickListener} and {@link View.OnLongClickListener}
@@ -13,7 +14,6 @@ class ItemClickWrapper<Item, Holder extends ViewHolder> implements View.OnClickL
 
     private UniversalConverter<Item, Holder, ?> universalConverter;
 
-    ItemClickedListener<Item, Holder> itemClickedListener;
     ItemLongClickedListener<Item, Holder> itemLongClickedListener;
 
     public ItemClickWrapper(UniversalConverter<Item, Holder, ?> converter) {
@@ -27,27 +27,18 @@ class ItemClickWrapper<Item, Holder extends ViewHolder> implements View.OnClickL
 
     @Override
     public void onClick(View v) {
-        if (universalConverter.getViewGroup() != null) {
-            int index = universalConverter.getViewGroup().indexOfChild(v);
-
-            if (universalConverter.getAdapter().isEnabled(index) && itemClickedListener != null) {
-                Item item = universalConverter.getAdapter().get(index);
-                Holder holder = (Holder) UniversalAdapterUtils.getViewHolder(v);
-                itemClickedListener.onItemClicked(universalConverter.getAdapter(), item, holder, index);
-            }
-        }
+        int index = (int) v.getTag(R.id.com_raizlabs_viewholderIndexID);
+        universalConverter.getAdapter().onItemClicked(index, v);
     }
 
     @Override
     public boolean onLongClick(View v) {
-        if (universalConverter.getViewGroup() != null) {
-            int index = universalConverter.getViewGroup().indexOfChild(v);
+        int index = (int) v.getTag(R.id.com_raizlabs_viewholderIndexID);
 
-            if (universalConverter.getAdapter().isEnabled(index) && itemLongClickedListener != null) {
-                Item item = universalConverter.getAdapter().get(index);
-                Holder holder = (Holder) UniversalAdapterUtils.getViewHolder(v);
-                return itemLongClickedListener.onItemLongClicked(universalConverter.getAdapter(), item, holder, index);
-            }
+        if (universalConverter.getAdapter().isEnabled(index) && itemLongClickedListener != null) {
+            Item item = universalConverter.getAdapter().get(index);
+            Holder holder = (Holder) UniversalAdapterUtils.getViewHolder(v);
+            return itemLongClickedListener.onItemLongClicked(universalConverter.getAdapter(), item, holder, index);
         }
         return false;
     }
