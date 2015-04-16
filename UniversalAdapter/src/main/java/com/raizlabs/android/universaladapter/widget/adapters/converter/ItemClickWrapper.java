@@ -35,7 +35,7 @@ class ItemClickWrapper<Item, Holder extends ViewHolder> implements View.OnClickL
     public boolean onLongClick(View v) {
         int index = (int) v.getTag(R.id.com_raizlabs_viewholderIndexID);
 
-        if (universalConverter.getAdapter().isEnabled(index) && itemLongClickedListener != null) {
+        if (universalConverter.getAdapter().internalIsEnabled(index) && itemLongClickedListener != null) {
             Item item = universalConverter.getAdapter().get(index);
             Holder holder = (Holder) UniversalAdapterUtils.getViewHolder(v);
             return itemLongClickedListener.onItemLongClicked(universalConverter.getAdapter(), item, holder, index);

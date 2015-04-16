@@ -154,7 +154,7 @@ public class BaseAdapterConverter<Item, Holder extends ViewHolder>
 
     @Override
     public boolean isEnabled(int position) {
-        return universalAdapter.isEnabled(position);
+        return universalAdapter.internalIsEnabled(position);
     }
 
     @Override

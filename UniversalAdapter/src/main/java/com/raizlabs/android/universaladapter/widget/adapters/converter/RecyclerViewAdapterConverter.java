@@ -127,7 +127,7 @@ public class RecyclerViewAdapterConverter<Item, Holder extends ViewHolder>
         @SuppressWarnings("unchecked")
         @Override
         public void onItemClick(ViewHolder viewHolder, RecyclerView parent, int position, float x, float y) {
-            if (getAdapter().isEnabled(position)) {
+            if (getAdapter().internalIsEnabled(position)) {
                 if (recyclerItemClickListener != null) {
                     recyclerItemClickListener.onItemClick((Holder) viewHolder, parent, position, x, y);
                 }
