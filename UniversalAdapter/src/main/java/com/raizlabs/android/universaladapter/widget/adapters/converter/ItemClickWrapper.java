@@ -13,8 +13,6 @@ class ItemClickWrapper<Item, Holder extends ViewHolder> implements View.OnClickL
 
     private UniversalConverter<Item, Holder, ?> universalConverter;
 
-    ItemLongClickedListener<Item, Holder> itemLongClickedListener;
-
     public ItemClickWrapper(UniversalConverter<Item, Holder, ?> converter) {
         this.universalConverter = converter;
     }

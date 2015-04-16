@@ -56,7 +56,7 @@ public class ViewGroupAdapterConverter<Item, Holder extends ViewHolder> implemen
      * @param listener The listener to call.
      */
     public void setItemLongClickedListener(ItemLongClickedListener<Item, Holder> listener) {
-        itemClickWrapper.itemLongClickedListener = listener;
+        getAdapter().setItemLongClickedListener(listener);
     }
 
     // region Inherited Methods

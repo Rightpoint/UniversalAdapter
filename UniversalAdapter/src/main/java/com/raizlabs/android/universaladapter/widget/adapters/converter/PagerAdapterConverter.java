@@ -74,7 +74,7 @@ public class PagerAdapterConverter<Item, Holder extends ViewHolder>
      * @param listener The listener to call.
      */
     public void setItemLongClickedListener(ItemLongClickedListener<Item, Holder> listener) {
-        itemClickedWrapper.itemLongClickedListener = listener;
+        getAdapter().setItemLongClickedListener(listener);
     }
 
     @Override
