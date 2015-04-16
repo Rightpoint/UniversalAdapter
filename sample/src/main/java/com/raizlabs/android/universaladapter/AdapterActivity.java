@@ -16,6 +16,7 @@ import android.widget.Toast;
 import com.raizlabs.android.universaladapter.widget.adapters.ListBasedAdapter;
 import com.raizlabs.android.universaladapter.widget.adapters.ViewHolder;
 import com.raizlabs.android.universaladapter.widget.adapters.converter.ItemClickedListener;
+import com.raizlabs.android.universaladapter.widget.adapters.converter.ItemLongClickedListener;
 import com.raizlabs.android.universaladapter.widget.adapters.converter.UniversalAdapter;
 import com.raizlabs.android.universaladapter.widget.adapters.converter.UniversalConverter;
 import com.raizlabs.android.universaladapter.widget.adapters.converter.UniversalConverterFactory;
@@ -106,6 +107,14 @@ public class AdapterActivity extends FragmentActivity {
             public void onItemClicked(UniversalAdapter<Object, UniversalHolder> adapter, Object o,
                                       UniversalHolder holder, int position) {
                 Toast.makeText(holder.itemView.getContext(), "Clicked on :" + position, Toast.LENGTH_SHORT).show();
+            }
+        });
+        converter.setItemLongClickedListener(new ItemLongClickedListener<Object, UniversalHolder>() {
+            @Override
+            public boolean onItemLongClicked(UniversalAdapter<Object, UniversalHolder> adapter, Object o,
+                                             UniversalHolder holder, int position) {
+                Toast.makeText(holder.itemView.getContext(), "Long clicked on: " + position, Toast.LENGTH_SHORT).show();
+                return false;
             }
         });
     }

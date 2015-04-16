@@ -17,10 +17,8 @@ public abstract class RecyclerViewItemClickListener
         implements OnItemTouchListener, RecyclerViewAdapterConverter.RecyclerItemClickListener {
     private GestureDetector gestureDetector;
 
-    private boolean isLongPress = false;
-
     @Override
-    public boolean onInterceptTouchEvent(RecyclerView view, MotionEvent e) {
+    public boolean onInterceptTouchEvent(final RecyclerView view, MotionEvent e) {
         if (gestureDetector == null) {
             gestureDetector = new GestureDetector(view.getContext(), new GestureDetector.SimpleOnGestureListener() {
                 @Override
@@ -30,7 +28,12 @@ public abstract class RecyclerViewItemClickListener
 
                 @Override
                 public void onLongPress(MotionEvent e) {
-                    isLongPress = true;
+                    View childView = view.findChildViewUnder(e.getX(), e.getY());
+                    if (childView != null) {
+                        int position = view.getChildAdapterPosition(childView);
+                        ViewHolder viewHolder = (ViewHolder) view.getChildViewHolder(childView);
+                        onItemLongClick(viewHolder, view, position, e.getX(), e.getY());
+                    }
                 }
             });
             gestureDetector.setIsLongpressEnabled(true);
@@ -40,12 +43,7 @@ public abstract class RecyclerViewItemClickListener
         if (childView != null && gestureDetector.onTouchEvent(e)) {
             int position = view.getChildAdapterPosition(childView);
             ViewHolder viewHolder = (ViewHolder) view.getChildViewHolder(childView);
-            if (!isLongPress) {
-                onItemClick(viewHolder, view, position, e.getX(), e.getY());
-            } else {
-                onItemLongClick(viewHolder, view, position, e.getX(), e.getY());
-                isLongPress = false;
-            }
+            onItemClick(viewHolder, view, position, e.getX(), e.getY());
         }
 
         return false;
