@@ -12,12 +12,40 @@ import com.raizlabs.android.universaladapter.widget.adapters.ViewHolder;
  */
 public interface UniversalConverter<Item, Holder extends ViewHolder, Register extends ViewGroup> {
 
+    /**
+     * Sets the listener to be called when an item is clicked.
+     *
+     * @param listener The listener to call.
+     */
     void setItemClickedListener(ItemClickedListener<Item, Holder> listener);
 
+    void setHeaderClickedListener(HeaderClickedListener headerClickedListener);
+
+    void setFooterClickedListener(FooterClickedListener footerClickedListener);
+
+    /**
+     * Sets the listener to be called when an item is long clicked.
+     *
+     * @param longClickedListener The listener to call.
+     */
     void setItemLongClickedListener(ItemLongClickedListener<Item, Holder> longClickedListener);
 
+    void setHeaderLongClickedListener(HeaderLongClickListener headerLongClickedListener);
+
+    void setFooterLongClickedListener(FooterLongClickedListener footerLongClickedListener);
+
+    /**
+     * Sets the adapter to use to populate the {@link ViewGroup} and loads
+     * the current data.
+     *
+     * @param listAdapter The adapter to use to populate the view group.
+     */
     void setAdapter(@NonNull UniversalAdapter<Item, Holder> listAdapter);
 
+    /**
+     * @return The {@link UniversalAdapter} that this adapter uses to populate
+     * the view group.
+     */
     UniversalAdapter<Item, Holder> getAdapter();
 
     void cleanup();

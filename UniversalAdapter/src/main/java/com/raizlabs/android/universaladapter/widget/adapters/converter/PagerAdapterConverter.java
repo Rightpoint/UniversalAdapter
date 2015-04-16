@@ -33,7 +33,7 @@ public class PagerAdapterConverter<Item, Holder extends ViewHolder>
 
     // endregion Members
 
-    PagerAdapterConverter(UniversalAdapter<Item, Holder> listBasedAdapter, ViewPager viewPager) {
+    PagerAdapterConverter(@NonNull UniversalAdapter<Item, Holder> listBasedAdapter, ViewPager viewPager) {
         setAdapter(listBasedAdapter);
         viewPager.setAdapter(this);
         superNotifyDataSetChanged();
@@ -42,24 +42,34 @@ public class PagerAdapterConverter<Item, Holder extends ViewHolder>
 
     // region Inherited Methods
 
-    /**
-     * Sets the listener to be called when an item is clicked.
-     *
-     * @param listener The listener to call.
-     */
     @Override
     public void setItemClickedListener(ItemClickedListener<Item, Holder> listener) {
         getAdapter().setItemClickedListener(listener);
     }
 
-    /**
-     * Sets the listener to be called when an item is long clicked.
-     *
-     * @param listener The listener to call.
-     */
     @Override
     public void setItemLongClickedListener(ItemLongClickedListener<Item, Holder> listener) {
         getAdapter().setItemLongClickedListener(listener);
+    }
+
+    @Override
+    public void setHeaderClickedListener(HeaderClickedListener headerClickedListener) {
+        getAdapter().setHeaderClickedListener(headerClickedListener);
+    }
+
+    @Override
+    public void setFooterClickedListener(FooterClickedListener footerClickedListener) {
+        getAdapter().setFooterClickedListener(footerClickedListener);
+    }
+
+    @Override
+    public void setHeaderLongClickedListener(HeaderLongClickListener headerLongClickedListener) {
+        getAdapter().setHeaderLongClickListener(headerLongClickedListener);
+    }
+
+    @Override
+    public void setFooterLongClickedListener(FooterLongClickedListener footerLongClickedListener) {
+        getAdapter().setFooterLongClickedListener(footerLongClickedListener);
     }
 
     @Override
@@ -69,18 +79,16 @@ public class PagerAdapterConverter<Item, Holder extends ViewHolder>
 
     @Override
     public void setAdapter(@NonNull UniversalAdapter<Item, Holder> listAdapter) {
-        if (this.universalAdapter != null) {
-            this.universalAdapter.getListObserver().removeListener(internalListObserverListener);
+        if (getAdapter() != null) {
+            getAdapter().getListObserver().removeListener(internalListObserverListener);
         }
         this.universalAdapter = listAdapter;
-        this.universalAdapter.getListObserver().addListener(internalListObserverListener);
+        listAdapter.getListObserver().addListener(internalListObserverListener);
     }
 
     @Override
     public void cleanup() {
-        if (this.universalAdapter != null) {
-            this.universalAdapter.getListObserver().removeListener(internalListObserverListener);
-        }
+        getAdapter().getListObserver().removeListener(internalListObserverListener);
     }
 
     @Override
@@ -90,9 +98,9 @@ public class PagerAdapterConverter<Item, Holder extends ViewHolder>
 
     @Override
     public Object instantiateItem(ViewGroup container, int position) {
-        ViewHolder holder = universalAdapter.createViewHolder(container,
-                                                              universalAdapter.getItemViewTypeInternal(position));
-        universalAdapter.bindViewHolder(holder, position);
+        ViewHolder holder = getAdapter().createViewHolder(container,
+                                                          getAdapter().getItemViewTypeInternal(position));
+        getAdapter().bindViewHolder(holder, position);
         View view = holder.itemView;
         UniversalAdapterUtils.setViewHolder(view, holder);
         itemClickedWrapper.register(view);
@@ -107,7 +115,7 @@ public class PagerAdapterConverter<Item, Holder extends ViewHolder>
 
     @Override
     public int getCount() {
-        return universalAdapter.getInternalCount();
+        return getAdapter().getInternalCount();
     }
 
     @Override

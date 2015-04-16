@@ -48,7 +48,7 @@ public class RecyclerViewAdapterConverter<Item, Holder extends ViewHolder>
 
     // endregion Members
 
-    RecyclerViewAdapterConverter(UniversalAdapter<Item, Holder> universalAdapter, RecyclerView recyclerView) {
+    RecyclerViewAdapterConverter(@NonNull UniversalAdapter<Item, Holder> universalAdapter, RecyclerView recyclerView) {
         observerListener = new RecyclerViewListObserverListener<>(this);
         setAdapter(universalAdapter);
         recyclerView.setAdapter(this);
@@ -77,33 +77,44 @@ public class RecyclerViewAdapterConverter<Item, Holder extends ViewHolder>
         return universalAdapter;
     }
 
-    /**
-     * Sets the listener to be called when an item is clicked.
-     *
-     * @param listener The listener to call.
-     */
     @Override
     public void setItemClickedListener(ItemClickedListener<Item, Holder> listener) {
-        universalAdapter.setItemClickedListener(listener);
+        getAdapter().setItemClickedListener(listener);
     }
 
     @Override
     public void setItemLongClickedListener(ItemLongClickedListener<Item, Holder> longClickedListener) {
-        universalAdapter.setItemLongClickedListener(longClickedListener);
+        getAdapter().setItemLongClickedListener(longClickedListener);
+    }
+
+    @Override
+    public void setHeaderClickedListener(HeaderClickedListener headerClickedListener) {
+        getAdapter().setHeaderClickedListener(headerClickedListener);
+    }
+
+    @Override
+    public void setFooterClickedListener(FooterClickedListener footerClickedListener) {
+        getAdapter().setFooterClickedListener(footerClickedListener);
+    }
+
+    @Override
+    public void setHeaderLongClickedListener(HeaderLongClickListener headerLongClickedListener) {
+        getAdapter().setHeaderLongClickListener(headerLongClickedListener);
+    }
+
+    @Override
+    public void setFooterLongClickedListener(FooterLongClickedListener footerLongClickedListener) {
+        getAdapter().setFooterLongClickedListener(footerLongClickedListener);
     }
 
     @Override
     public void cleanup() {
-        if (this.universalAdapter != null) {
-            this.universalAdapter.getListObserver().removeListener(observerListener);
-        }
+        getAdapter().getListObserver().removeListener(observerListener);
     }
 
     @Override
     public void setAdapter(@NonNull UniversalAdapter<Item, Holder> listAdapter) {
-        if (this.universalAdapter != null) {
-            this.universalAdapter.getListObserver().removeListener(observerListener);
-        }
+        getAdapter().getListObserver().removeListener(observerListener);
 
         this.universalAdapter = listAdapter;
         // Add a listener which will delegate list observer calls back to us
@@ -113,27 +124,27 @@ public class RecyclerViewAdapterConverter<Item, Holder extends ViewHolder>
 
     @Override
     public long getItemId(int position) {
-        return universalAdapter.getItemId(position);
+        return getAdapter().getItemId(position);
     }
 
     @Override
     public int getItemViewType(int position) {
-        return universalAdapter.getItemViewTypeInternal(position);
+        return getAdapter().getItemViewTypeInternal(position);
     }
 
     @Override
     public int getItemCount() {
-        return universalAdapter.getInternalCount();
+        return getAdapter().getInternalCount();
     }
 
     @Override
     public void onBindViewHolder(RecyclerView.ViewHolder viewHolder, int position) {
-        universalAdapter.bindViewHolder((ViewHolder) viewHolder, position);
+        getAdapter().bindViewHolder((ViewHolder) viewHolder, position);
     }
 
     @Override
     public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        return universalAdapter.createViewHolder(parent, viewType);
+        return getAdapter().createViewHolder(parent, viewType);
     }
 
     // endregion Inherited Methods

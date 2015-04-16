@@ -46,26 +46,42 @@ public class BaseAdapterConverter<Item, Holder extends ViewHolder>
 
     @Override
     public void cleanup() {
-        if (this.universalAdapter != null) {
-            this.universalAdapter.getListObserver().removeListener(internalListObserverListener);
-        }
+        getAdapter().getListObserver().removeListener(internalListObserverListener);
     }
 
     @Override
     public void setItemClickedListener(ItemClickedListener<Item, Holder> itemClickedListener) {
-        universalAdapter.setItemClickedListener(itemClickedListener);
+        getAdapter().setItemClickedListener(itemClickedListener);
     }
 
     @Override
     public void setItemLongClickedListener(ItemLongClickedListener<Item, Holder> longClickedListener) {
-        universalAdapter.setItemLongClickedListener(longClickedListener);
+        getAdapter().setItemLongClickedListener(longClickedListener);
+    }
+
+    @Override
+    public void setHeaderClickedListener(HeaderClickedListener headerClickedListener) {
+        getAdapter().setHeaderClickedListener(headerClickedListener);
+    }
+
+    @Override
+    public void setFooterClickedListener(FooterClickedListener footerClickedListener) {
+        getAdapter().setFooterClickedListener(footerClickedListener);
+    }
+
+    @Override
+    public void setHeaderLongClickedListener(HeaderLongClickListener headerLongClickedListener) {
+        getAdapter().setHeaderLongClickListener(headerLongClickedListener);
+    }
+
+    @Override
+    public void setFooterLongClickedListener(FooterLongClickedListener footerLongClickedListener) {
+        getAdapter().setFooterLongClickedListener(footerLongClickedListener);
     }
 
     @Override
     public void setAdapter(@NonNull UniversalAdapter<Item, Holder> listAdapter) {
-        if (this.universalAdapter != null) {
-            this.universalAdapter.getListObserver().removeListener(internalListObserverListener);
-        }
+        getAdapter().getListObserver().removeListener(internalListObserverListener);
 
         this.universalAdapter = listAdapter;
         listAdapter.getListObserver().addListener(internalListObserverListener);
@@ -73,32 +89,32 @@ public class BaseAdapterConverter<Item, Holder extends ViewHolder>
 
     @Override
     public void notifyDataSetChanged() {
-        universalAdapter.notifyDataSetChanged();
+        getAdapter().notifyDataSetChanged();
     }
 
     @Override
     public int getViewTypeCount() {
-        return universalAdapter.getInternalItemViewTypeCount();
+        return getAdapter().getInternalItemViewTypeCount();
     }
 
     @Override
     public int getItemViewType(int position) {
-        return universalAdapter.getItemViewTypeInternal(position);
+        return getAdapter().getItemViewTypeInternal(position);
     }
 
     @Override
     public int getCount() {
-        return universalAdapter.getInternalCount();
+        return getAdapter().getInternalCount();
     }
 
     @Override
     public Item getItem(int position) {
-        return universalAdapter.get(position);
+        return getAdapter().get(position);
     }
 
     @Override
     public long getItemId(int position) {
-        return universalAdapter.getItemId(position);
+        return getAdapter().getItemId(position);
     }
 
     @Override
@@ -110,11 +126,11 @@ public class BaseAdapterConverter<Item, Holder extends ViewHolder>
 
         if (viewHolder == null) {
             int viewType = getItemViewType(position);
-            viewHolder = universalAdapter.createViewHolder(parent, viewType);
+            viewHolder = getAdapter().createViewHolder(parent, viewType);
             setViewHolder(viewHolder.itemView, viewHolder);
         }
 
-        universalAdapter.bindViewHolder(viewHolder, position);
+        getAdapter().bindViewHolder(viewHolder, position);
 
         return viewHolder.itemView;
     }
@@ -128,23 +144,23 @@ public class BaseAdapterConverter<Item, Holder extends ViewHolder>
 
         if (viewHolder == null) {
             int viewType = getItemViewType(position);
-            viewHolder = universalAdapter.createDropDownViewHolder(parent, viewType);
+            viewHolder = getAdapter().createDropDownViewHolder(parent, viewType);
             setViewHolder(viewHolder.itemView, viewHolder);
         }
 
-        universalAdapter.bindDropDownViewHolder(viewHolder, position);
+        getAdapter().bindDropDownViewHolder(viewHolder, position);
 
         return viewHolder.itemView;
     }
 
     @Override
     public boolean isEnabled(int position) {
-        return universalAdapter.internalIsEnabled(position);
+        return getAdapter().internalIsEnabled(position);
     }
 
     @Override
     public boolean areAllItemsEnabled() {
-        return universalAdapter.areAllItemsEnabled();
+        return getAdapter().areAllItemsEnabled();
     }
 
     // endregion Inherited Methods
