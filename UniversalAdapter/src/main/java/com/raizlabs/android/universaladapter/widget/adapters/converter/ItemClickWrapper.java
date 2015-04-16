@@ -31,7 +31,6 @@ class ItemClickWrapper<Item, Holder extends ViewHolder> implements View.OnClickL
     @Override
     public boolean onLongClick(View v) {
         int index = (int) v.getTag(R.id.com_raizlabs_viewholderIndexID);
-        universalConverter.getAdapter().onItemLongClicked(index, v);
-        return false;
+        return universalConverter.getAdapter().onItemLongClicked(index, v);
     }
 }

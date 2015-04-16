@@ -21,6 +21,8 @@ import com.raizlabs.android.universaladapter.widget.adapters.ViewHolder;
 public class RecyclerViewAdapterConverter<Item, Holder extends ViewHolder>
         extends RecyclerView.Adapter implements UniversalConverter<Item, Holder, RecyclerView> {
 
+    // region Interface Declarations
+
     /**
      * Provides more specific information for a click, separate from {@link ItemClickedListener}
      */
@@ -36,11 +38,15 @@ public class RecyclerViewAdapterConverter<Item, Holder extends ViewHolder>
         void onItemClick(Holder viewHolder, RecyclerView parent, int position, float x, float y);
     }
 
+    // endregion Interface Declaration
+
+    // region Members
+
     private UniversalAdapter<Item, Holder> universalAdapter;
-
     private RecyclerItemClickListener<Holder> recyclerItemClickListener;
-
     private RecyclerViewListObserverListener<Item> observerListener;
+
+    // endregion Members
 
     RecyclerViewAdapterConverter(UniversalAdapter<Item, Holder> universalAdapter, RecyclerView recyclerView) {
         observerListener = new RecyclerViewListObserverListener<>(this);
@@ -49,6 +55,8 @@ public class RecyclerViewAdapterConverter<Item, Holder extends ViewHolder>
         recyclerView.addOnItemTouchListener(internalOnItemTouchListener);
         universalAdapter.notifyDataSetChanged();
     }
+
+    // region Instance Methods
 
     /**
      * Sets the listener to be called when an item is clicked. This call back provides more
@@ -59,6 +67,8 @@ public class RecyclerViewAdapterConverter<Item, Holder extends ViewHolder>
     public void setRecyclerItemClickListener(RecyclerItemClickListener<Holder> recyclerItemClickListener) {
         this.recyclerItemClickListener = recyclerItemClickListener;
     }
+
+    // endregion Instance Methods
 
     // region Inherited Methods
 
@@ -75,6 +85,11 @@ public class RecyclerViewAdapterConverter<Item, Holder extends ViewHolder>
     @Override
     public void setItemClickedListener(ItemClickedListener<Item, Holder> listener) {
         universalAdapter.setItemClickedListener(listener);
+    }
+
+    @Override
+    public void setItemLongClickedListener(ItemLongClickedListener<Item, Holder> longClickedListener) {
+        universalAdapter.setItemLongClickedListener(longClickedListener);
     }
 
     @Override
@@ -123,6 +138,8 @@ public class RecyclerViewAdapterConverter<Item, Holder extends ViewHolder>
 
     // endregion Inherited Methods
 
+    // region Anonymous Classes
+
     private final RecyclerViewItemClickListener internalOnItemTouchListener = new RecyclerViewItemClickListener() {
         @SuppressWarnings("unchecked")
         @Override
@@ -135,6 +152,12 @@ public class RecyclerViewAdapterConverter<Item, Holder extends ViewHolder>
                 getAdapter().onItemClicked(position, viewHolder);
             }
         }
+
+        @Override
+        public void onItemLongClick(ViewHolder viewHolder, RecyclerView parent, int position, float x, float y) {
+            getAdapter().onItemLongClicked(position, viewHolder);
+        }
     };
 
+    // endregion Anonymous Classes
 }

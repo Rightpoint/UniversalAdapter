@@ -469,9 +469,9 @@ public abstract class UniversalAdapter<Item, Holder extends ViewHolder> {
      * @param view     The view that was clicked.
      */
     @SuppressWarnings("unchecked")
-    void onItemLongClicked(int position, View view) {
+    boolean onItemLongClicked(int position, View view) {
         ViewHolder holder = (ViewHolder) view.getTag(R.id.com_raizlabs_viewholderTagID);
-        onItemLongClicked(position, holder);
+        return onItemLongClicked(position, holder);
     }
 
     /**
@@ -480,23 +480,25 @@ public abstract class UniversalAdapter<Item, Holder extends ViewHolder> {
      * @param position The position of the item in the whole list, including headers and footers
      * @param holder   The holder of the clicked item.
      */
-    void onItemLongClicked(int position, ViewHolder holder) {
+    boolean onItemLongClicked(int position, ViewHolder holder) {
         if (internalIsEnabled(position)) {
             if (position < getHeadersCount()) {
                 if (footerLongClickedListener != null) {
-                    footerLongClickedListener.onFooterLongClicked(this, holder, position);
+                    return footerLongClickedListener.onFooterLongClicked(this, holder, position);
                 }
             } else if (position >= getFooterStartIndex()) {
                 if (headerLongClickListener != null) {
-                    headerLongClickListener.onHeaderLongClicked(this, holder, position - getFooterStartIndex() - 1);
+                    return headerLongClickListener.onHeaderLongClicked(this, holder,
+                                                                       position - getFooterStartIndex() - 1);
                 }
             } else {
                 if (itemLongClickedListener != null) {
                     int adjusted = position - getHeadersCount();
-                    itemLongClickedListener.onItemLongClicked(this, get(adjusted), (Holder) holder, adjusted);
+                    return itemLongClickedListener.onItemLongClicked(this, get(adjusted), (Holder) holder, adjusted);
                 }
             }
         }
+        return false;
     }
 
     /**
@@ -673,6 +675,5 @@ public abstract class UniversalAdapter<Item, Holder extends ViewHolder> {
     };
 
     // endregion Anonymous Classes
-
 
 }

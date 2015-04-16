@@ -26,9 +26,12 @@ import com.raizlabs.android.universaladapter.widget.adapters.ViewHolder;
 public class PagerAdapterConverter<Item, Holder extends ViewHolder>
         extends PagerAdapter implements UniversalConverter<Item, Holder, ViewPager> {
 
-    private UniversalAdapter<Item, Holder> universalAdapter;
+    // region Members
 
+    private UniversalAdapter<Item, Holder> universalAdapter;
     private ItemClickWrapper<Item, Holder> itemClickedWrapper;
+
+    // endregion Members
 
     PagerAdapterConverter(UniversalAdapter<Item, Holder> listBasedAdapter, ViewPager viewPager) {
         setAdapter(listBasedAdapter);
@@ -36,6 +39,8 @@ public class PagerAdapterConverter<Item, Holder extends ViewHolder>
         superNotifyDataSetChanged();
         itemClickedWrapper = new ItemClickWrapper<>(this);
     }
+
+    // region Inherited Methods
 
     /**
      * Sets the listener to be called when an item is clicked.
@@ -45,6 +50,16 @@ public class PagerAdapterConverter<Item, Holder extends ViewHolder>
     @Override
     public void setItemClickedListener(ItemClickedListener<Item, Holder> listener) {
         getAdapter().setItemClickedListener(listener);
+    }
+
+    /**
+     * Sets the listener to be called when an item is long clicked.
+     *
+     * @param listener The listener to call.
+     */
+    @Override
+    public void setItemLongClickedListener(ItemLongClickedListener<Item, Holder> listener) {
+        getAdapter().setItemLongClickedListener(listener);
     }
 
     @Override
@@ -68,41 +83,15 @@ public class PagerAdapterConverter<Item, Holder extends ViewHolder>
         }
     }
 
-    /**
-     * Sets the listener to be called when an item is long clicked.
-     *
-     * @param listener The listener to call.
-     */
-    public void setItemLongClickedListener(ItemLongClickedListener<Item, Holder> listener) {
-        getAdapter().setItemLongClickedListener(listener);
-    }
-
     @Override
     public void notifyDataSetChanged() {
         universalAdapter.notifyDataSetChanged();
     }
 
-    protected void superNotifyDataSetChanged() {
-        super.notifyDataSetChanged();
-    }
-
-    private final Runnable superDataSetChangedRunnable = new Runnable() {
-        @Override
-        public void run() {
-            superNotifyDataSetChanged();
-        }
-    };
-
-    /**
-     * Calls {@link #superNotifyDataSetChanged()} on the UI thread.
-     */
-    protected void superNotifyDataSetChangedOnUIThread() {
-        ThreadingUtils.runOnUIThread(superDataSetChangedRunnable);
-    }
-
     @Override
     public Object instantiateItem(ViewGroup container, int position) {
-        ViewHolder holder = universalAdapter.createViewHolder(container, universalAdapter.getItemViewTypeInternal(position));
+        ViewHolder holder = universalAdapter.createViewHolder(container,
+                                                              universalAdapter.getItemViewTypeInternal(position));
         universalAdapter.bindViewHolder(holder, position);
         View view = holder.itemView;
         UniversalAdapterUtils.setViewHolder(view, holder);
@@ -126,6 +115,33 @@ public class PagerAdapterConverter<Item, Holder extends ViewHolder>
         return view == object;
     }
 
+    // endregion Inherited Methods
+
+    // region Instance Methods
+
+    protected void superNotifyDataSetChanged() {
+        super.notifyDataSetChanged();
+    }
+
+    /**
+     * Calls {@link #superNotifyDataSetChanged()} on the UI thread.
+     */
+    protected void superNotifyDataSetChangedOnUIThread() {
+        ThreadingUtils.runOnUIThread(superDataSetChangedRunnable);
+    }
+
+    // endregion Instance Methods
+
+    // region Anonymous Classes
+
+    private final Runnable superDataSetChangedRunnable = new Runnable() {
+        @Override
+        public void run() {
+            superNotifyDataSetChanged();
+        }
+    };
+
+
     private final ListObserverListener<Item> internalListObserverListener = new SimpleListObserverListener<Item>() {
         @Override
         public void onGenericChange(ListObserver<Item> listObserver) {
@@ -133,4 +149,5 @@ public class PagerAdapterConverter<Item, Holder extends ViewHolder>
         }
     };
 
+    // endregion Anonymous Classes
 }

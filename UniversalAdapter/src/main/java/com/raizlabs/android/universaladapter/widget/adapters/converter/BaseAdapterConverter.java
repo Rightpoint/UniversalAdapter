@@ -12,7 +12,6 @@ import com.raizlabs.android.coreutils.util.observable.lists.ListObserverListener
 import com.raizlabs.android.coreutils.util.observable.lists.SimpleListObserverListener;
 import com.raizlabs.android.universaladapter.widget.adapters.UniversalAdapterUtils;
 import com.raizlabs.android.universaladapter.widget.adapters.ViewHolder;
-import com.raizlabs.widget.adapters.R;
 
 /**
  * Class which dynamically converts a {@link UniversalAdapter} into a
@@ -29,11 +28,12 @@ public class BaseAdapterConverter<Item, Holder extends ViewHolder>
 
     private UniversalAdapter<Item, Holder> universalAdapter;
 
-
-    BaseAdapterConverter(@NonNull UniversalAdapter<Item, Holder> universalAdapter, AdapterView<? super BaseAdapter> adapterView) {
+    BaseAdapterConverter(@NonNull UniversalAdapter<Item, Holder> universalAdapter,
+                         AdapterView<? super BaseAdapter> adapterView) {
         setAdapter(universalAdapter);
         adapterView.setAdapter(this);
         adapterView.setOnItemClickListener(internalItemClickListener);
+        adapterView.setOnItemLongClickListener(internalLongClickListener);
         notifyDataSetChanged();
     }
 
@@ -57,6 +57,11 @@ public class BaseAdapterConverter<Item, Holder extends ViewHolder>
     }
 
     @Override
+    public void setItemLongClickedListener(ItemLongClickedListener<Item, Holder> longClickedListener) {
+        universalAdapter.setItemLongClickedListener(longClickedListener);
+    }
+
+    @Override
     public void setAdapter(@NonNull UniversalAdapter<Item, Holder> listAdapter) {
         if (this.universalAdapter != null) {
             this.universalAdapter.getListObserver().removeListener(internalListObserverListener);
@@ -66,29 +71,9 @@ public class BaseAdapterConverter<Item, Holder extends ViewHolder>
         listAdapter.getListObserver().addListener(internalListObserverListener);
     }
 
-    // endregion Inherited Methods
-
     @Override
     public void notifyDataSetChanged() {
         universalAdapter.notifyDataSetChanged();
-    }
-
-    protected void superNotifyDataSetChanged() {
-        super.notifyDataSetChanged();
-    }
-
-    private final Runnable superDataSetChangedRunnable = new Runnable() {
-        @Override
-        public void run() {
-            superNotifyDataSetChanged();
-        }
-    };
-
-    /**
-     * Calls {@link #superNotifyDataSetChanged()} on the UI thread.
-     */
-    protected void superNotifyDataSetChangedOnUIThread() {
-        ThreadingUtils.runOnUIThread(superDataSetChangedRunnable);
     }
 
     @Override
@@ -162,6 +147,14 @@ public class BaseAdapterConverter<Item, Holder extends ViewHolder>
         return universalAdapter.areAllItemsEnabled();
     }
 
+    // endregion Inherited Methods
+
+    // region Instance Methods
+
+    protected void superNotifyDataSetChanged() {
+        super.notifyDataSetChanged();
+    }
+
     @SuppressWarnings("unchecked")
     protected Holder getViewHolder(View view) {
         try {
@@ -173,9 +166,33 @@ public class BaseAdapterConverter<Item, Holder extends ViewHolder>
         return null;
     }
 
+    /**
+     * Attaches the view holder to the specified {@link View}
+     *
+     * @param view   The view to attach the holder to.
+     * @param holder The holder to attach to the view.
+     */
     protected void setViewHolder(View view, ViewHolder holder) {
         UniversalAdapterUtils.setViewHolder(view, holder);
     }
+
+    /**
+     * Calls {@link #superNotifyDataSetChanged()} on the UI thread.
+     */
+    protected void superNotifyDataSetChangedOnUIThread() {
+        ThreadingUtils.runOnUIThread(superDataSetChangedRunnable);
+    }
+
+    // endregion Instance Methods
+
+    // region Anonymous Classes
+
+    private final Runnable superDataSetChangedRunnable = new Runnable() {
+        @Override
+        public void run() {
+            superNotifyDataSetChanged();
+        }
+    };
 
     private final ListObserverListener<Item> internalListObserverListener = new SimpleListObserverListener<Item>() {
         @Override
@@ -191,4 +208,13 @@ public class BaseAdapterConverter<Item, Holder extends ViewHolder>
             getAdapter().onItemClicked(position, view);
         }
     };
+
+    private final AdapterView.OnItemLongClickListener internalLongClickListener = new AdapterView.OnItemLongClickListener() {
+        @Override
+        public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
+            return getAdapter().onItemLongClicked(position, view);
+        }
+    };
+
+    // endregion Anonymous Classes
 }

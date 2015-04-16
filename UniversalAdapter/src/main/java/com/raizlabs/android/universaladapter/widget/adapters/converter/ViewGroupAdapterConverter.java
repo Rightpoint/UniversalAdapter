@@ -50,15 +50,6 @@ public class ViewGroupAdapterConverter<Item, Holder extends ViewHolder> implemen
         itemClickWrapper = new ItemClickWrapper<>(this);
     }
 
-    /**
-     * Sets the listener to be called when an item is long clicked.
-     *
-     * @param listener The listener to call.
-     */
-    public void setItemLongClickedListener(ItemLongClickedListener<Item, Holder> listener) {
-        getAdapter().setItemLongClickedListener(listener);
-    }
-
     // region Inherited Methods
 
     /**
@@ -78,6 +69,16 @@ public class ViewGroupAdapterConverter<Item, Holder extends ViewHolder> implemen
     @Override
     public void setItemClickedListener(ItemClickedListener<Item, Holder> listener) {
         getAdapter().setItemClickedListener(listener);
+    }
+
+    /**
+     * Sets the listener to be called when an item is long clicked.
+     *
+     * @param listener The listener to call.
+     */
+    @Override
+    public void setItemLongClickedListener(ItemLongClickedListener<Item, Holder> listener) {
+        getAdapter().setItemLongClickedListener(listener);
     }
 
     /**
