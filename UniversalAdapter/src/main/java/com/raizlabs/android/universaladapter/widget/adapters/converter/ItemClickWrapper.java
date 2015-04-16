@@ -2,7 +2,6 @@ package com.raizlabs.android.universaladapter.widget.adapters.converter;
 
 import android.view.View;
 
-import com.raizlabs.android.universaladapter.widget.adapters.UniversalAdapterUtils;
 import com.raizlabs.android.universaladapter.widget.adapters.ViewHolder;
 import com.raizlabs.widget.adapters.R;
 
@@ -34,12 +33,7 @@ class ItemClickWrapper<Item, Holder extends ViewHolder> implements View.OnClickL
     @Override
     public boolean onLongClick(View v) {
         int index = (int) v.getTag(R.id.com_raizlabs_viewholderIndexID);
-
-        if (universalConverter.getAdapter().internalIsEnabled(index) && itemLongClickedListener != null) {
-            Item item = universalConverter.getAdapter().get(index);
-            Holder holder = (Holder) UniversalAdapterUtils.getViewHolder(v);
-            return itemLongClickedListener.onItemLongClicked(universalConverter.getAdapter(), item, holder, index);
-        }
+        universalConverter.getAdapter().onItemLongClicked(index, v);
         return false;
     }
 }

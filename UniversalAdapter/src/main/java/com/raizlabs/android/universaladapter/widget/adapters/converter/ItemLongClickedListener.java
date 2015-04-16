@@ -3,7 +3,7 @@ package com.raizlabs.android.universaladapter.widget.adapters.converter;
 import com.raizlabs.android.universaladapter.widget.adapters.ViewHolder;
 
 /**
- * Interface for a listener which is called when a {@link ViewGroupAdapterConverter}
+ * Interface for a listener which is called when a {@link ViewGroupAdapterConverter} or {@link PagerAdapterConverter}
  * view is long clicked.
  */
 public interface ItemLongClickedListener<Item, Holder extends ViewHolder> {

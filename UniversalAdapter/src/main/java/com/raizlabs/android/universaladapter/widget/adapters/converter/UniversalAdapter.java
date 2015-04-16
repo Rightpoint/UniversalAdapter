@@ -43,9 +43,14 @@ public abstract class UniversalAdapter<Item, Holder extends ViewHolder> {
     private boolean transactionModified;
 
     private SimpleListObserver<Item> listObserver;
+
     private ItemClickedListener<Item, Holder> itemClickedListener;
     private FooterClickedListener footerClickedListener;
     private HeaderClickedListener headerClickedListener;
+
+    private ItemLongClickedListener<Item, Holder> itemLongClickedListener;
+    private FooterLongClickedListener footerLongClickedListener;
+    private HeaderLongClickListener headerLongClickListener;
 
     // endregion Members
 
@@ -73,6 +78,18 @@ public abstract class UniversalAdapter<Item, Holder extends ViewHolder> {
 
     public void setHeaderClickedListener(HeaderClickedListener headerClickedListener) {
         this.headerClickedListener = headerClickedListener;
+    }
+
+    public void setItemLongClickedListener(ItemLongClickedListener<Item, Holder> itemLongClickedListener) {
+        this.itemLongClickedListener = itemLongClickedListener;
+    }
+
+    public void setFooterLongClickedListener(FooterLongClickedListener footerLongClickedListener) {
+        this.footerLongClickedListener = footerLongClickedListener;
+    }
+
+    public void setHeaderLongClickListener(HeaderLongClickListener headerLongClickListener) {
+        this.headerLongClickListener = headerLongClickListener;
     }
 
     // endregion Accessors
@@ -439,6 +456,44 @@ public abstract class UniversalAdapter<Item, Holder extends ViewHolder> {
                 if (itemClickedListener != null) {
                     int adjusted = position - getHeadersCount();
                     itemClickedListener.onItemClicked(this, get(adjusted), (Holder) holder, adjusted);
+                }
+            }
+        }
+    }
+
+    /**
+     * Called when an item is clicked. This consolidates and delegates the call to this adapter. We retrieve the {@link Holder}
+     * from the view and call {@link #onItemClicked(int, ViewHolder)}
+     *
+     * @param position The position of the item in the whole list, including headers and footers
+     * @param view     The view that was clicked.
+     */
+    @SuppressWarnings("unchecked")
+    void onItemLongClicked(int position, View view) {
+        ViewHolder holder = (ViewHolder) view.getTag(R.id.com_raizlabs_viewholderTagID);
+        onItemLongClicked(position, holder);
+    }
+
+    /**
+     * Called when an item is clicked. This consolidates and delegates the call to this adapter.
+     *
+     * @param position The position of the item in the whole list, including headers and footers
+     * @param holder   The holder of the clicked item.
+     */
+    void onItemLongClicked(int position, ViewHolder holder) {
+        if (internalIsEnabled(position)) {
+            if (position < getHeadersCount()) {
+                if (footerLongClickedListener != null) {
+                    footerLongClickedListener.onFooterLongClicked(this, holder, position);
+                }
+            } else if (position >= getFooterStartIndex()) {
+                if (headerLongClickListener != null) {
+                    headerLongClickListener.onHeaderLongClicked(this, holder, position - getFooterStartIndex() - 1);
+                }
+            } else {
+                if (itemLongClickedListener != null) {
+                    int adjusted = position - getHeadersCount();
+                    itemLongClickedListener.onItemLongClicked(this, get(adjusted), (Holder) holder, adjusted);
                 }
             }
         }
