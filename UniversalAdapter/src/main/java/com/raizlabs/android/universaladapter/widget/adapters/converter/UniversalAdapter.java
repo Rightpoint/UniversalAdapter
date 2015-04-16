@@ -1,5 +1,6 @@
 package com.raizlabs.android.universaladapter.widget.adapters.converter;
 
+import android.support.v4.view.ViewPager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -16,6 +17,17 @@ import com.raizlabs.widget.adapters.R;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * The base adapter for all of the convertible adapters. This is the only list you'll ever need to use. It provides
+ * common functionality that not only works with {@link BaseAdapter} and {@link RecyclerView.Adapter}, but also
+ * binds to {@link ViewGroup} and {@link ViewPager}.
+ * <p/>
+ * It also supports an arbitrary number of headers and footer views. This adapter handles positioning, item view types,
+ * clicks, and more for these independent of the normal methods.
+ *
+ * @param <Item>   The uniform item used for the {@link Holder}
+ * @param <Holder> The holder for the uniform item type.
+ */
 public abstract class UniversalAdapter<Item, Holder extends ViewHolder> {
 
     // region Constants
