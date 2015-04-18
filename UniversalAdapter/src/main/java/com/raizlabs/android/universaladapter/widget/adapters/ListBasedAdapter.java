@@ -24,7 +24,13 @@ import java.util.ListIterator;
  */
 public abstract class ListBasedAdapter<Item, Holder extends ViewHolder> extends UniversalAdapter<Item, Holder> implements ObservableList<Item> {
 
+    // region Members
+
     private List<Item> mList;
+
+    // endregion Members
+
+    // region Constructors
 
     /**
      * Constructs an empty {@link ListBasedAdapter}.
@@ -42,6 +48,10 @@ public abstract class ListBasedAdapter<Item, Holder extends ViewHolder> extends 
         setItemsList(list);
     }
 
+    // endregion Constructors
+
+    // region Accessors
+
     /**
      * @return The {@link List} of items in this adapter.
      */
@@ -49,90 +59,9 @@ public abstract class ListBasedAdapter<Item, Holder extends ViewHolder> extends 
         return mList;
     }
 
-    /**
-     * Purges any resources from this adapter. Note that this may make the
-     * adapter unusable.
-     */
-    public void cleanup() {
-        unbindList();
-    }
+    // endregion Accessors
 
-    /**
-     * Loads the given varg array into a {@link List} into this adapter. See
-     * {@link #notifyDataSetChangedOnUIThread()}.
-     *
-     * @param list The {@link List} to load.
-     */
-    public void loadItemArray(Item... list) {
-        setItemsList(Arrays.asList(list));
-    }
-
-    /**
-     * Loads the given {@link List} into this adapter. This will use the same
-     * reference, so any changes to the source list will be reflected by the
-     * adapter whenever the data is repopulated. See
-     * {@link #notifyDataSetChangedOnUIThread()}.
-     *
-     * @param list The {@link List} to load.
-     */
-    public void loadItemList(List<Item> list) {
-        setItemsList(list);
-    }
-
-    /**
-     * Loads the given {@link List} into this adapter and subscribes to updates.
-     * This will use the same reference, so any changes to the source list will
-     * be reflected by the adapter whenever the data is repopulated. See
-     * {@link #notifyDataSetChangedOnUIThread()}.
-     *
-     * @param list The {@link ObservableList} to load.
-     */
-    public void loadItemList(ObservableList<Item> list) {
-        setItemsList(list);
-    }
-
-    /**
-     * Loads the given items as the contents of this adapter.
-     *
-     * @param items The {@link Collection} of items to load.
-     */
-    public void loadItems(Collection<? extends Item> items) {
-        List<Item> data = new ArrayList<Item>(items.size());
-        for (Item item : items) {
-            data.add(item);
-        }
-        setItemsList(data);
-    }
-
-    protected void unbindList() {
-        if (mList instanceof ObservableList<?>) {
-            ((ObservableList<Item>) mList).getListObserver().removeListener(observableListener);
-        }
-    }
-
-    /**
-     * Sets the {@link List} of items in this adapter.
-     *
-     * @param list The {@link List} of items to use.
-     */
-    protected void setItemsList(List<Item> list) {
-        unbindList();
-        if (list == null) list = new LinkedList<Item>();
-        mList = list;
-        notifyDataSetChangedOnUIThread();
-    }
-
-    /**
-     * Sets the {@link ObservableList} of items in this adapter, and subscribes
-     * to updates.
-     *
-     * @param list The {@link ObservableList} of items to use.
-     */
-    protected void setItemsList(ObservableList<Item> list) {
-        if (list != null) list.getListObserver().addListener(observableListener);
-        setItemsList((List<Item>) list);
-    }
-
+    // region Inherited Methods
 
     @Override
     public void notifyDataSetChanged() {
@@ -145,8 +74,6 @@ public abstract class ListBasedAdapter<Item, Holder extends ViewHolder> extends 
         return mList.size();
     }
 
-
-    //region List Methods
 
     @Override
     public void add(int location, Item object) {
@@ -298,5 +225,94 @@ public abstract class ListBasedAdapter<Item, Holder extends ViewHolder> extends 
         return mList.toArray(array);
     }
 
-    //endregion List Methods
+    //endregion Inherited Methods
+
+    // region Instance Methods
+
+    /**
+     * Purges any resources from this adapter. Note that this may make the
+     * adapter unusable.
+     */
+    public void cleanup() {
+        unbindList();
+    }
+
+    /**
+     * Loads the given varg array into a {@link List} into this adapter. See
+     * {@link #notifyDataSetChangedOnUIThread()}.
+     *
+     * @param list The {@link List} to load.
+     */
+    public void loadItemArray(Item... list) {
+        setItemsList(Arrays.asList(list));
+    }
+
+    /**
+     * Loads the given {@link List} into this adapter. This will use the same
+     * reference, so any changes to the source list will be reflected by the
+     * adapter whenever the data is repopulated. See
+     * {@link #notifyDataSetChangedOnUIThread()}.
+     *
+     * @param list The {@link List} to load.
+     */
+    public void loadItemList(List<Item> list) {
+        setItemsList(list);
+    }
+
+    /**
+     * Loads the given {@link List} into this adapter and subscribes to updates.
+     * This will use the same reference, so any changes to the source list will
+     * be reflected by the adapter whenever the data is repopulated. See
+     * {@link #notifyDataSetChangedOnUIThread()}.
+     *
+     * @param list The {@link ObservableList} to load.
+     */
+    public void loadItemList(ObservableList<Item> list) {
+        setItemsList(list);
+    }
+
+    /**
+     * Loads the given items as the contents of this adapter.
+     *
+     * @param items The {@link Collection} of items to load.
+     */
+    public void loadItems(Collection<? extends Item> items) {
+        List<Item> data = new ArrayList<Item>(items.size());
+        for (Item item : items) {
+            data.add(item);
+        }
+        setItemsList(data);
+    }
+
+    protected void unbindList() {
+        if (mList instanceof ObservableList<?>) {
+            ((ObservableList<Item>) mList).getListObserver().removeListener(observableListener);
+        }
+    }
+
+    /**
+     * Sets the {@link List} of items in this adapter.
+     *
+     * @param list The {@link List} of items to use.
+     */
+    protected void setItemsList(List<Item> list) {
+        unbindList();
+        if (list == null) list = new LinkedList<Item>();
+        mList = list;
+        notifyDataSetChangedOnUIThread();
+    }
+
+    /**
+     * Sets the {@link ObservableList} of items in this adapter, and subscribes
+     * to updates.
+     *
+     * @param list The {@link ObservableList} of items to use.
+     */
+    protected void setItemsList(ObservableList<Item> list) {
+        if (list != null) list.getListObserver().addListener(observableListener);
+        setItemsList((List<Item>) list);
+    }
+
+    // endregion Instance Methods
+
 }

@@ -15,7 +15,14 @@ import com.raizlabs.android.universaladapter.widget.adapters.converter.RecyclerV
  */
 public abstract class RecyclerViewItemClickListener
         implements OnItemTouchListener, RecyclerViewAdapterConverter.RecyclerItemClickListener {
+
+    // region Members
+
     private GestureDetector gestureDetector;
+
+    // endregion Members
+
+    // region Inherited Methods
 
     @Override
     public boolean onInterceptTouchEvent(final RecyclerView view, MotionEvent e) {
@@ -53,6 +60,10 @@ public abstract class RecyclerViewItemClickListener
     public void onTouchEvent(RecyclerView view, MotionEvent motionEvent) {
     }
 
+    // endregion Inherited Methods
+
+    // region Abstract Methods
+
     /**
      * Called when an item in the {@link RecyclerView} is clicked.
      *
@@ -71,4 +82,6 @@ public abstract class RecyclerViewItemClickListener
      * @param position   The position in the adapter of the clicked item.
      */
     public abstract void onItemLongClick(ViewHolder viewHolder, RecyclerView parent, int position, float x, float y);
+
+    // endregion Abstract Methods
 }
