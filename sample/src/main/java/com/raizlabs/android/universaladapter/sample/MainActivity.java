@@ -1,9 +1,9 @@
-package com.raizlabs.android.universaladapter;
+package com.raizlabs.android.universaladapter.sample;
 
 import android.os.Bundle;
 import android.support.v7.app.ActionBarActivity;
-import android.view.Menu;
-import android.view.MenuItem;
+
+import com.raizlabs.android.universaladapter.sample.R;
 
 
 public class MainActivity extends ActionBarActivity {

@@ -1,4 +1,4 @@
-package com.raizlabs.android.universaladapter.widget.adapters.converter;
+package com.raizlabs.android.universaladapter.converter;
 
 import android.support.v4.view.ViewPager;
 import android.support.v7.widget.RecyclerView;
@@ -11,11 +11,11 @@ import com.raizlabs.android.coreutils.threading.ThreadingUtils;
 import com.raizlabs.android.coreutils.util.observable.lists.ListObserver;
 import com.raizlabs.android.coreutils.util.observable.lists.ListObserverListener;
 import com.raizlabs.android.coreutils.util.observable.lists.SimpleListObserver;
-import com.raizlabs.android.universaladapter.widget.adapters.ViewHolder;
-import com.raizlabs.widget.adapters.R;
+import com.raizlabs.android.universaladapter.ViewHolder;
 
 import java.util.ArrayList;
 import java.util.List;
+import com.raizlabs.android.universaladapter.R;
 
 /**
  * The base adapter for all of the convertible adapters. This is the only list you'll ever need to use. It provides

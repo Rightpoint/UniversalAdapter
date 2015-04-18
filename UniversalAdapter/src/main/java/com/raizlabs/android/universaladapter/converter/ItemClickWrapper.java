@@ -1,9 +1,10 @@
-package com.raizlabs.android.universaladapter.widget.adapters.converter;
+package com.raizlabs.android.universaladapter.converter;
 
 import android.view.View;
 
-import com.raizlabs.android.universaladapter.widget.adapters.ViewHolder;
-import com.raizlabs.widget.adapters.R;
+import com.raizlabs.android.universaladapter.R;
+import com.raizlabs.android.universaladapter.ViewHolder;
+
 
 /**
  * Description: Wraps conversion for {@link View.OnClickListener} and {@link View.OnLongClickListener}

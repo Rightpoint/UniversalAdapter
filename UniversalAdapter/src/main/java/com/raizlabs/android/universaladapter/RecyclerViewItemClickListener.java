@@ -1,4 +1,4 @@
-package com.raizlabs.android.universaladapter.widget.adapters;
+package com.raizlabs.android.universaladapter;
 
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.RecyclerView.OnItemTouchListener;
@@ -6,7 +6,7 @@ import android.view.GestureDetector;
 import android.view.MotionEvent;
 import android.view.View;
 
-import com.raizlabs.android.universaladapter.widget.adapters.converter.RecyclerViewAdapterConverter;
+import com.raizlabs.android.universaladapter.converter.RecyclerViewAdapterConverter;
 
 /**
  * Class which assists in handling the item clicks of a {@link RecyclerView}.

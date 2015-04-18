@@ -1,4 +1,4 @@
-package com.raizlabs.android.universaladapter;
+package com.raizlabs.android.universaladapter.sample;
 
 import android.content.Context;
 import android.content.Intent;
@@ -13,13 +13,14 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.raizlabs.android.universaladapter.widget.adapters.ListBasedAdapter;
-import com.raizlabs.android.universaladapter.widget.adapters.ViewHolder;
-import com.raizlabs.android.universaladapter.widget.adapters.converter.ItemClickedListener;
-import com.raizlabs.android.universaladapter.widget.adapters.converter.ItemLongClickedListener;
-import com.raizlabs.android.universaladapter.widget.adapters.converter.UniversalAdapter;
-import com.raizlabs.android.universaladapter.widget.adapters.converter.UniversalConverter;
-import com.raizlabs.android.universaladapter.widget.adapters.converter.UniversalConverterFactory;
+import com.raizlabs.android.universaladapter.ListBasedAdapter;
+import com.raizlabs.android.universaladapter.converter.UniversalAdapter;
+import com.raizlabs.android.universaladapter.sample.R;
+import com.raizlabs.android.universaladapter.ViewHolder;
+import com.raizlabs.android.universaladapter.converter.ItemClickedListener;
+import com.raizlabs.android.universaladapter.converter.ItemLongClickedListener;
+import com.raizlabs.android.universaladapter.converter.UniversalConverter;
+import com.raizlabs.android.universaladapter.converter.UniversalConverterFactory;
 
 import java.util.ArrayList;
 import java.util.List;

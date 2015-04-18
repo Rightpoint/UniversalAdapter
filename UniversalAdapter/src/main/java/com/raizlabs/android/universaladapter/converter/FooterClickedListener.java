@@ -1,8 +1,8 @@
-package com.raizlabs.android.universaladapter.widget.adapters.converter;
+package com.raizlabs.android.universaladapter.converter;
 
 import android.view.View;
 
-import com.raizlabs.android.universaladapter.widget.adapters.ViewHolder;
+import com.raizlabs.android.universaladapter.ViewHolder;
 
 /**
  * Unified interface for clicks on a footer {@link View}

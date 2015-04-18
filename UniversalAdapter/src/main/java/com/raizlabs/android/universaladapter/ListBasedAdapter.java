@@ -1,9 +1,9 @@
-package com.raizlabs.android.universaladapter.widget.adapters;
+package com.raizlabs.android.universaladapter;
 
 import android.widget.Adapter;
 
 import com.raizlabs.android.coreutils.util.observable.lists.ObservableList;
-import com.raizlabs.android.universaladapter.widget.adapters.converter.UniversalAdapter;
+import com.raizlabs.android.universaladapter.converter.UniversalAdapter;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -22,7 +22,8 @@ import java.util.ListIterator;
  * @param <Holder> The type of the {@link ViewHolder} that will be used to hold
  *                 views.
  */
-public abstract class ListBasedAdapter<Item, Holder extends ViewHolder> extends UniversalAdapter<Item, Holder> implements ObservableList<Item> {
+public abstract class ListBasedAdapter<Item, Holder extends ViewHolder> extends UniversalAdapter<Item, Holder>
+        implements ObservableList<Item> {
 
     // region Members
 

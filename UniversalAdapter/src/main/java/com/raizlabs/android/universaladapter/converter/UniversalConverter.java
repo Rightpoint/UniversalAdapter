@@ -1,9 +1,9 @@
-package com.raizlabs.android.universaladapter.widget.adapters.converter;
+package com.raizlabs.android.universaladapter.converter;
 
 import android.support.annotation.NonNull;
 import android.view.ViewGroup;
 
-import com.raizlabs.android.universaladapter.widget.adapters.ViewHolder;
+import com.raizlabs.android.universaladapter.ViewHolder;
 
 /**
  * A unified interface that all converters such as {@link BaseAdapterConverter}, {@link PagerAdapterConverter},

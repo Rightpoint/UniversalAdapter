@@ -1,4 +1,4 @@
-package com.raizlabs.android.universaladapter.widget.adapters.converter;
+package com.raizlabs.android.universaladapter.converter;
 
 import android.support.annotation.NonNull;
 import android.view.View;
@@ -7,8 +7,8 @@ import android.view.ViewGroup;
 import com.raizlabs.android.coreutils.util.observable.lists.ListObserver;
 import com.raizlabs.android.coreutils.util.observable.lists.ListObserverListener;
 import com.raizlabs.android.coreutils.util.observable.lists.SimpleListObserverListener;
-import com.raizlabs.android.universaladapter.widget.adapters.UniversalAdapterUtils;
-import com.raizlabs.android.universaladapter.widget.adapters.ViewHolder;
+import com.raizlabs.android.universaladapter.UniversalAdapterUtils;
+import com.raizlabs.android.universaladapter.ViewHolder;
 
 /**
  * Class which uses a {@link UniversalAdapter} to display a set of views in a

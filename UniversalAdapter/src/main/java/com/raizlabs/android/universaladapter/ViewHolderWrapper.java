@@ -1,4 +1,4 @@
-package com.raizlabs.android.universaladapter.widget.adapters;
+package com.raizlabs.android.universaladapter;
 
 import android.view.View;
 

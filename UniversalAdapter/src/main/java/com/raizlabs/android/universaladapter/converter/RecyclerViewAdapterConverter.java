@@ -1,12 +1,12 @@
-package com.raizlabs.android.universaladapter.widget.adapters.converter;
+package com.raizlabs.android.universaladapter.converter;
 
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
 import android.view.ViewGroup;
 
-import com.raizlabs.android.universaladapter.widget.adapters.RecyclerViewItemClickListener;
-import com.raizlabs.android.universaladapter.widget.adapters.RecyclerViewListObserverListener;
-import com.raizlabs.android.universaladapter.widget.adapters.ViewHolder;
+import com.raizlabs.android.universaladapter.RecyclerViewItemClickListener;
+import com.raizlabs.android.universaladapter.RecyclerViewListObserverListener;
+import com.raizlabs.android.universaladapter.ViewHolder;
 
 /**
  * Class which dynamically converts a {@link UniversalAdapter} into a
