@@ -1,12 +1,14 @@
-package com.raizlabs.android.universaladapter.widget.adapters.converter;
+package com.raizlabs.android.universaladapter.converter;
 
-import com.raizlabs.android.universaladapter.widget.adapters.ViewHolder;
+import android.view.View;
+
+import com.raizlabs.android.universaladapter.ViewHolder;
 
 /**
- * Interface for a listener which is called when a {@link ViewGroupAdapterConverter}
- * view is clicked.
+ * A unified interface for clicks on a {@link View} within each corresponding adapter.
  */
 public interface ItemClickedListener<Item, Holder extends ViewHolder> {
+
     /**
      * Called when an item in the adapter is clicked.
      *

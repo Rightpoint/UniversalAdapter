@@ -1,4 +1,4 @@
-package com.raizlabs.android.universaladapter.widget.adapters.converter;
+package com.raizlabs.android.universaladapter.converter;
 
 import android.support.v4.view.ViewPager;
 import android.support.v7.widget.RecyclerView;
@@ -6,7 +6,7 @@ import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.BaseAdapter;
 
-import com.raizlabs.android.universaladapter.widget.adapters.ViewHolder;
+import com.raizlabs.android.universaladapter.ViewHolder;
 
 /**
  * Class which contains methods for creating various {@link UniversalConverter}s.

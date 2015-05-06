@@ -1,4 +1,4 @@
-package com.raizlabs.android.universaladapter.widget.adapters.converter;
+package com.raizlabs.android.universaladapter.converter;
 
 import android.support.annotation.NonNull;
 import android.view.View;
@@ -7,8 +7,8 @@ import android.view.ViewGroup;
 import com.raizlabs.android.coreutils.util.observable.lists.ListObserver;
 import com.raizlabs.android.coreutils.util.observable.lists.ListObserverListener;
 import com.raizlabs.android.coreutils.util.observable.lists.SimpleListObserverListener;
-import com.raizlabs.android.universaladapter.widget.adapters.UniversalAdapterUtils;
-import com.raizlabs.android.universaladapter.widget.adapters.ViewHolder;
+import com.raizlabs.android.universaladapter.UniversalAdapterUtils;
+import com.raizlabs.android.universaladapter.ViewHolder;
 
 /**
  * Class which uses a {@link UniversalAdapter} to display a set of views in a
@@ -23,18 +23,13 @@ import com.raizlabs.android.universaladapter.widget.adapters.ViewHolder;
  */
 public class ViewGroupAdapterConverter<Item, Holder extends ViewHolder> implements UniversalConverter<Item, Holder, ViewGroup> {
 
+    // region Members
+
     private ViewGroup viewGroup;
-
-    /**
-     * @return The {@link ViewGroup} that this adapter populates.
-     */
-    public ViewGroup getViewGroup() {
-        return viewGroup;
-    }
-
     private UniversalAdapter<Item, Holder> universalAdapter;
-
     private ItemClickWrapper<Item, Holder> itemClickWrapper;
+
+    // endregion Members
 
     /**
      * Constructs a new adapter bound to the given {@link ViewGroup}, and binds
@@ -50,63 +45,77 @@ public class ViewGroupAdapterConverter<Item, Holder extends ViewHolder> implemen
         itemClickWrapper = new ItemClickWrapper<>(this);
     }
 
+    // region Accessors
+
     /**
-     * Sets the listener to be called when an item is long clicked.
-     *
-     * @param listener The listener to call.
+     * @return The {@link ViewGroup} that this adapter populates.
      */
-    public void setItemLongClickedListener(ItemLongClickedListener<Item, Holder> listener) {
-        itemClickWrapper.itemLongClickedListener = listener;
+    public ViewGroup getViewGroup() {
+        return viewGroup;
     }
+
+    // endregion Accessors
 
     // region Inherited Methods
 
-    /**
-     * @return The {@link UniversalAdapter} that this adapter uses to populate
-     * the view group.
-     */
     @Override
     public UniversalAdapter<Item, Holder> getAdapter() {
         return universalAdapter;
     }
 
-    /**
-     * Sets the listener to be called when an item is clicked.
-     *
-     * @param listener The listener to call.
-     */
     @Override
     public void setItemClickedListener(ItemClickedListener<Item, Holder> listener) {
-        itemClickWrapper.itemClickedListener = listener;
+        getAdapter().setItemClickedListener(listener);
     }
 
-    /**
-     * Sets the adapter to use to populate the {@link ViewGroup} and loads
-     * the current data.
-     *
-     * @param adapter The adapter to use to populate the view group.
-     */
+    @Override
+    public void setItemLongClickedListener(ItemLongClickedListener<Item, Holder> listener) {
+        getAdapter().setItemLongClickedListener(listener);
+    }
+
+    @Override
+    public void setHeaderClickedListener(HeaderClickedListener headerClickedListener) {
+        getAdapter().setHeaderClickedListener(headerClickedListener);
+    }
+
+    @Override
+    public void setFooterClickedListener(FooterClickedListener footerClickedListener) {
+        getAdapter().setFooterClickedListener(footerClickedListener);
+    }
+
+    @Override
+    public void setHeaderLongClickedListener(HeaderLongClickListener headerLongClickedListener) {
+        getAdapter().setHeaderLongClickListener(headerLongClickedListener);
+    }
+
+    @Override
+    public void setFooterLongClickedListener(FooterLongClickedListener footerLongClickedListener) {
+        getAdapter().setFooterLongClickedListener(footerLongClickedListener);
+    }
+
     @Override
     public void setAdapter(@NonNull UniversalAdapter<Item, Holder> adapter) {
-        if (this.universalAdapter != null) {
-            this.universalAdapter.getListObserver().removeListener(listChangeListener);
+        if (getAdapter() != null) {
+            getAdapter().getListObserver().removeListener(listChangeListener);
         }
 
         this.universalAdapter = adapter;
-        this.universalAdapter.getListObserver().addListener(listChangeListener);
+        adapter.getListObserver().addListener(listChangeListener);
 
         populateAll();
     }
 
     @Override
     public void cleanup() {
-        if (this.universalAdapter != null) {
-            this.universalAdapter.getListObserver().removeListener(listChangeListener);
+        if (getAdapter() != null) {
+            getAdapter().getListObserver().removeListener(listChangeListener);
         }
         this.viewGroup = null;
     }
 
     // endregion Inherited Methods
+
+    // region Instance Methods
 
     private void clear() {
         viewGroup.removeAllViews();
@@ -116,8 +125,8 @@ public class ViewGroupAdapterConverter<Item, Holder extends ViewHolder> implemen
         if (viewGroup != null) {
             clear();
 
-            if (universalAdapter != null) {
-                final int count = universalAdapter.getInternalCount();
+            if (getAdapter() != null) {
+                final int count = getAdapter().getInternalCount();
                 for (int i = 0; i < count; i++) {
                     addItem(i);
                 }
@@ -127,8 +136,9 @@ public class ViewGroupAdapterConverter<Item, Holder extends ViewHolder> implemen
     }
 
     private void addItem(int position) {
-        ViewHolder holder = universalAdapter.createViewHolder(getViewGroup(), universalAdapter.getItemViewTypeInternal(position));
-        universalAdapter.bindViewHolder(holder, position);
+        ViewHolder holder = getAdapter().createViewHolder(getViewGroup(),
+                                                          universalAdapter.getItemViewTypeInternal(position));
+        getAdapter().bindViewHolder(holder, position);
 
         View view = holder.itemView;
         UniversalAdapterUtils.setViewHolder(view, holder);
@@ -143,5 +153,7 @@ public class ViewGroupAdapterConverter<Item, Holder extends ViewHolder> implemen
             populateAll();
         }
     };
+
+    // endregion Instance Methods
 
 }

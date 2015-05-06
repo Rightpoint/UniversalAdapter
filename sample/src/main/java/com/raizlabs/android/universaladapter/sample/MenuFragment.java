@@ -1,4 +1,4 @@
-package com.raizlabs.android.universaladapter;
+package com.raizlabs.android.universaladapter.sample;
 
 import android.content.Context;
 import android.os.Bundle;
@@ -10,13 +10,13 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
-import com.raizlabs.android.universaladapter.widget.adapters.ListBasedAdapter;
-import com.raizlabs.android.universaladapter.widget.adapters.ViewHolder;
-import com.raizlabs.android.universaladapter.widget.adapters.converter.ItemClickedListener;
-import com.raizlabs.android.universaladapter.widget.adapters.converter.RecyclerViewAdapterConverter;
-import com.raizlabs.android.universaladapter.widget.adapters.converter.UniversalAdapter;
-import com.raizlabs.android.universaladapter.widget.adapters.converter.UniversalConverter;
-import com.raizlabs.android.universaladapter.widget.adapters.converter.UniversalConverterFactory;
+import com.raizlabs.android.universaladapter.ListBasedAdapter;
+import com.raizlabs.android.universaladapter.converter.UniversalAdapter;
+import com.raizlabs.android.universaladapter.sample.R;
+import com.raizlabs.android.universaladapter.ViewHolder;
+import com.raizlabs.android.universaladapter.converter.ItemClickedListener;
+import com.raizlabs.android.universaladapter.converter.UniversalConverter;
+import com.raizlabs.android.universaladapter.converter.UniversalConverterFactory;
 
 /**
  * Description:
