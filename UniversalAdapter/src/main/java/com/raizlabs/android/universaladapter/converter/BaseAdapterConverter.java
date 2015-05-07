@@ -81,7 +81,9 @@ public class BaseAdapterConverter<Item, Holder extends ViewHolder>
 
     @Override
     public void setAdapter(@NonNull UniversalAdapter<Item, Holder> listAdapter) {
-        getAdapter().getListObserver().removeListener(internalListObserverListener);
+        if(getAdapter() != null) {
+            getAdapter().getListObserver().removeListener(internalListObserverListener);
+        }
 
         this.universalAdapter = listAdapter;
         listAdapter.getListObserver().addListener(internalListObserverListener);

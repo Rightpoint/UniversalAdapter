@@ -114,7 +114,9 @@ public class RecyclerViewAdapterConverter<Item, Holder extends ViewHolder>
 
     @Override
     public void setAdapter(@NonNull UniversalAdapter<Item, Holder> listAdapter) {
-        getAdapter().getListObserver().removeListener(observerListener);
+        if(getAdapter() != null) {
+            getAdapter().getListObserver().removeListener(observerListener);
+        }
 
         this.universalAdapter = listAdapter;
         // Add a listener which will delegate list observer calls back to us
