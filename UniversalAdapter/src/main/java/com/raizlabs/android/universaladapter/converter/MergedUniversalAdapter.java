@@ -130,6 +130,18 @@ public class MergedUniversalAdapter extends UniversalAdapter {
     }
 
     /**
+     * Appends a varying amount of adapters at the end of this {@link MergedUniversalAdapter}
+     *
+     * @param adapters The adapters to append.
+     */
+    public void addAdapters(UniversalAdapter... adapters) {
+        for (UniversalAdapter adapter : adapters) {
+            addAdapter(listPieces.size(), adapter);
+        }
+        notifyDataSetChanged();
+    }
+
+    /**
      * Adds an adapter to this merged adapter based on the position of adapters.
      *
      * @param position The 0-based index position within adapters to add. If this is the 3rd adapter, the position is 2.
