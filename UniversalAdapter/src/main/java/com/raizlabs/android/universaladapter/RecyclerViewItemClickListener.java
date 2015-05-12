@@ -46,11 +46,13 @@ public abstract class RecyclerViewItemClickListener
             gestureDetector.setIsLongpressEnabled(true);
         }
 
-        View childView = view.findChildViewUnder(e.getX(), e.getY());
-        if (childView != null && gestureDetector.onTouchEvent(e)) {
-            int position = view.getChildAdapterPosition(childView);
-            ViewHolder viewHolder = (ViewHolder) view.getChildViewHolder(childView);
-            onItemClick(viewHolder, view, position, e.getX(), e.getY());
+        if (gestureDetector.onTouchEvent(e)) {
+            View childView = view.findChildViewUnder(e.getX(), e.getY());
+            if (childView != null) {
+                int position = view.getChildAdapterPosition(childView);
+                ViewHolder viewHolder = (ViewHolder) view.getChildViewHolder(childView);
+                onItemClick(viewHolder, view, position, e.getX(), e.getY());
+            }
         }
 
         return false;

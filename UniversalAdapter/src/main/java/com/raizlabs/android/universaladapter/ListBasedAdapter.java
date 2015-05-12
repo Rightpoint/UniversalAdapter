@@ -16,7 +16,7 @@ import java.util.ListIterator;
 /**
  * Common base class implementation of a {@link Adapter} that is backed
  * by a {@link List}. This class also implements {@link List} to support the
- * same functionality, while still functioning as an {@link Adapter}.
+ * same functionality, while still functioning as an {@link UniversalAdapter}.
  *
  * @param <Item>   The type of item that views will represent.
  * @param <Holder> The type of the {@link ViewHolder} that will be used to hold

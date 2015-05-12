@@ -137,7 +137,7 @@ public class ViewGroupAdapterConverter<Item, Holder extends ViewHolder> implemen
 
     private void addItem(int position) {
         ViewHolder holder = getAdapter().createViewHolder(getViewGroup(),
-                                                          universalAdapter.getItemViewTypeInternal(position));
+                                                          universalAdapter.getInternalItemViewType(position));
         getAdapter().bindViewHolder(holder, position);
 
         View view = holder.itemView;

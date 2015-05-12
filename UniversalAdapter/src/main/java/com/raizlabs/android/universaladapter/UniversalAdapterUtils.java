@@ -37,11 +37,12 @@ public class UniversalAdapterUtils {
      * @param view The view to get the view holder of.
      * @return The associated view holder, or null if none was found.
      */
-    public static Object getViewHolder(View view) {
+    @SuppressWarnings("unchecked")
+    public static <Holder> Holder getViewHolder(View view) {
         if (view == null) {
             return null;
         }
-        return view.getTag(VIEWHOLDER_TAG_ID);
+        return (Holder) view.getTag(VIEWHOLDER_TAG_ID);
     }
 
     /**

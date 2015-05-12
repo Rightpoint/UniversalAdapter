@@ -101,7 +101,7 @@ public class BaseAdapterConverter<Item, Holder extends ViewHolder>
 
     @Override
     public int getItemViewType(int position) {
-        return getAdapter().getItemViewTypeInternal(position);
+        return getAdapter().getInternalItemViewType(position);
     }
 
     @Override
@@ -173,10 +173,9 @@ public class BaseAdapterConverter<Item, Holder extends ViewHolder>
         super.notifyDataSetChanged();
     }
 
-    @SuppressWarnings("unchecked")
     protected Holder getViewHolder(View view) {
         try {
-            return (Holder) UniversalAdapterUtils.getViewHolder(view);
+            return UniversalAdapterUtils.getViewHolder(view);
         } catch (ClassCastException ex) {
             // Don't care. Just don't crash. We'll just ignore convertView.
         }

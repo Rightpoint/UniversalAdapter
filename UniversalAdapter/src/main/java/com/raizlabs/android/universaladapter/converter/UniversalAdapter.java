@@ -390,7 +390,7 @@ public abstract class UniversalAdapter<Item, Holder extends ViewHolder> {
      * @param position The position in the whole list including headers and footers.
      * @return The item view type. Header and footers each will have a unique item type, since they're not uniform.
      */
-    int getItemViewTypeInternal(int position) {
+    int getInternalItemViewType(int position) {
         int viewType;
         if (position < getHeadersCount()) {
             viewType = position;

@@ -131,7 +131,7 @@ public class RecyclerViewAdapterConverter<Item, Holder extends ViewHolder>
 
     @Override
     public int getItemViewType(int position) {
-        return getAdapter().getItemViewTypeInternal(position);
+        return getAdapter().getInternalItemViewType(position);
     }
 
     @Override

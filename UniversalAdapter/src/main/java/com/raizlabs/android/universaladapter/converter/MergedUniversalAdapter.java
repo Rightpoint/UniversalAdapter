@@ -77,7 +77,7 @@ public class MergedUniversalAdapter extends UniversalAdapter {
             int size = piece.getCount();
 
             if (position < size) {
-                result = typeOffset + piece.adapter.getItemViewTypeInternal(position);
+                result = typeOffset + piece.adapter.getInternalItemViewType(position);
                 break;
             }
 
@@ -232,7 +232,7 @@ public class MergedUniversalAdapter extends UniversalAdapter {
          */
         void initializeItemViewTypes() {
             for (int i = 0; i < getCount(); i++) {
-                itemViewTypes.add(adapter.getItemViewTypeInternal(i));
+                itemViewTypes.add(adapter.getInternalItemViewType(i));
             }
         }
 
