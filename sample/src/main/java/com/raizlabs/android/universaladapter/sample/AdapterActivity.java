@@ -15,7 +15,6 @@ import android.widget.Toast;
 
 import com.raizlabs.android.universaladapter.ListBasedAdapter;
 import com.raizlabs.android.universaladapter.converter.UniversalAdapter;
-import com.raizlabs.android.universaladapter.sample.R;
 import com.raizlabs.android.universaladapter.ViewHolder;
 import com.raizlabs.android.universaladapter.converter.ItemClickedListener;
 import com.raizlabs.android.universaladapter.converter.ItemLongClickedListener;
@@ -44,7 +43,7 @@ public class AdapterActivity extends FragmentActivity {
         return intent;
     }
 
-    private UniversalConverter<Object, UniversalHolder, ?> converter;
+    private UniversalConverter<Object, UniversalHolder> converter;
 
     private ListBasedAdapter<Object, ? extends ViewHolder> adapter;
 
@@ -102,7 +101,7 @@ public class AdapterActivity extends FragmentActivity {
             ((RecyclerView) viewGroup).setLayoutManager(new LinearLayoutManager(viewGroup.getContext()));
         }
 
-        converter = (UniversalConverter<Object, UniversalHolder, ?>) UniversalConverterFactory.createGeneric(adapter, viewGroup);
+        converter = (UniversalConverter<Object, UniversalHolder>) UniversalConverterFactory.createGeneric(adapter, viewGroup);
         converter.setItemClickedListener(new ItemClickedListener<Object, UniversalHolder>() {
             @Override
             public void onItemClicked(UniversalAdapter<Object, UniversalHolder> adapter, Object o,

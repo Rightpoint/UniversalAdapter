@@ -19,7 +19,7 @@ import com.raizlabs.android.universaladapter.ViewHolder;
  *                 views.
  */
 public class RecyclerViewAdapterConverter<Item, Holder extends ViewHolder>
-        extends RecyclerView.Adapter implements UniversalConverter<Item, Holder, RecyclerView> {
+        extends RecyclerView.Adapter implements UniversalConverter<Item, Holder> {
 
     // region Interface Declarations
 

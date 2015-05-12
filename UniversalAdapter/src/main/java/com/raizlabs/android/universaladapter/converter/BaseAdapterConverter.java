@@ -24,7 +24,7 @@ import com.raizlabs.android.universaladapter.ViewHolder;
  *                 views.
  */
 public class BaseAdapterConverter<Item, Holder extends ViewHolder>
-        extends BaseAdapter implements UniversalConverter<Item, Holder, AdapterView<? super BaseAdapter>> {
+        extends BaseAdapter implements UniversalConverter<Item, Holder> {
 
     private UniversalAdapter<Item, Holder> universalAdapter;
 

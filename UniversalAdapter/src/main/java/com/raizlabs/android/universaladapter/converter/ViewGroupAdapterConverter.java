@@ -21,7 +21,7 @@ import com.raizlabs.android.universaladapter.ViewHolder;
  * @param <Holder> The type of the {@link ViewHolder} that will be used to hold
  *                 views.
  */
-public class ViewGroupAdapterConverter<Item, Holder extends ViewHolder> implements UniversalConverter<Item, Holder, ViewGroup> {
+public class ViewGroupAdapterConverter<Item, Holder extends ViewHolder> implements UniversalConverter<Item, Holder> {
 
     // region Members
 

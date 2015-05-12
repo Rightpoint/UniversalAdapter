@@ -13,7 +13,7 @@ import java.util.List;
 import java.util.Set;
 
 /**
- * Description: Merges adapters together into one large {@link UniversalAdapter}.
+ *  Merges adapters together into one large {@link UniversalAdapter}.
  */
 public class MergedUniversalAdapter extends UniversalAdapter {
 
@@ -41,12 +41,19 @@ public class MergedUniversalAdapter extends UniversalAdapter {
     @Override
     protected ViewHolder onCreateViewHolder(ViewGroup parent, int itemType) {
         ViewHolder viewHolder = null;
+
         int typeOffset = 1;
         for (ListPiece piece : listPieces) {
-            if (piece.hasViewType(typeOffset - itemType)) {
-                viewHolder = piece.adapter.createViewHolder(parent, typeOffset - itemType);
+
+            // offset is used to retrieve the specified item type from the inner adapter
+            // since it has no knowledge of being part of this merged adapter.
+            int adapterItemType = typeOffset - itemType;
+            if (piece.hasViewType(adapterItemType)) {
+                viewHolder = piece.adapter.createViewHolder(parent, adapterItemType);
                 break;
             }
+
+            // uses offset to calculate what the view type actually is, as offset by each adapter's viewtype amount.
             typeOffset += piece.adapter.getInternalItemViewTypeCount();
         }
         return viewHolder;
@@ -104,12 +111,8 @@ public class MergedUniversalAdapter extends UniversalAdapter {
 
     @Override
     public Object get(int position) {
-        for (ListPiece piece : listPieces) {
-            if (piece.isPositionWithinAdapter(position)) {
-                return piece.getAdjustedItem(position);
-            }
-        }
-        return null;
+        ListPiece piece = getPieceAt(position);
+        return piece != null ? piece.getAdjustedItem(position) : null;
     }
 
     // endregion Inherited Methods

@@ -24,7 +24,7 @@ import com.raizlabs.android.universaladapter.ViewHolder;
  *                 views.
  */
 public class PagerAdapterConverter<Item, Holder extends ViewHolder>
-        extends PagerAdapter implements UniversalConverter<Item, Holder, ViewPager> {
+        extends PagerAdapter implements UniversalConverter<Item, Holder> {
 
     // region Members
 

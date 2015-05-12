@@ -27,7 +27,7 @@ public class UniversalConverterFactory {
      */
     @SuppressWarnings("unchecked")
     public static <Item, Holder extends ViewHolder>
-    UniversalConverter<Item, Holder, ?> createGeneric(UniversalAdapter<Item, Holder> adapter, ViewGroup viewGroup) {
+    UniversalConverter<Item, Holder> createGeneric(UniversalAdapter<Item, Holder> adapter, ViewGroup viewGroup) {
         if (viewGroup instanceof RecyclerView) {
             return create(adapter, (RecyclerView) viewGroup);
         } else if (viewGroup instanceof AdapterView) {

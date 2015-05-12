@@ -9,8 +9,11 @@ import com.raizlabs.android.universaladapter.ViewHolder;
  * A unified interface that all converters such as {@link BaseAdapterConverter}, {@link PagerAdapterConverter},
  * {@link RecyclerViewAdapterConverter}, and {@link ViewGroupAdapterConverter} implement. The {@link UniversalConverterFactory}
  * returns this interface when calling {@link UniversalConverterFactory#createGeneric(UniversalAdapter, ViewGroup)}
+ *
+ * @param <Item>   The uniform item used for the {@link Holder}
+ * @param <Holder> The holder for the uniform item type.
  */
-public interface UniversalConverter<Item, Holder extends ViewHolder, Register extends ViewGroup> {
+public interface UniversalConverter<Item, Holder extends ViewHolder> {
 
     /**
      * Sets the listener to be called when an item is clicked.
