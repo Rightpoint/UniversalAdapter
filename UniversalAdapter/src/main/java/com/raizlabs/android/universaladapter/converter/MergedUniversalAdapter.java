@@ -13,7 +13,7 @@ import java.util.List;
 import java.util.Set;
 
 /**
- *  Merges adapters together into one large {@link UniversalAdapter}.
+ * Merges adapters together into one large {@link UniversalAdapter}.
  */
 public class MergedUniversalAdapter extends UniversalAdapter {
 
@@ -119,12 +119,24 @@ public class MergedUniversalAdapter extends UniversalAdapter {
 
     // region Instance Methods
 
+    /**
+     * Adds an adapter at the end of this {@link MergedUniversalAdapter}.
+     *
+     * @param adapter The adapter to add to this adapter
+     */
     public void addAdapter(UniversalAdapter adapter) {
         addAdapter(listPieces.size(), adapter);
+        notifyDataSetChanged();
     }
 
+    /**
+     * Adds an adapter to this merged adapter based on the position of adapters.
+     *
+     * @param position The 0-based index position within adapters to add. If this is the 3rd adapter, the position is 2.
+     * @param adapter  The adapter to add.
+     */
     @SuppressWarnings("unchecked")
-    public void addAdapter(int position, UniversalAdapter adapter) {
+    void addAdapter(int position, UniversalAdapter adapter) {
         int count = getCount();
 
         // create reference piece
@@ -137,24 +149,6 @@ public class MergedUniversalAdapter extends UniversalAdapter {
 
         // know what kind of item types the piece contains for faster item view type.
         piece.initializeItemViewTypes();
-        notifyDataSetChanged();
-    }
-
-    @SuppressWarnings("unchecked")
-    public void removeAdapter(int position) {
-        listPieces.remove(position)
-                .adapter.getListObserver().removeListener(cascadingListObserver);
-        notifyDataSetChanged();
-    }
-
-    public void removeAdapter(UniversalAdapter adapter) {
-        for (int i = 0; i < listPieces.size(); i++) {
-            if (listPieces.get(i).adapter.equals(adapter)) {
-                listPieces.remove(i);
-                break;
-            }
-        }
-        notifyDataSetChanged();
     }
 
     /**
@@ -244,7 +238,6 @@ public class MergedUniversalAdapter extends UniversalAdapter {
             return adapter.getInternalCount();
         }
 
-
         Object getAdjustedItem(int position) {
             return adapter.get(getAdjustedItemPosition(position));
         }
@@ -254,7 +247,6 @@ public class MergedUniversalAdapter extends UniversalAdapter {
         }
 
         // endregion Instance Methods
-
 
     }
 
