@@ -10,6 +10,6 @@ android {
 }
 
 dependencies {
-    nsMod 'com.android.support:{recyclerview-v7, support-v4}:22.0.0'
+    nsMod 'com.android.support:{recyclerview-v7, support-v4}:22.1.0'
     mod 'com.raizlabs.android:{CoreUtils}:1.0.0'
 }
