@@ -3,6 +3,7 @@ package com.raizlabs.android.universaladapter;
 import android.widget.Adapter;
 
 import com.raizlabs.android.coreutils.util.observable.lists.ObservableList;
+import com.raizlabs.android.coreutils.util.observable.lists.ObservableListWrapper;
 import com.raizlabs.android.universaladapter.converter.UniversalAdapter;
 
 import java.util.ArrayList;
@@ -36,7 +37,7 @@ public abstract class ListBasedAdapter<Item, Holder extends ViewHolder> extends 
     /**
      * Constructs an empty {@link ListBasedAdapter}.
      */
-    protected ListBasedAdapter() {
+    public ListBasedAdapter() {
         this(null);
     }
 
@@ -45,7 +46,17 @@ public abstract class ListBasedAdapter<Item, Holder extends ViewHolder> extends 
      *
      * @param list The list of items to use.
      */
-    protected ListBasedAdapter(List<Item> list) {
+    public ListBasedAdapter(List<Item> list) {
+        setItemsList(list);
+    }
+
+    /**
+     * Constructs a {@link ListBasedAdapter} which contains the given list. Giving this adapter's underlying data
+     * a hook into notifying this class of its changes automatically.
+     *
+     * @param list The list of items to use.
+     */
+    public ListBasedAdapter(ObservableListWrapper<Item> list) {
         setItemsList(list);
     }
 
@@ -69,12 +80,10 @@ public abstract class ListBasedAdapter<Item, Holder extends ViewHolder> extends 
         onGenericChange();
     }
 
-
     @Override
     public int getCount() {
         return mList.size();
     }
-
 
     @Override
     public void add(int location, Item object) {
@@ -298,7 +307,9 @@ public abstract class ListBasedAdapter<Item, Holder extends ViewHolder> extends 
      */
     protected void setItemsList(List<Item> list) {
         unbindList();
-        if (list == null) list = new LinkedList<Item>();
+        if (list == null) {
+            list = new LinkedList<Item>();
+        }
         mList = list;
         notifyDataSetChangedOnUIThread();
     }
@@ -310,7 +321,9 @@ public abstract class ListBasedAdapter<Item, Holder extends ViewHolder> extends 
      * @param list The {@link ObservableList} of items to use.
      */
     protected void setItemsList(ObservableList<Item> list) {
-        if (list != null) list.getListObserver().addListener(observableListener);
+        if (list != null) {
+            list.getListObserver().addListener(observableListener);
+        }
         setItemsList((List<Item>) list);
     }
 

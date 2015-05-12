@@ -11,11 +11,11 @@ import com.raizlabs.android.coreutils.threading.ThreadingUtils;
 import com.raizlabs.android.coreutils.util.observable.lists.ListObserver;
 import com.raizlabs.android.coreutils.util.observable.lists.ListObserverListener;
 import com.raizlabs.android.coreutils.util.observable.lists.SimpleListObserver;
+import com.raizlabs.android.universaladapter.R;
 import com.raizlabs.android.universaladapter.ViewHolder;
 
 import java.util.ArrayList;
 import java.util.List;
-import com.raizlabs.android.universaladapter.R;
 
 /**
  * The base adapter for all of the convertible adapters. This is the only list you'll ever need to use. It provides
@@ -23,7 +23,7 @@ import com.raizlabs.android.universaladapter.R;
  * binds to {@link ViewGroup} and {@link ViewPager}.
  * <p/>
  * It also supports an arbitrary number of headers and footer views. This adapter handles positioning, item view types,
- * clicks, and more for these independent of the normal methods.
+ * clicks, and more making it independent of the standard adapter classes.
  *
  * @param <Item>   The uniform item used for the {@link Holder}
  * @param <Holder> The holder for the uniform item type.
@@ -112,18 +112,17 @@ public abstract class UniversalAdapter<Item, Holder extends ViewHolder> {
     public abstract int getCount();
 
     /**
-     * Called to create the given view holder with the specific itemType. By default,
-     * this is called from {@link #createViewHolder(ViewGroup, int)}.
+     * Called to create the given view holder with the specific itemType. This is called from {@link #createViewHolder(ViewGroup, int)}.
      *
      * @param parent   The parent that the {@link Holder} uses to for params and context.
      * @param itemType The item type to use.
-     * @return A populated {@link Holder}
+     * @return A created {@link Holder} with its views already instantiated.
      */
     protected abstract Holder onCreateViewHolder(ViewGroup parent, int itemType);
 
     /**
-     * Called to populate the given view holder with the data from the given
-     * item. By default, this is called from
+     * Called to bind the given view holder with the data from the given
+     * item. This is called from
      * {@link #bindViewHolder(ViewHolder, int)} with the appropriate item.
      *
      * @param viewHolder The view holder to populate.
@@ -301,7 +300,6 @@ public abstract class UniversalAdapter<Item, Holder extends ViewHolder> {
             throw new IllegalStateException("Tried to end a transaction when no transaction was running!");
         }
     }
-
 
     /**
      * @param parent   The parent to reference in the {@link ViewHolder}
@@ -563,7 +561,6 @@ public abstract class UniversalAdapter<Item, Holder extends ViewHolder> {
     protected View inflateView(ViewGroup parent, int layoutResId) {
         return LayoutInflater.from(parent.getContext()).inflate(layoutResId, parent, false);
     }
-
 
     /**
      * Binds a header {@link ViewHolder} for the specified position. Override if you need to do any custom

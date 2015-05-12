@@ -1,10 +1,10 @@
 # UniversalAdapter
 
-A single adapter implementation for any scrolling view.
+A single adapter implementation for any scrolling view or `ViewGroup`.
 
-This library consolidates the differences between `BaseAdapter`, `RecyclerView.Adapter`, `PagerAdapter`, and `ViewGroupAdapter` into one unified API.
+This library consolidates the differences between `BaseAdapter`, `RecyclerView.Adapter`, `PagerAdapter`, and binding to `ViewGroup` into one unified API.
 
-It bases it's underlying implementation on the `ViewHolder` pattern and abstracts it to work with all of the adapter views.
+Its underlying implementation is based on the `ViewHolder` pattern and abstracts it to work with all of the adapter views.
 
 ## Including in your project
 
@@ -60,8 +60,8 @@ or by standard Gradle use (without linking sources support):
 This library comes packed with some notable features:
   1. Unified adapter binding
   2. List observability: when an adapter's inner content changes, notifications to the parent adapter view happen automatically
-  3. Merged adapter: add an arbitrary amount of `UniversalAdapter` together to enable diverse view-data sets!
-  4. Unified header and footer support: add an arbitrary number of headers and footers to a `HFListBasedAdapter` and let the library handle it for you, no matter the parent view!
+  3. Merged adapter: add an arbitrary amount of `UniversalAdapter`'s together to enable diverse view-data sets!
+  4. Unified header and footer support: add an arbitrary number of headers and footers to any `UniversalAdapter` and let the library handle it for you, no matter the parent view!
   5. `ViewGroup` binding for views such as `LinearLayout` or `GridLayout`!
 
 
@@ -69,9 +69,9 @@ This library comes packed with some notable features:
 
 This library comes with two main adapter classes: `UniversalAdapter` and `ListBasedAdapter`.
 
-`UniversalAdapter` is an almost identical mirror to `BaseAdapter` while not relying on subclassing it.
+`UniversalAdapter` is similar to `BaseAdapter` while not relying on subclassing it.
 
-`ListBasedAdapter` supports a `List` of items and manages observability and content changes for you.
+`ListBasedAdapter` supports a `List` of items. _Note: use ObservableListWrapper to pass changes from this list to this adapter automatically!_
 
 To define an adapter:
 

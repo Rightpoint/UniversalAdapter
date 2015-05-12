@@ -120,7 +120,7 @@ public class PagerAdapterConverter<Item, Holder extends ViewHolder>
 
     @Override
     public boolean isViewFromObject(View view, Object object) {
-        return view == object;
+        return (view == object);
     }
 
     // endregion Inherited Methods

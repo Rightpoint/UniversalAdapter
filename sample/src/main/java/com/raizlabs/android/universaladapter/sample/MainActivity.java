@@ -1,12 +1,9 @@
 package com.raizlabs.android.universaladapter.sample;
 
 import android.os.Bundle;
-import android.support.v7.app.ActionBarActivity;
+import android.support.v7.app.AppCompatActivity;
 
-import com.raizlabs.android.universaladapter.sample.R;
-
-
-public class MainActivity extends ActionBarActivity {
+public class MainActivity extends AppCompatActivity {
 
     static final String TAG_MENU_FRAGMENT = "MenuFragment";
 
@@ -16,9 +13,8 @@ public class MainActivity extends ActionBarActivity {
         setContentView(R.layout.activity_main);
 
         if (getSupportFragmentManager().findFragmentByTag(TAG_MENU_FRAGMENT) == null) {
-            getSupportFragmentManager().beginTransaction()
-                    .add(R.id.container, new MenuFragment(), TAG_MENU_FRAGMENT)
-                    .commit();
+            getSupportFragmentManager().beginTransaction().add(R.id.container, new MenuFragment(),
+                                                               TAG_MENU_FRAGMENT).commit();
         }
     }
 
