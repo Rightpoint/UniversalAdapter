@@ -1,3 +1,4 @@
+[![Raizlabs Repository](http://img.shields.io/badge/Raizlabs%20Repository-2.0.0-blue.svg?style=flat)](https://github.com/Raizlabs/maven-releases)
 # UniversalAdapter
 
 A single adapter implementation for any scrolling view or `ViewGroup`.
@@ -32,8 +33,7 @@ Add the maven repo url to your root build.gradle in the ```buildscript{}``` and 
 
 ```
 
-Add the library to the project-level build.gradle, using the [apt plugin](https://bitbucket.org/hvisser/android-apt) to enable Annotation Processing and the
-[Griddle](https://github.com/Raizlabs/Griddle) plugin to simplify your build.gradle and link sources:
+Add the library to the project-level build.gradle, using the [Griddle](https://github.com/Raizlabs/Griddle) plugin to simplify your build.gradle and link sources:
 
 ```groovy
 
