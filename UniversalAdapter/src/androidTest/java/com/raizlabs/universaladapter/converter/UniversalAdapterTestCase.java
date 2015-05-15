@@ -34,7 +34,7 @@ public class UniversalAdapterTestCase extends AndroidTestCase {
         assertEquals(expected, adapter.getInternalCount());
     }
 
-    protected static void assetBindCorrectly(int position, ViewGroup parent, UniversalAdapter adapter) {
+    protected static void assertBindCorrectly(int position, ViewGroup parent, UniversalAdapter adapter) {
         ViewHolder viewHolder = adapter.createViewHolder(parent, adapter.getInternalItemViewType(position));
         adapter.bindViewHolder(viewHolder, position);
     }

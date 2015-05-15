@@ -23,6 +23,7 @@ public class MultipleItemTest extends UniversalAdapterTestCase {
         multipleItemTypeAdapter.add("Multiple");
         multipleItemTypeAdapter.add(5);
         multipleItemTypeAdapter.add(0.5f);
+        multipleItemTypeAdapter.add(4);
 
         SimpleHeaderHolder headerHolder = new SimpleHeaderHolder(new View(dummyLinear.getContext()));
         multipleItemTypeAdapter.addHeaderHolder(headerHolder);
@@ -30,16 +31,17 @@ public class MultipleItemTest extends UniversalAdapterTestCase {
         headerHolder = new SimpleHeaderHolder(new View(dummyLinear.getContext()));
         multipleItemTypeAdapter.addHeaderHolder(headerHolder);
 
-        assertTotalCount(5, multipleItemTypeAdapter);
+        assertTotalCount(6, multipleItemTypeAdapter);
 
         SimpleFooterHolder simpleFooterHolder = new SimpleFooterHolder(new View(dummyLinear.getContext()));
         multipleItemTypeAdapter.addFooterHolder(simpleFooterHolder);
 
-        assertTotalCount(6, multipleItemTypeAdapter);
+        assertTotalCount(7, multipleItemTypeAdapter);
 
         assertTrue(multipleItemTypeAdapter.get(0) instanceof String);
         assertTrue(multipleItemTypeAdapter.get(1) instanceof Integer);
         assertTrue(multipleItemTypeAdapter.get(2) instanceof Float);
+        assertTrue(multipleItemTypeAdapter.get(3) instanceof Integer);
 
         // ensure header is proper viewtype
         assertInternalHolderCreatedType(0, multipleItemTypeAdapter, SimpleHeaderHolder.class, dummyLinear);
@@ -60,10 +62,11 @@ public class MultipleItemTest extends UniversalAdapterTestCase {
         assertItemTypeWasCorrectlySpecified(MultipleItemTypeAdapter.TYPE_1, 0, multipleItemTypeAdapter);
         assertItemTypeWasCorrectlySpecified(MultipleItemTypeAdapter.TYPE_2, 1, multipleItemTypeAdapter);
         assertItemTypeWasCorrectlySpecified(MultipleItemTypeAdapter.TYPE_3, 2, multipleItemTypeAdapter);
+        assertItemTypeWasCorrectlySpecified(MultipleItemTypeAdapter.TYPE_2, 3, multipleItemTypeAdapter);
 
         // ensure we can bind to all items correctly
         for(int i = 0; i < getInternalCount(multipleItemTypeAdapter); i++) {
-            assetBindCorrectly(i, dummyLinear, multipleItemTypeAdapter);
+            assertBindCorrectly(i, dummyLinear, multipleItemTypeAdapter);
         }
     }
 

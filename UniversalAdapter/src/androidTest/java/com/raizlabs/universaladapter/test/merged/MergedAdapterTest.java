@@ -1,5 +1,7 @@
 package com.raizlabs.universaladapter.test.merged;
 
+import android.widget.LinearLayout;
+
 import com.raizlabs.universaladapter.converter.MergedUniversalAdapter;
 import com.raizlabs.universaladapter.converter.UniversalAdapterTestCase;
 import com.raizlabs.universaladapter.test.MultipleItemTypeAdapter;
@@ -11,6 +13,9 @@ public class MergedAdapterTest extends UniversalAdapterTestCase {
 
 
     public void testMergedAdapter() {
+
+        LinearLayout dummyParent = new LinearLayout(getContext());
+
         MergedUniversalAdapter mergedUniversalAdapter = new MergedUniversalAdapter();
 
         MergedAdapter1 mergedAdapter1 = new MergedAdapter1();
@@ -33,6 +38,10 @@ public class MergedAdapterTest extends UniversalAdapterTestCase {
 
         assertTrue(mergedUniversalAdapter.getAdapter(0) instanceof MergedAdapter1);
         assertTrue(mergedUniversalAdapter.getAdapter(1) instanceof MultipleItemTypeAdapter);
+
+        for(int i = 0; i < getInternalCount(mergedUniversalAdapter); i++) {
+            assertBindCorrectly(i, dummyParent, mergedUniversalAdapter);
+        }
 
     }
 }
