@@ -13,6 +13,7 @@ public class MultipleItemTypeAdapter extends ListBasedAdapter<Object, ViewHolder
 
     public static final int TYPE_1 = 0;
     public static final int TYPE_2 = 1;
+    public static final int TYPE_3 = 2;
 
     @Override
     protected com.raizlabs.universaladapter.ViewHolder onCreateViewHolder(ViewGroup parent, int itemType) {
@@ -21,6 +22,8 @@ public class MultipleItemTypeAdapter extends ListBasedAdapter<Object, ViewHolder
                 return new ViewHolder1(new View(parent.getContext()));
             case TYPE_2:
                 return new ViewHolder2(new View(parent.getContext()));
+            case TYPE_3:
+                return new ViewHolder3(new View(parent.getContext()));
         }
         throw new IllegalArgumentException("Wrong item viewtype here");
     }
@@ -32,6 +35,8 @@ public class MultipleItemTypeAdapter extends ListBasedAdapter<Object, ViewHolder
             ViewHolder1 viewHolder1 = (ViewHolder1) viewHolder;
         } else if(viewType == TYPE_2) {
             ViewHolder2 viewHolder2 = (ViewHolder2) viewHolder;
+        } else if(viewType == TYPE_3) {
+            ViewHolder3 viewHolder3 = (ViewHolder3) viewHolder;
         } else {
             throw new IllegalArgumentException("Wrong item viewtype here");
         }
@@ -39,12 +44,20 @@ public class MultipleItemTypeAdapter extends ListBasedAdapter<Object, ViewHolder
 
     @Override
     public int getItemViewType(int position) {
-        return (get(position) instanceof String) ? TYPE_1 : TYPE_2;
+        if (get(position) instanceof String) {
+            return TYPE_1;
+        } else if(get(position) instanceof Integer) {
+            return TYPE_2;
+        } else if(get(position) instanceof Float) {
+            return TYPE_3;
+        } else {
+            throw new IllegalArgumentException("Wrong item viewtype here");
+        }
     }
 
     @Override
     public int getItemViewTypeCount() {
-        return 2;
+        return 3;
     }
 
     public static class ViewHolder1 extends ViewHolder {
@@ -57,6 +70,13 @@ public class MultipleItemTypeAdapter extends ListBasedAdapter<Object, ViewHolder
     public static class ViewHolder2 extends ViewHolder {
 
         public ViewHolder2(View itemView) {
+            super(itemView);
+        }
+    }
+
+    public static class ViewHolder3 extends ViewHolder {
+
+        public ViewHolder3(View itemView) {
             super(itemView);
         }
     }
