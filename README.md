@@ -1,4 +1,4 @@
-[![Raizlabs Repository](http://img.shields.io/badge/Raizlabs%20Repository-2.0.0-blue.svg?style=flat)](https://github.com/Raizlabs/maven-releases)
+[![Raizlabs Repository](http://img.shields.io/badge/Raizlabs%20Repository-2.0.1-blue.svg?style=flat)](https://github.com/Raizlabs/maven-releases)
 # UniversalAdapter
 
 A single adapter implementation for any scrolling view or `ViewGroup`.
@@ -40,7 +40,7 @@ Add the library to the project-level build.gradle, using the [Griddle](https://g
   apply plugin: 'com.raizlabs.griddle'
 
   dependencies {
-    mod 'com.raizlabs.android:UniversalAdapter:2.0.0'
+    mod 'com.raizlabs.android:UniversalAdapter:2.0.1'
   }
 
 ```
@@ -50,7 +50,7 @@ or by standard Gradle use (without linking sources support):
 ```groovy
 
   dependencies {
-    compile "com.raizlabs.android:UniversalAdapter:2.0.0"
+    compile "com.raizlabs.android:UniversalAdapter:2.0.1"
   }
 
 ```
