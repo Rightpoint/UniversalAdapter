@@ -392,7 +392,7 @@ public abstract class UniversalAdapter<Item, Holder extends ViewHolder> {
         int viewType;
         if (position < getHeadersCount()) {
             viewType = position;
-        } else if (position >= getFooterStartIndex()) {
+        } else if (position > getFooterStartIndex()) {
             viewType = position - getFooterStartIndex() + getHeadersCount() + getItemViewTypeCount() - 1;
         } else {
             viewType = getItemViewType(position - getHeadersCount()) + getHeadersCount();
@@ -446,7 +446,7 @@ public abstract class UniversalAdapter<Item, Holder extends ViewHolder> {
                 if (footerClickedListener != null) {
                     footerClickedListener.onFooterClicked(this, holder, position);
                 }
-            } else if (position >= getFooterStartIndex()) {
+            } else if (position > getFooterStartIndex()) {
                 if (headerClickedListener != null) {
                     headerClickedListener.onHeaderClicked(this, holder, position - getFooterStartIndex() - 1);
                 }
@@ -484,7 +484,7 @@ public abstract class UniversalAdapter<Item, Holder extends ViewHolder> {
                 if (footerLongClickedListener != null) {
                     return footerLongClickedListener.onFooterLongClicked(this, holder, position);
                 }
-            } else if (position >= getFooterStartIndex()) {
+            } else if (position > getFooterStartIndex()) {
                 if (headerLongClickListener != null) {
                     return headerLongClickListener.onHeaderLongClicked(this, holder,
                                                                        position - getFooterStartIndex() - 1);
