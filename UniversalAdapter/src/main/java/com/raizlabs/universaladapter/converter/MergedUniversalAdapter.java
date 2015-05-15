@@ -42,7 +42,7 @@ public class MergedUniversalAdapter extends UniversalAdapter {
     protected ViewHolder onCreateViewHolder(ViewGroup parent, int itemType) {
         ViewHolder viewHolder = null;
 
-        int typeOffset = 1;
+        int typeOffset = 0;
         for (ListPiece piece : listPieces) {
 
             // offset is used to retrieve the specified item type from the inner adapter
@@ -176,6 +176,16 @@ public class MergedUniversalAdapter extends UniversalAdapter {
             }
         }
         return null;
+    }
+
+    /**
+     * @param adapterIndex The index of adapters added to this adapter. 0 is for the first adapter added, 1 is for second. etc.
+     * @param <Item>       The item of the adapter.
+     * @param <Holder>     The holder it uses.
+     * @return The specified adapter from the adapterIndex.
+     */
+    public UniversalAdapter getAdapter(int adapterIndex) {
+        return listPieces.get(adapterIndex).adapter;
     }
 
     // endregion Instance Methods

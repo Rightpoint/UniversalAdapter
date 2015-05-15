@@ -2,6 +2,7 @@ package com.raizlabs.universaladapter.sample;
 
 import android.content.Context;
 import android.os.Bundle;
+import android.support.annotation.LayoutRes;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -16,36 +17,61 @@ import com.raizlabs.universaladapter.ViewHolder;
 import com.raizlabs.universaladapter.converter.ItemClickedListener;
 import com.raizlabs.universaladapter.converter.UniversalConverter;
 import com.raizlabs.universaladapter.converter.UniversalConverterFactory;
+import com.raizlabs.universaladapter.sample.multiple.MultipleItemTypesHFActivity;
 
 /**
  * Description:
  */
 public class MenuFragment extends Fragment {
 
-    class MenuConstants {
+    enum MenuConstants {
 
-        public static final String RECYCLERVIEW = "RecyclerView";
+        RECYCLERVIEW {
+            @Override
+            public String getKeyForType() {
+                return "RecyclerView";
+            }
 
-        public static final String RECYCLERVIEW_HOLDERS = "RecyclerView with HF Holders";
+            @Override
+            public int getLayoutResourceId() {
+                return R.layout.activity_recyclerview;
+            }
+        }, LISTVIEW  {
+            @Override
+            public String getKeyForType() {
+                return "ListView";
+            }
+        }, VIEWPAGER  {
+            @Override
+            public String getKeyForType() {
+                return "ViewPager";
+            }
 
-        public static final String LISTVIEW = "ListView";
+            @Override
+            public int getLayoutResourceId() {
+                return R.layout.activity_viewpager;
+            }
+        }, VIEWGROUP {
+            @Override
+            public String getKeyForType() {
+                return "LinearLayout ViewGroup";
+            }
 
-        public static final String LISTVIEW_HOLDERS = "ListView with HF Holders";
+            @Override
+            public int getLayoutResourceId() {
+                return R.layout.activity_linearlayout;
+            }
+        };
 
-        public static final String VIEWPAGER = "ViewPager";
+        public abstract String getKeyForType();
 
-        public static final String VIEWPAGER_HOLDERS = "ViewPager with HF Holders";
-
-        public static final String MERGED = "Merged Recyclerview";
-
-        public static final String MERGED_LISTVIEW = "Merged ListView";
-
-        public static final String MERGED_VIEWPAGER = "Merged ViewPager";
-
+        public @LayoutRes int getLayoutResourceId() {
+            return R.layout.activity_listview;
+        }
 
     }
 
-    private ListBasedAdapter<String, MenuHolder> adapter;
+    private MenuAdapter adapter;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -60,44 +86,62 @@ public class MenuFragment extends Fragment {
         recyclerView.setLayoutManager(new LinearLayoutManager(view.getContext()));
 
         adapter = new MenuAdapter();
-        adapter.loadItemArray(MenuConstants.RECYCLERVIEW, MenuConstants.RECYCLERVIEW_HOLDERS,
-                MenuConstants.LISTVIEW, MenuConstants.LISTVIEW_HOLDERS,
-                MenuConstants.VIEWPAGER, MenuConstants.VIEWPAGER_HOLDERS,
-                MenuConstants.MERGED, MenuConstants.MERGED_LISTVIEW, MenuConstants.MERGED_VIEWPAGER);
+        for (MenuConstants menuConstants: MenuConstants.values()) {
+            for (int i = 0; i < 5; i++) {
+                MenuModelHolder menuModelHolder = new MenuModelHolder();
+                menuModelHolder.title = menuConstants.name();
+                menuModelHolder.hasHF = (i == 1 || i == 4);
+                menuModelHolder.isMerged = (i == 2);
+                menuModelHolder.layoutResId = menuConstants.getLayoutResourceId();
+                menuModelHolder.isMultipleItems = (i > 2);
+                adapter.add(menuModelHolder);
+            }
+        }
 
         UniversalConverter converter = UniversalConverterFactory.create(adapter, recyclerView);
-        converter.setItemClickedListener(new ItemClickedListener<String, MenuHolder>() {
+        converter.setItemClickedListener(new ItemClickedListener<MenuModelHolder, MenuHolder>() {
             @Override
-            public void onItemClicked(UniversalAdapter<String, MenuHolder> adapter, String s, MenuHolder holder, int position) {
+            public void onItemClicked(UniversalAdapter<MenuModelHolder, MenuHolder> adapter, MenuModelHolder item, MenuHolder holder, int position) {
                 Context context = holder.Title.getContext();
-                if (s.equals(MenuConstants.LISTVIEW)) {
-                    startActivity(AdapterActivity.getLaunchIntent(context, R.layout.activity_listview));
-                } else if (s.equals(MenuConstants.VIEWPAGER)) {
-                    startActivity(AdapterActivity.getLaunchIntent(context, R.layout.activity_viewpager));
-                } else if (s.equals(MenuConstants.VIEWPAGER_HOLDERS)) {
-                    startActivity(AdapterActivity.getHFLaunchIntent(context, R.layout.activity_viewpager));
-                } else if (s.equals(MenuConstants.LISTVIEW_HOLDERS)) {
-                    startActivity(AdapterActivity.getHFLaunchIntent(context, R.layout.activity_listview));
-                } else if (s.equals(MenuConstants.RECYCLERVIEW_HOLDERS)) {
-                    startActivity(AdapterActivity.getHFLaunchIntent(context, R.layout.activity_recyclerview));
-                } else if (s.equals(MenuConstants.MERGED)) {
-                    startActivity(MergedActivity.getLaunchIntent(context, R.layout.activity_recyclerview));
-                } else if (s.equals(MenuConstants.MERGED_LISTVIEW)) {
-                    startActivity(MergedActivity.getLaunchIntent(context, R.layout.activity_listview));
-                } else if (s.equals(MenuConstants.MERGED_VIEWPAGER)) {
-                    startActivity(MergedActivity.getLaunchIntent(context, R.layout.activity_viewpager));
+                if(item.isMultipleItems) {
+                    if(item.hasHF) {
+                        startActivity(MultipleItemTypesHFActivity.getHFLaunchIntent(context, item.layoutResId));
+                    } else {
+                        startActivity(MultipleItemTypesHFActivity.getLaunchIntent(context, item.layoutResId));
+                    }
+                } else if(item.isMerged) {
+                    startActivity(MergedActivity.getLaunchIntent(context, item.layoutResId));
+                } else if(item.hasHF) {
+                    startActivity(AdapterActivity.getHFLaunchIntent(context, item.layoutResId));
                 } else {
-                    startActivity(AdapterActivity.getLaunchIntent(context, R.layout.activity_recyclerview));
+                    startActivity(AdapterActivity.getLaunchIntent(context, item.layoutResId));
                 }
             }
         });
     }
 
-    private static class MenuAdapter extends ListBasedAdapter<String, MenuHolder> {
+    private static class MenuModelHolder {
+
+        private String title;
+
+        boolean isMerged;
+
+        boolean hasHF;
+
+        boolean isMultipleItems;
+
+        int layoutResId;
+
+        public String getTitle() {
+            return title + (isMerged ? " - Merged" : "") + (hasHF ? " - Header + Footers" : "") + (isMultipleItems ? " - Multiple Item Types" : "");
+        }
+    }
+
+    private static class MenuAdapter extends ListBasedAdapter<MenuModelHolder, MenuHolder> {
 
         @Override
-        protected void onBindViewHolder(MenuHolder viewHolder, String s, int position) {
-            viewHolder.Title.setText(s);
+        protected void onBindViewHolder(MenuHolder viewHolder, MenuModelHolder menuConstants, int position) {
+            viewHolder.Title.setText(menuConstants.getTitle());
         }
 
         @Override

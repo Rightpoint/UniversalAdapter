@@ -315,7 +315,7 @@ public abstract class UniversalAdapter<Item, Holder extends ViewHolder> {
         } else if (viewType > (getHeadersCount() + getItemViewTypeCount() - 1)) {
             viewHolder = footerHolders.get(viewType - getHeadersCount() - getItemViewTypeCount());
         } else {
-            viewHolder = onCreateViewHolder(parent, viewType - getHeadersCount() + 1);
+            viewHolder = onCreateViewHolder(parent, viewType - getHeadersCount());
         }
         viewHolder.itemView.setTag(R.id.com_raizlabs_viewholderTagID, viewHolder);
         return viewHolder;

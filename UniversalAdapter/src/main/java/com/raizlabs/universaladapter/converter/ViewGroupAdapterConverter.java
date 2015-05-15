@@ -41,8 +41,8 @@ public class ViewGroupAdapterConverter<Item, Holder extends ViewHolder> implemen
     ViewGroupAdapterConverter(@NonNull UniversalAdapter<Item, Holder> adapter, @NonNull ViewGroup viewGroup) {
         setAdapter(adapter);
         this.viewGroup = viewGroup;
-        populateAll();
         itemClickWrapper = new ItemClickWrapper<>(this);
+        populateAll();
     }
 
     // region Accessors
