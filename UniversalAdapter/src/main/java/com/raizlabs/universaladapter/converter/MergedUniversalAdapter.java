@@ -42,12 +42,12 @@ public class MergedUniversalAdapter extends UniversalAdapter {
     protected ViewHolder onCreateViewHolder(ViewGroup parent, int itemType) {
         ViewHolder viewHolder = null;
 
-        int typeOffset = 1;
+        int typeOffset = 0;
         for (ListPiece piece : listPieces) {
 
             // offset is used to retrieve the specified item type from the inner adapter
             // since it has no knowledge of being part of this merged adapter.
-            int adapterItemType = typeOffset - itemType;
+            int adapterItemType = itemType - typeOffset;
             if (piece.hasViewType(adapterItemType)) {
                 viewHolder = piece.adapter.createViewHolder(parent, adapterItemType);
                 break;
@@ -55,6 +55,9 @@ public class MergedUniversalAdapter extends UniversalAdapter {
 
             // uses offset to calculate what the view type actually is, as offset by each adapter's viewtype amount.
             typeOffset += piece.adapter.getInternalItemViewTypeCount();
+        }
+        if(viewHolder == null) {
+            throw new IllegalStateException("ViewHolder returned a null for itemType " + itemType);
         }
         return viewHolder;
     }
@@ -178,6 +181,16 @@ public class MergedUniversalAdapter extends UniversalAdapter {
         return null;
     }
 
+    /**
+     * @param adapterIndex The index of adapters added to this adapter. 0 is for the first adapter added, 1 is for second. etc.
+     * @param <Item>       The item of the adapter.
+     * @param <Holder>     The holder it uses.
+     * @return The specified adapter from the adapterIndex.
+     */
+    public UniversalAdapter getAdapter(int adapterIndex) {
+        return listPieces.get(adapterIndex).adapter;
+    }
+
     // endregion Instance Methods
 
     // region Anonymous Classes
@@ -202,7 +215,7 @@ public class MergedUniversalAdapter extends UniversalAdapter {
      */
     private static class ListPiece {
 
-        Set<Integer> itemViewTypes = new HashSet<>();
+        final Set<Integer> itemViewTypes = new HashSet<>();
 
         final UniversalAdapter adapter;
 
@@ -211,8 +224,10 @@ public class MergedUniversalAdapter extends UniversalAdapter {
          */
         int startPosition;
 
+        @SuppressWarnings("unchecked")
         ListPiece(UniversalAdapter adapter) {
             this.adapter = adapter;
+            adapter.getListObserver().addListener(internalChangeListener);
         }
 
         // region Instance Methods
@@ -237,8 +252,11 @@ public class MergedUniversalAdapter extends UniversalAdapter {
          * Tracks the item view types of each adapter.
          */
         void initializeItemViewTypes() {
-            for (int i = 0; i < getCount(); i++) {
-                itemViewTypes.add(adapter.getInternalItemViewType(i));
+            synchronized (itemViewTypes) {
+                itemViewTypes.clear();
+                for (int i = 0; i < getCount(); i++) {
+                    itemViewTypes.add(adapter.getInternalItemViewType(i));
+                }
             }
         }
 
@@ -259,6 +277,13 @@ public class MergedUniversalAdapter extends UniversalAdapter {
         }
 
         // endregion Instance Methods
+
+        private final SimpleListObserverListener internalChangeListener = new SimpleListObserverListener() {
+            @Override
+            public void onGenericChange(ListObserver listObserver) {
+                initializeItemViewTypes();
+            }
+        };
 
     }
 

@@ -24,6 +24,8 @@
             android:name=".MergedActivity"
             android:label="@string/title_activity_merged" >
         </activity>
+        <activity android:name=".multiple.MultipleItemTypesHFActivity"
+                  android:label="Multiple Item Types"/>
     </application>
 
 </manifest>
