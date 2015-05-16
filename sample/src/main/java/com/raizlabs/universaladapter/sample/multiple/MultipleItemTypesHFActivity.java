@@ -74,11 +74,13 @@ public class MultipleItemTypesHFActivity extends AppCompatActivity {
         if (getIntent().hasExtra(INTENT_USE_HF)) {
             for (int i = 0; i < 5; i++) {
                 HeaderHolder headerHolder = new HeaderHolder(LayoutInflater.from(this).inflate(R.layout.list_item_image, null));
+                headerHolder.Image.setImageResource(R.drawable.abc_ic_ab_back_mtrl_am_alpha);
                 adapter.addHeaderHolder(headerHolder);
             }
 
             for (int i = 0; i < 5; i++) {
                 FooterHolder footerHolder = new FooterHolder(LayoutInflater.from(this).inflate(R.layout.list_item_text, null));
+                footerHolder.Dummy.setText(i + "");
                 adapter.addFooterHolder(footerHolder);
             }
         }

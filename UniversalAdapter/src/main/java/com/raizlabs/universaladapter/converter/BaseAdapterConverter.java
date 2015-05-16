@@ -5,6 +5,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.BaseAdapter;
+import android.widget.Spinner;
 
 import com.raizlabs.android.coreutils.threading.ThreadingUtils;
 import com.raizlabs.android.coreutils.util.observable.lists.ListObserver;
@@ -32,7 +33,15 @@ public class BaseAdapterConverter<Item, Holder extends ViewHolder>
                          AdapterView<? super BaseAdapter> adapterView) {
         setAdapter(universalAdapter);
         adapterView.setAdapter(this);
-        adapterView.setOnItemClickListener(internalItemClickListener);
+
+        // Spinners don't like on item click listeners.
+        // We will still delegate calls to it since you're clicking on an item to select it...
+        if(!(adapterView instanceof Spinner)) {
+            adapterView.setOnItemClickListener(internalItemClickListener);
+        } else {
+            adapterView.setOnItemSelectedListener(internalItemSelectedListener);
+        }
+
         adapterView.setOnItemLongClickListener(internalLongClickListener);
         notifyDataSetChanged();
     }
@@ -215,6 +224,18 @@ public class BaseAdapterConverter<Item, Holder extends ViewHolder>
         @Override
         public void onGenericChange(ListObserver<Item> listObserver) {
             superNotifyDataSetChangedOnUIThread();
+        }
+    };
+
+    private final AdapterView.OnItemSelectedListener internalItemSelectedListener = new AdapterView.OnItemSelectedListener() {
+        @Override
+        public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+            getAdapter().onItemClicked(position, view);
+        }
+
+        @Override
+        public void onNothingSelected(AdapterView<?> parent) {
+            // ignored.
         }
     };
 
