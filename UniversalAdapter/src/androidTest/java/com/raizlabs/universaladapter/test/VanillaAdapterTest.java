@@ -3,6 +3,8 @@ package com.raizlabs.universaladapter.test;
 import android.view.View;
 import android.widget.LinearLayout;
 
+import com.raizlabs.android.coreutils.util.observable.lists.ListObserver;
+import com.raizlabs.android.coreutils.util.observable.lists.ListObserverListener;
 import com.raizlabs.universaladapter.ViewHolder;
 import com.raizlabs.universaladapter.converter.UniversalAdapterTestCase;
 
@@ -14,6 +16,7 @@ public class VanillaAdapterTest extends UniversalAdapterTestCase {
     public void testVanillaAdapter() {
 
         VanillaAdapter adapter = new VanillaAdapter();
+
         LinearLayout viewGroup = new LinearLayout(getContext());
 
         String name = "test";
@@ -51,4 +54,43 @@ public class VanillaAdapterTest extends UniversalAdapterTestCase {
 
     }
 
+
+    public void testVanillaListeners() {
+        // keep track of changes
+        final boolean[] changes = new boolean[4];
+        VanillaAdapter adapter = new VanillaAdapter();
+        adapter.getListObserver().addListener(new ListObserverListener<Object>() {
+            @Override
+            public void onItemRangeChanged(ListObserver<Object> listObserver, int i, int i1) {
+                changes[0] = true;
+            }
+
+            @Override
+            public void onItemRangeInserted(ListObserver<Object> listObserver, int i, int i1) {
+                changes[1] = true;
+            }
+
+            @Override
+            public void onItemRangeRemoved(ListObserver<Object> listObserver, int i, int i1) {
+                changes[2] = true;
+            }
+
+            @Override
+            public void onGenericChange(ListObserver<Object> listObserver) {
+                changes[3] = true;
+            }
+        });
+
+        adapter.add("Test");
+        assertTrue(changes[1]);
+
+        adapter.set(0, "Test2");
+        assertTrue(changes[0]);
+
+        adapter.remove("Test2");
+        assertTrue(changes[2]);
+
+        adapter.notifyDataSetChanged();
+        assertTrue(changes[3]);
+    }
 }
