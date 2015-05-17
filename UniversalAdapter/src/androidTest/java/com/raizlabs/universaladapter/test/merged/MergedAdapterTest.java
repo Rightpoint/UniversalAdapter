@@ -2,6 +2,8 @@ package com.raizlabs.universaladapter.test.merged;
 
 import android.widget.LinearLayout;
 
+import com.raizlabs.android.coreutils.util.observable.lists.ListObserver;
+import com.raizlabs.android.coreutils.util.observable.lists.ListObserverListener;
 import com.raizlabs.universaladapter.converter.MergedUniversalAdapter;
 import com.raizlabs.universaladapter.converter.UniversalAdapterTestCase;
 import com.raizlabs.universaladapter.test.MultipleItemTypeAdapter;
@@ -43,5 +45,46 @@ public class MergedAdapterTest extends UniversalAdapterTestCase {
             assertBindCorrectly(i, dummyParent, mergedUniversalAdapter);
         }
 
+    }
+
+    public void testMergedAdapterNotifications() {
+        MergedUniversalAdapter mergedUniversalAdapter = new MergedUniversalAdapter();
+
+        final int[] starts = new int[3];
+        final int[] counts = new int[3];
+        final boolean[] called = new boolean[4];
+        mergedUniversalAdapter.getListObserver().addListener(new ListObserverListener() {
+            @Override
+            public void onItemRangeChanged(ListObserver listObserver, int start, int count) {
+                starts[0] = start;
+                called[0] = true;
+                counts[0] = count;
+            }
+
+            @Override
+            public void onItemRangeInserted(ListObserver listObserver, int start, int count) {
+                starts[1] = start;
+                called[1] = true;
+                counts[1] = count;
+            }
+
+            @Override
+            public void onItemRangeRemoved(ListObserver listObserver, int start, int count) {
+                starts[2] = start;
+                called[2] = true;
+                counts[2] = count;
+            }
+
+            @Override
+            public void onGenericChange(ListObserver listObserver) {
+                called[3] = true;
+            }
+        });
+
+        MergedAdapter1 adapter1 = new MergedAdapter1();
+        mergedUniversalAdapter.addAdapter(adapter1);
+        assertTrue(called[1]);
+        assertTrue(starts[1] == 0);
+        assertTrue(counts[1] == 0);
     }
 }
