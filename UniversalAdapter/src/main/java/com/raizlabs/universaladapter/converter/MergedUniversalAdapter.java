@@ -220,20 +220,20 @@ public class MergedUniversalAdapter extends UniversalAdapter {
 
         @Override
         public void onItemRangeInserted(ListObserver listObserver, int start, int count) {
-            MergedUniversalAdapter.this.onItemRangeInserted(start, count);
             recalculateStartPositions();
+            MergedUniversalAdapter.this.onItemRangeInserted(start, count);
         }
 
         @Override
         public void onItemRangeRemoved(ListObserver listObserver, int start, int count) {
-            MergedUniversalAdapter.this.onItemRangeRemoved(start, count);
             recalculateStartPositions();
+            MergedUniversalAdapter.this.onItemRangeRemoved(start, count);
         }
 
         @Override
         public void onGenericChange(ListObserver listObserver) {
-            MergedUniversalAdapter.this.onGenericChange();
             recalculateStartPositions();
+            MergedUniversalAdapter.this.onGenericChange();
         }
     };
 
