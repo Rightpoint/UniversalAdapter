@@ -4,7 +4,6 @@ import android.view.ViewGroup;
 
 import com.raizlabs.android.coreutils.util.observable.lists.ListObserver;
 import com.raizlabs.android.coreutils.util.observable.lists.ListObserverListener;
-import com.raizlabs.android.coreutils.util.observable.lists.SimpleListObserverListener;
 import com.raizlabs.universaladapter.ViewHolder;
 
 import java.util.ArrayList;
@@ -28,6 +27,7 @@ public class MergedUniversalAdapter extends UniversalAdapter {
     @Override
     public void notifyDataSetChanged() {
         onGenericChange();
+        recalculateStartPositions();
     }
 
     @SuppressWarnings("unchecked")
@@ -56,7 +56,7 @@ public class MergedUniversalAdapter extends UniversalAdapter {
             // uses offset to calculate what the view type actually is, as offset by each adapter's viewtype amount.
             typeOffset += piece.adapter.getInternalItemViewTypeCount();
         }
-        if(viewHolder == null) {
+        if (viewHolder == null) {
             throw new IllegalStateException("ViewHolder returned a null for itemType " + itemType);
         }
         return viewHolder;
@@ -128,8 +128,9 @@ public class MergedUniversalAdapter extends UniversalAdapter {
      * @param adapter The adapter to add to this adapter
      */
     public void addAdapter(UniversalAdapter adapter) {
+        int count = getCount();
         addAdapter(listPieces.size(), adapter);
-        notifyDataSetChanged();
+        onItemRangeInserted(count, listPieces.get(listPieces.size() - 1).getCount());
     }
 
     /**
@@ -138,10 +139,13 @@ public class MergedUniversalAdapter extends UniversalAdapter {
      * @param adapters The adapters to append.
      */
     public void addAdapters(UniversalAdapter... adapters) {
+        int count = getCount();
+        int totalCount = 0;
         for (UniversalAdapter adapter : adapters) {
             addAdapter(listPieces.size(), adapter);
+            totalCount += listPieces.get(listPieces.size() - 1).getCount();
         }
-        notifyDataSetChanged();
+        onItemRangeInserted(count, totalCount);
     }
 
     /**
@@ -155,8 +159,7 @@ public class MergedUniversalAdapter extends UniversalAdapter {
         int count = getCount();
 
         // create reference piece
-        ListPiece piece = new ListPiece(adapter);
-        piece.adapter.getListObserver().addListener(cascadingListObserver);
+        ListPiece piece = new ListPiece(adapter, this);
         listPieces.add(position, piece);
 
         // set the starting point for it
@@ -183,12 +186,21 @@ public class MergedUniversalAdapter extends UniversalAdapter {
 
     /**
      * @param adapterIndex The index of adapters added to this adapter. 0 is for the first adapter added, 1 is for second. etc.
-     * @param <Item>       The item of the adapter.
-     * @param <Holder>     The holder it uses.
      * @return The specified adapter from the adapterIndex.
      */
     public UniversalAdapter getAdapter(int adapterIndex) {
         return listPieces.get(adapterIndex).adapter;
+    }
+
+    /**
+     * When data changes we need to update the starting positions of all adapters.
+     */
+    private void recalculateStartPositions() {
+        int currentStartIndex = 0;
+        for (ListPiece listPiece : listPieces) {
+            listPiece.setStartPosition(currentStartIndex);
+            currentStartIndex += listPiece.getCount();
+        }
     }
 
     // endregion Instance Methods
@@ -199,10 +211,28 @@ public class MergedUniversalAdapter extends UniversalAdapter {
      * Whenever a singular {@link ListPiece} changes, we refresh the adapter and notify content
      * changed.
      */
-    private final ListObserverListener cascadingListObserver = new SimpleListObserverListener() {
+    private final ListObserverListener cascadingListObserver = new ListObserverListener() {
+        @Override
+        public void onItemRangeChanged(ListObserver listObserver, int start, int count) {
+            MergedUniversalAdapter.this.onItemRangeChanged(start, count);
+        }
+
+        @Override
+        public void onItemRangeInserted(ListObserver listObserver, int start, int count) {
+            recalculateStartPositions();
+            MergedUniversalAdapter.this.onItemRangeInserted(start, count);
+        }
+
+        @Override
+        public void onItemRangeRemoved(ListObserver listObserver, int start, int count) {
+            recalculateStartPositions();
+            MergedUniversalAdapter.this.onItemRangeRemoved(start, count);
+        }
+
         @Override
         public void onGenericChange(ListObserver listObserver) {
-            notifyDataSetChanged();
+            recalculateStartPositions();
+            MergedUniversalAdapter.this.onGenericChange();
         }
     };
 
@@ -219,15 +249,17 @@ public class MergedUniversalAdapter extends UniversalAdapter {
 
         final UniversalAdapter adapter;
 
+        final ForwardingChangeListener forwardingChangeListener;
+
         /**
          * Position it starts at
          */
         int startPosition;
 
         @SuppressWarnings("unchecked")
-        ListPiece(UniversalAdapter adapter) {
+        ListPiece(UniversalAdapter adapter, MergedUniversalAdapter mergedUniversalAdapter) {
             this.adapter = adapter;
-            adapter.getListObserver().addListener(internalChangeListener);
+            forwardingChangeListener = new ForwardingChangeListener(this, mergedUniversalAdapter.cascadingListObserver);
         }
 
         // region Instance Methods
@@ -278,13 +310,47 @@ public class MergedUniversalAdapter extends UniversalAdapter {
 
         // endregion Instance Methods
 
-        private final SimpleListObserverListener internalChangeListener = new SimpleListObserverListener() {
-            @Override
-            public void onGenericChange(ListObserver listObserver) {
-                initializeItemViewTypes();
-            }
-        };
+    }
 
+    /**
+     * Forwards internal adapter changes to the merged adapter.
+     */
+    @SuppressWarnings("unchecked")
+    private static class ForwardingChangeListener implements ListObserverListener {
+
+        private final ListPiece listPiece;
+
+        private final ListObserverListener listObserverListener;
+
+        private ForwardingChangeListener(ListPiece listPiece, ListObserverListener listObserverListener) {
+            this.listPiece = listPiece;
+            this.listObserverListener = listObserverListener;
+            listPiece.adapter.getListObserver().addListener(this);
+        }
+
+        @Override
+        public void onItemRangeChanged(ListObserver listObserver, int start, int count) {
+            listPiece.initializeItemViewTypes();
+            listObserverListener.onItemRangeChanged(listObserver, listPiece.startPosition + start, count);
+        }
+
+        @Override
+        public void onItemRangeInserted(ListObserver listObserver, int start, int count) {
+            listPiece.initializeItemViewTypes();
+            listObserverListener.onItemRangeInserted(listObserver, listPiece.startPosition + start, count);
+        }
+
+        @Override
+        public void onItemRangeRemoved(ListObserver listObserver, int start, int count) {
+            listPiece.initializeItemViewTypes();
+            listObserverListener.onItemRangeRemoved(listObserver, listPiece.startPosition + start, count);
+        }
+
+        @Override
+        public void onGenericChange(ListObserver listObserver) {
+            listPiece.initializeItemViewTypes();
+            listObserverListener.onGenericChange(listObserver);
+        }
     }
 
     // endregion Inner Classes

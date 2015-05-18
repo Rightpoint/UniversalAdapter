@@ -257,7 +257,7 @@ public abstract class UniversalAdapter<Item, Holder extends ViewHolder> {
      */
     public void addFooterHolder(ViewHolder viewHolder) {
         footerHolders.add(viewHolder);
-        onItemRangeInserted(getFooterStartIndex() + getFootersCount() - 1, 1);
+        onItemRangeInserted(getFooterStartIndex() + getFootersCount(), 1);
     }
 
     /**

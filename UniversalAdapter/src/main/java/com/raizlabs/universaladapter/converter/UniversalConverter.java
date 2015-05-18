@@ -22,8 +22,18 @@ public interface UniversalConverter<Item, Holder extends ViewHolder> {
      */
     void setItemClickedListener(ItemClickedListener<Item, Holder> listener);
 
+    /**
+     * Sets listener to get called when a header is clicked.
+     *
+     * @param headerClickedListener The listener to call.
+     */
     void setHeaderClickedListener(HeaderClickedListener headerClickedListener);
 
+    /**
+     * Sets listener to get called when a footer is clicked.
+     *
+     * @param footerClickedListener The listener to call.
+     */
     void setFooterClickedListener(FooterClickedListener footerClickedListener);
 
     /**
@@ -33,8 +43,18 @@ public interface UniversalConverter<Item, Holder extends ViewHolder> {
      */
     void setItemLongClickedListener(ItemLongClickedListener<Item, Holder> longClickedListener);
 
+    /**
+     * Sets listener to get called when a header is long clicked.
+     *
+     * @param headerLongClickedListener The listener to call.
+     */
     void setHeaderLongClickedListener(HeaderLongClickListener headerLongClickedListener);
 
+    /**
+     * Sets listener to get called when a footer is long clicked.
+     *
+     * @param footerLongClickedListener The listener to call.
+     */
     void setFooterLongClickedListener(FooterLongClickedListener footerLongClickedListener);
 
     /**
@@ -47,10 +67,13 @@ public interface UniversalConverter<Item, Holder extends ViewHolder> {
 
     /**
      * @return The {@link UniversalAdapter} that this adapter uses to populate
-     * the view group.
+     * the {@link ViewGroup}.
      */
     UniversalAdapter<Item, Holder> getAdapter();
 
+    /**
+     * Performs some cleanup such as unbinding a {@link ViewGroup}.
+     */
     void cleanup();
 
 }

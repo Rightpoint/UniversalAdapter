@@ -1,5 +1,6 @@
-[![Raizlabs Repository](http://img.shields.io/badge/Raizlabs%20Repository-2.0.2-blue.svg?style=flat)](https://github.com/Raizlabs/maven-releases)
 # UniversalAdapter
+
+[![Raizlabs Repository](http://img.shields.io/badge/Raizlabs%20Repository-2.1.0-blue.svg?style=flat)](https://github.com/Raizlabs/maven-releases)
 
 A single adapter implementation for any scrolling view or `ViewGroup`.
 
@@ -40,7 +41,7 @@ Add the library to the project-level build.gradle, using the [Griddle](https://g
   apply plugin: 'com.raizlabs.griddle'
 
   dependencies {
-    mod 'com.raizlabs.android:UniversalAdapter:2.0.2'
+    mod 'com.raizlabs.android:UniversalAdapter:2.1.0'
   }
 
 ```
@@ -50,7 +51,7 @@ or by standard Gradle use (without linking sources support):
 ```groovy
 
   dependencies {
-    compile "com.raizlabs.android:UniversalAdapter:2.0.2"
+    compile "com.raizlabs.android:UniversalAdapter:2.1.0"
   }
 
 ```
@@ -58,20 +59,35 @@ or by standard Gradle use (without linking sources support):
 ## Usage
 
 This library comes packed with some notable features:
-  1. Unified adapter binding
+  1. One adapter implementation to rule them all. Enforces `ViewHolder` pattern and binds to a
+  range of `ViewGroup` such as `LinearLayout`, `GridView`, `ListView`, `RecyclerView`,
+  `ViewPager`, and more!
   2. List observability: when an adapter's inner content changes, notifications to the parent adapter view happen automatically
   3. Merged adapter: add an arbitrary amount of `UniversalAdapter`'s together to enable diverse view-data sets!
   4. Unified header and footer support: add an arbitrary number of headers and footers to any `UniversalAdapter` and let the library handle it for you, no matter the parent view!
-  5. `ViewGroup` binding for views such as `LinearLayout` or `GridLayout`!
 
 
-### Define an adapter
+### Adapters
 
 This library comes with two main adapter classes: `UniversalAdapter` and `ListBasedAdapter`.
 
-`UniversalAdapter` is similar to `BaseAdapter` while not relying on subclassing it.
+`UniversalAdapter`: The base class that all adapters should derive from. It's strongly
+based on the `BaseAdapter` class, while not relying on subclassing it.
 
 `ListBasedAdapter` supports a `List` of items. _Note: use ObservableListWrapper to pass changes from this list to this adapter automatically!_
+
+#### How Binding Works
+
+Any `UniversalAdapter` can bind to the `ViewGroup` you need it to by using the `UniversalConverterFactory`, which exposes a `UniversalConverter` class. Depending on the parent `ViewGroup` passed to `UniversalConverterFactory.create()`, it returns the appropriate adapter implementation.
+
+The `UniversalConverter` provides methods for:
+  1. Clicks on items, footers, and headers
+  2. Long Clicks on items, footers, and headers
+  3. Swapping in another adapter.
+  4. Retrieving the contained adapter
+  5. And more
+
+#### Example
 
 To define an adapter:
 
@@ -94,12 +110,13 @@ ListBasedAdapter<Item, Holder> adapter = new ListBasedAdapter<>() {
 
 ```
 
-To add items to an adapter:
+To add items to this list-based adapter:
 
 
 ```java
 
 adapter.loadItemsList(myItems);
+adapter.add(item);
 
 
 ```
@@ -127,6 +144,8 @@ This method "converts" the `UniversalAdapter` to the appropriate adapter for the
 
 ### Merged Adapter
 
+Ever need multiple kinds of uniform adapter data and want to display them together?
+
 A `MergedUniversalAdapter` allows you to add multiple `UniversalAdapter` and display them all together!
 
 ```java
@@ -142,7 +161,7 @@ UniversalConverterFactory.create(merged, viewGroup);
 
 ### Header and Footers
 
-One of the pain points of `RecyclerView` is that it does _not_ natively support header and footer views. Also, `ListView` does, but does it internally. We add header and footer support to `UniversalAdapter` to merge the two concepts together at the `Adapter` level.
+One of the pain points of `RecyclerView` is that it does _not_ natively support header and footer views. `ListView` does provide a mechanism, but this is not done uniformly at the adapter level. We added header and footer support to `UniversalAdapter` to merge the two concepts together at the `Adapter` level, so no matter the parent container, it works the same way.
 
 To use it:
 
@@ -174,7 +193,7 @@ Sometimes we want to simply add a homogenous set of data to a `LinearLayout` or 
 
 You don't even need to worry about it because its the same interface for `ListView`, `RecyclerView`, and `ViewPager`.
 
-```java
+```javaadd
 
 LinearLayout layout = (LinearLayout) findViewById(R.id.my_list);
 
@@ -185,3 +204,13 @@ UniversalConverterFactory.create(myListAdapter, layout);
 ```
 
 That's it!
+
+## Maintainers
+
+[agrosner](https://github.com/agrosner) ([agrosner](https://twitter.com/agrosner))
+
+[dylanrjames](https://github.com/dylanrjames)
+
+## Contributors
+
+To become a contributor, please make pull requests against the `develop` branch and once code is merged, we'll add you!
