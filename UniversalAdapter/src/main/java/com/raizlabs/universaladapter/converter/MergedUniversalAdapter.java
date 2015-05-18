@@ -196,10 +196,10 @@ public class MergedUniversalAdapter extends UniversalAdapter {
      * When data changes we need to update the starting positions of all adapters.
      */
     private void recalculateStartPositions() {
-        int previousCount = 0;
+        int currentStartIndex = 0;
         for (ListPiece listPiece : listPieces) {
-            listPiece.setStartPosition(previousCount);
-            previousCount += listPiece.getCount();
+            listPiece.setStartPosition(currentStartIndex);
+            currentStartIndex += listPiece.getCount();
         }
     }
 
