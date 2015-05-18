@@ -143,7 +143,7 @@ public class MergedUniversalAdapter extends UniversalAdapter {
         int totalCount = 0;
         for (UniversalAdapter adapter : adapters) {
             addAdapter(listPieces.size(), adapter);
-            totalCount+=listPieces.get(listPieces.size() - 1).getCount();
+            totalCount += listPieces.get(listPieces.size() - 1).getCount();
         }
         onItemRangeInserted(count, totalCount);
     }
