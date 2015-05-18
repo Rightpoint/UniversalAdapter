@@ -160,7 +160,6 @@ public class MergedUniversalAdapter extends UniversalAdapter {
 
         // create reference piece
         ListPiece piece = new ListPiece(adapter, this);
-        piece.adapter.getListObserver().addListener(cascadingListObserver);
         listPieces.add(position, piece);
 
         // set the starting point for it
