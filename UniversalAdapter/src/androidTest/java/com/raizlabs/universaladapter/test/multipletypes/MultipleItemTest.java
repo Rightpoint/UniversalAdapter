@@ -12,6 +12,8 @@ import com.raizlabs.universaladapter.test.MultipleItemTypeAdapter;
 import com.raizlabs.universaladapter.test.SimpleFooterHolder;
 import com.raizlabs.universaladapter.test.SimpleHeaderHolder;
 
+import static com.raizlabs.universaladapter.test.Constants.*;
+
 /**
  * Description: Test multiple item types
  */
@@ -93,43 +95,43 @@ public class MultipleItemTest extends UniversalAdapterTestCase {
         adapter.getListObserver().addListener(new ListObserverListener<Object>() {
             @Override
             public void onItemRangeChanged(ListObserver<Object> listObserver, int i, int i1) {
-                changes[0] = true;
-                startPositions[0] = i;
+                changes[INDEX_CHANGED] = true;
+                startPositions[INDEX_CHANGED] = i;
             }
 
             @Override
             public void onItemRangeInserted(ListObserver<Object> listObserver, int i, int i1) {
-                changes[1] = true;
-                startPositions[1] = i;
+                changes[INDEX_INSERTED] = true;
+                startPositions[INDEX_INSERTED] = i;
             }
 
             @Override
             public void onItemRangeRemoved(ListObserver<Object> listObserver, int i, int i1) {
-                changes[2] = true;
-                startPositions[2] = i;
+                changes[INDEX_REMOVED] = true;
+                startPositions[INDEX_REMOVED] = i;
             }
 
             @Override
             public void onGenericChange(ListObserver<Object> listObserver) {
-                changes[3] = true;
+                changes[INDEX_GENERIC] = true;
 
             }
         });
 
         adapter.add("First");
-        assertTrue(changes[1]);
-        assertTrue(startPositions[1] == 0);
-        changes[1] = false;
+        assertTrue(changes[INDEX_INSERTED]);
+        assertTrue(startPositions[INDEX_INSERTED] == 0);
+        changes[INDEX_INSERTED] = false;
 
         adapter.addHeaderHolder(new SimpleHeaderHolder(new View(dummy.getContext())));
-        assertTrue(changes[1]);
-        assertTrue(startPositions[1] == 0);
-        changes[1] = false;
+        assertTrue(changes[INDEX_INSERTED]);
+        assertTrue(startPositions[INDEX_INSERTED] == 0);
+        changes[INDEX_INSERTED] = false;
 
 
         adapter.addFooterHolder(new SimpleFooterHolder(new View(dummy.getContext())));
-        assertTrue(changes[1]);
-        assertTrue(startPositions[1] == 2);
-        changes[1] = false;
+        assertTrue(changes[INDEX_INSERTED]);
+        assertTrue(startPositions[INDEX_INSERTED] == 2);
+        changes[INDEX_INSERTED] = false;
     }
 }

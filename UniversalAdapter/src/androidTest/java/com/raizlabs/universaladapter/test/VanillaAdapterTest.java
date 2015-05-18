@@ -8,6 +8,8 @@ import com.raizlabs.android.coreutils.util.observable.lists.ListObserverListener
 import com.raizlabs.universaladapter.ViewHolder;
 import com.raizlabs.universaladapter.converter.UniversalAdapterTestCase;
 
+import static com.raizlabs.universaladapter.test.Constants.*;
+
 /**
  * Description: Tests to ensure vanilla adapters (not merged) handle item types and other data appropriately.
  */
@@ -62,35 +64,35 @@ public class VanillaAdapterTest extends UniversalAdapterTestCase {
         adapter.getListObserver().addListener(new ListObserverListener<Object>() {
             @Override
             public void onItemRangeChanged(ListObserver<Object> listObserver, int i, int i1) {
-                changes[0] = true;
+                changes[INDEX_CHANGED] = true;
             }
 
             @Override
             public void onItemRangeInserted(ListObserver<Object> listObserver, int i, int i1) {
-                changes[1] = true;
+                changes[INDEX_INSERTED] = true;
             }
 
             @Override
             public void onItemRangeRemoved(ListObserver<Object> listObserver, int i, int i1) {
-                changes[2] = true;
+                changes[INDEX_REMOVED] = true;
             }
 
             @Override
             public void onGenericChange(ListObserver<Object> listObserver) {
-                changes[3] = true;
+                changes[INDEX_GENERIC] = true;
             }
         });
 
         adapter.add("Test");
-        assertTrue(changes[1]);
+        assertTrue(changes[INDEX_INSERTED]);
 
         adapter.set(0, "Test2");
-        assertTrue(changes[0]);
+        assertTrue(changes[INDEX_CHANGED]);
 
         adapter.remove("Test2");
-        assertTrue(changes[2]);
+        assertTrue(changes[INDEX_REMOVED]);
 
         adapter.notifyDataSetChanged();
-        assertTrue(changes[3]);
+        assertTrue(changes[INDEX_GENERIC]);
     }
 }
