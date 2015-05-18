@@ -193,7 +193,7 @@ Sometimes we want to simply add a homogenous set of data to a `LinearLayout` or 
 
 You don't even need to worry about it because its the same interface for `ListView`, `RecyclerView`, and `ViewPager`.
 
-```java
+```javaadd
 
 LinearLayout layout = (LinearLayout) findViewById(R.id.my_list);
 
@@ -204,3 +204,13 @@ UniversalConverterFactory.create(myListAdapter, layout);
 ```
 
 That's it!
+
+## Maintainers
+
+[agrosner](https://github.com/agrosner) ([agrosner](https://twitter.com/agrosner))
+
+[dylanrjames](https://github.com/dylanrjames)
+
+## Contributors
+
+To become a contributor, please make pull requests against the `develop` branch and once code is merged, we'll add you!
