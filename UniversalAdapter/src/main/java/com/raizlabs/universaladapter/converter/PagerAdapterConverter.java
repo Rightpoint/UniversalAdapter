@@ -34,6 +34,7 @@ public class PagerAdapterConverter<Item, Holder extends ViewHolder>
     // endregion Members
 
     PagerAdapterConverter(@NonNull UniversalAdapter<Item, Holder> listBasedAdapter, ViewPager viewPager) {
+        listBasedAdapter.checkIfBoundAndSet();
         setAdapter(listBasedAdapter);
         viewPager.setAdapter(this);
         superNotifyDataSetChanged();

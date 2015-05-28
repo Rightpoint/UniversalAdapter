@@ -31,6 +31,7 @@ public class BaseAdapterConverter<Item, Holder extends ViewHolder>
 
     BaseAdapterConverter(@NonNull UniversalAdapter<Item, Holder> universalAdapter,
                          AdapterView<? super BaseAdapter> adapterView) {
+        universalAdapter.checkIfBoundAndSet();
         setAdapter(universalAdapter);
         adapterView.setAdapter(this);
 

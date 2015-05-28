@@ -50,6 +50,7 @@ public class RecyclerViewAdapterConverter<Item, Holder extends ViewHolder>
 
     RecyclerViewAdapterConverter(@NonNull UniversalAdapter<Item, Holder> universalAdapter, RecyclerView recyclerView) {
         observerListener = new RecyclerViewListObserverListener<>(this);
+        universalAdapter.checkIfBoundAndSet();
         setAdapter(universalAdapter);
         recyclerView.setAdapter(this);
         recyclerView.addOnItemTouchListener(internalOnItemTouchListener);

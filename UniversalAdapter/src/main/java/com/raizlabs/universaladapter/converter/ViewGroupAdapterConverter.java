@@ -39,6 +39,7 @@ public class ViewGroupAdapterConverter<Item, Holder extends ViewHolder> implemen
      * @param adapter   The list adapter to use to populate views.
      */
     ViewGroupAdapterConverter(@NonNull UniversalAdapter<Item, Holder> adapter, @NonNull ViewGroup viewGroup) {
+        adapter.checkIfBoundAndSet();
         setAdapter(adapter);
         this.viewGroup = viewGroup;
         itemClickWrapper = new ItemClickWrapper<>(this);
