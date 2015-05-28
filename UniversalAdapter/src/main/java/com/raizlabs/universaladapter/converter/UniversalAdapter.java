@@ -275,6 +275,17 @@ public abstract class UniversalAdapter<Item, Holder extends ViewHolder> {
     }
 
     /**
+     * @param position The raw position the binded to {@link ViewGroup} reports.
+     * @return The position offset by the headers. This is useful when you respond to a custom view that returns a
+     * position that does not take into account the headers of this adapter. For example if you add logic to a ListView
+     * that has no knowledge of the headers in this adapter. Call this method to resolve its actual position. It will return
+     * a position < 0 if the passed in position is a header or a number larger than the {@link #getCount()} method for a footer.
+     */
+    public int getAdjustedPosition(int position) {
+        return position - getHeadersCount();
+    }
+
+    /**
      * Starts a transaction to only notify our observers only when {@link #endTransaction()} is called. Use this
      * when you need to modify the list in a significant way.
      */
@@ -415,9 +426,9 @@ public abstract class UniversalAdapter<Item, Holder extends ViewHolder> {
         if (position < getHeadersCount()) {
             return isHeaderEnabled(position);
         } else if (position > getFooterStartIndex()) {
-            return isFooterEnabled(position);
+            return isFooterEnabled(position - getFooterStartIndex() - 1);
         } else {
-            return isEnabled(position);
+            return isEnabled(getAdjustedPosition(position));
         }
     }
 
@@ -452,7 +463,7 @@ public abstract class UniversalAdapter<Item, Holder extends ViewHolder> {
                 }
             } else {
                 if (itemClickedListener != null) {
-                    int adjusted = position - getHeadersCount();
+                    int adjusted = getAdjustedPosition(position);
                     itemClickedListener.onItemClicked(this, get(adjusted), (Holder) holder, adjusted);
                 }
             }
@@ -491,7 +502,7 @@ public abstract class UniversalAdapter<Item, Holder extends ViewHolder> {
                 }
             } else {
                 if (itemLongClickedListener != null) {
-                    int adjusted = position - getHeadersCount();
+                    int adjusted = getAdjustedPosition(position);
                     return itemLongClickedListener.onItemLongClicked(this, get(adjusted), (Holder) holder, adjusted);
                 }
             }
