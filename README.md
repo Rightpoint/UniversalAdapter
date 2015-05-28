@@ -1,6 +1,6 @@
 # UniversalAdapter
 
-[![Raizlabs Repository](http://img.shields.io/badge/Raizlabs%20Repository-2.1.0-blue.svg?style=flat)](https://github.com/Raizlabs/maven-releases)
+[![Raizlabs Repository](http://img.shields.io/badge/Raizlabs%20Repository-2.2.0-blue.svg?style=flat)](https://github.com/Raizlabs/maven-releases)
 
 A single adapter implementation for any scrolling view or `ViewGroup`.
 
@@ -41,7 +41,7 @@ Add the library to the project-level build.gradle, using the [Griddle](https://g
   apply plugin: 'com.raizlabs.griddle'
 
   dependencies {
-    mod 'com.raizlabs.android:UniversalAdapter:2.1.0'
+    mod 'com.raizlabs.android:UniversalAdapter:2.2.0'
   }
 
 ```
@@ -51,7 +51,7 @@ or by standard Gradle use (without linking sources support):
 ```groovy
 
   dependencies {
-    compile "com.raizlabs.android:UniversalAdapter:2.1.0"
+    compile "com.raizlabs.android:UniversalAdapter:2.2.0"
   }
 
 ```
@@ -186,6 +186,8 @@ adapter.addFooterHolder(myFooterHolder);
 UniversalConverterFactory.create(adapter, viewGroup);
 
 ```
+
+Please _note_ that these must be added __before__ binding the adapter to the `ViewGroup`. This is because the adapter treats headers and footers as different item types. Unfortunately, `ListView` and `RecyclerView` do not treat dynamic viewtypes too kindly. 
 
 ### ViewGroup adapter
 
