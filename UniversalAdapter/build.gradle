@@ -1,5 +1,6 @@
 apply plugin: 'com.android.library'
 apply plugin: 'com.raizlabs.griddle'
+apply plugin: 'com.jfrog.bintray'
 
 apply from: 'https://raw.githubusercontent.com/Raizlabs/maven-releases/master/android_artifacts.gradle'
 apply from: 'https://raw.githubusercontent.com/Raizlabs/maven-releases/master/maven_push.gradle'
@@ -12,4 +13,27 @@ android {
 dependencies {
     nsMod 'com.android.support:{recyclerview-v7, support-v4}:22.1.0'
     mod 'com.raizlabs.android:{CoreUtils}:1.0.0'
+}
+
+Properties properties = new Properties()
+properties.load(project.rootProject.file('local.properties').newDataInputStream())
+
+bintray {
+    user = properties.getProperty("bt_user")
+    key = properties.getProperty("bt_key")
+
+    configurations = ['archives']
+    pkg {
+        repo = 'Libraries'
+        name = 'universal-adapter'
+        userOrg = 'raizlabs'
+        licenses = ['Apache-2.0']
+        vcsUrl = 'https://github.com/Raizlabs/UniversalAdapter.git'
+        publish = true //If version should be auto published after an upload
+        version {
+            name = VERSION
+            vcsTag = VERSION
+            released  = new Date()
+        }
+    }
 }
