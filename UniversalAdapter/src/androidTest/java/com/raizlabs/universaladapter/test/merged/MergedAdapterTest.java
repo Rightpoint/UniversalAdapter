@@ -2,8 +2,8 @@ package com.raizlabs.universaladapter.test.merged;
 
 import android.widget.LinearLayout;
 
-import com.raizlabs.android.coreutils.util.observable.lists.ListObserver;
-import com.raizlabs.android.coreutils.util.observable.lists.ListObserverListener;
+import com.raizlabs.coreutils.util.observable.lists.ListObserver;
+import com.raizlabs.coreutils.util.observable.lists.ListObserverListener;
 import com.raizlabs.universaladapter.converter.MergedUniversalAdapter;
 import com.raizlabs.universaladapter.converter.UniversalAdapterTestCase;
 import com.raizlabs.universaladapter.test.MultipleItemTypeAdapter;

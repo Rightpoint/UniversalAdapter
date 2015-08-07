@@ -17,5 +17,5 @@ android {
 dependencies {
     nsMod 'com.android.support:{appcompat-v7, recyclerview-v7}:22.1.0'
     compile project(':UniversalAdapter')
-    mod 'com.raizlabs.android:{CoreUtils}:1.0.0'
+    mod 'com.raizlabs:CoreUtils:1.1.0'
 }

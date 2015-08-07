@@ -2,8 +2,8 @@ package com.raizlabs.universaladapter;
 
 import android.widget.Adapter;
 
-import com.raizlabs.android.coreutils.util.observable.lists.ObservableList;
-import com.raizlabs.android.coreutils.util.observable.lists.ObservableListWrapper;
+import com.raizlabs.coreutils.util.observable.lists.ObservableList;
+import com.raizlabs.coreutils.util.observable.lists.ObservableListWrapper;
 import com.raizlabs.universaladapter.converter.UniversalAdapter;
 
 import java.util.ArrayList;

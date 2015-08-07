@@ -1,39 +1,126 @@
 apply plugin: 'com.android.library'
 apply plugin: 'com.raizlabs.griddle'
-apply plugin: 'com.jfrog.bintray'
 
-apply from: 'https://raw.githubusercontent.com/Raizlabs/maven-releases/master/android_artifacts.gradle'
-apply from: 'https://raw.githubusercontent.com/Raizlabs/maven-releases/master/maven_push.gradle'
 
 android {
     compileSdkVersion 22
     buildToolsVersion "22"
 }
 
-dependencies {
-    nsMod 'com.android.support:{recyclerview-v7, support-v4}:22.1.0'
-    mod 'com.raizlabs.android:{CoreUtils}:1.0.0'
+configurations {
+    javadocDeps
 }
 
+dependencies {
+    nsMod 'com.android.support:{recyclerview-v7, support-v4}:22.1.0'
+    mod 'com.raizlabs:CoreUtils:1.1.0'
+
+    javadocDeps 'com.android.support:support-v4:22.1.0'
+    javadocDeps 'com.android.support:recyclerview-v7:22.1.0'
+    javadocDeps 'com.raizlabs:CoreUtils:1.1.0'
+}
+
+android.libraryVariants.all { variant ->
+    def name = variant.name
+    task "javadoc$name"(type: Javadoc) {
+        description = "Generates javadoc for build $name"
+        destinationDir = new File(destinationDir, variant.baseName)
+        source = files(variant.javaCompile.source)
+        classpath = files(variant.javaCompile.classpath.files) + files(android.bootClasspath)
+        options.links("http://docs.oracle.com/javase/7/docs/api/")
+        options.links("http://d.android.com/reference/")
+        exclude '**/R.html', '**/R.*.html'
+    }
+}
+
+//apply from: 'https://raw.githubusercontent.com/Raizlabs/maven-releases/master/raizlabs_bintray_upload.gradle'
+/*** READ ME ***
+ * Use this gradle script to perform the following operations
+ * - Upload the android library (*.aar) to Bintray using user credentials
+ * - Generate JavaDocs jar and source jars for the library
+ * - Generate the required POM file needed to publish the artifacts to JCenter public Repo for single line import by public users
+ *
+ * How to use this script:
+ * - Include the following fields in local.properties file:
+ *      * bintray_user: User name registered in bintray account
+ *      * bintray_key: The key generated in bintray account from the password to authenticate upload
+ * - Include the following fields in gradle.properties (Project Properties)
+ *      * VERSION_NAME: The version name to be used when imported (e.g. x.y.z format)
+ *      * ARTIFACT_NAME: The name of the android library
+ *      * GROUP_NAME: The group name of this library (e.g. com.raizlabs)
+ *      * LIBRARY_DESCRIPTION: A brief description of the library
+ *      * GIT_URL: https://github.com/Raizlabs/LibraryName.git
+ *      * SITE_URL: https://github.com/Raizlabs/LibraryName
+ * - Run the following gradle commands:
+ *      * ./gradlew install
+ *      * ./gradle bintrayUpload
+ * - After the artifacts are uploaded make sure they are linked to JCenter in bintray console.
+ *
+ * Please note: Its recommended you create a package in bintray repo 'Libraries' and provide all the required details for the package.
+ * This script DOES NOT automatically fill in those information but assumes that the information already exists for that package such as detailed description, tags etc.
+ */
+apply plugin: "com.jfrog.bintray"
+apply plugin: 'com.github.dcendents.android-maven'
+
+//Generate POM files needed to publish the artifacts to JCenter public Repo
+install {
+    repositories.mavenInstaller.pom.project {
+        packaging 'aar'
+        groupId GROUP_NAME
+        artifactId ARTIFACT_NAME
+
+        // Set your license
+        licenses {
+            license {
+                name 'The Apache Software License, Version 2.0'
+                url 'http://www.apache.org/licenses/LICENSE-2.0.txt'
+            }
+        }
+
+        scm {
+            connection GIT_URL
+            developerConnection GIT_URL
+            url SITE_URL
+        }
+    }
+}
+
+task androidJavadocs(type: Javadoc) {
+    source = android.sourceSets.main.java.srcDirs
+    classpath += project.files(android.getBootClasspath().join(File.pathSeparator))
+    classpath += configurations.javadocDeps
+}
+
+task androidJavadocsJar(type: Jar, dependsOn: androidJavadocs) {
+    classifier = 'javadoc'
+    from androidJavadocs.destinationDir
+}
+
+task androidSourcesJar(type: Jar) {
+    classifier = 'sources'
+    from android.sourceSets.main.java.srcDirs
+}
+
+artifacts {
+    archives androidSourcesJar
+//    archives androidJavadocsJar
+}
+
+//Bintray Upload
 Properties properties = new Properties()
 properties.load(project.rootProject.file('local.properties').newDataInputStream())
 
 bintray {
-    user = properties.getProperty("bt_user")
-    key = properties.getProperty("bt_key")
+    user = properties.getProperty("bintray_user")
+    key = properties.getProperty("bintray_key")
 
     configurations = ['archives']
+
     pkg {
         repo = 'Libraries'
-        name = 'universal-adapter'
+        name = ARTIFACT_NAME
         userOrg = 'raizlabs'
-        licenses = ['Apache-2.0']
-        vcsUrl = 'https://github.com/Raizlabs/UniversalAdapter.git'
-        publish = true //If version should be auto published after an upload
-        version {
-            name = VERSION
-            vcsTag = VERSION
-            released  = new Date()
-        }
+        publish = true
+        version.name = VERSION_NAME
     }
 }

@@ -41,7 +41,7 @@ Add the library to the project-level build.gradle, using the [Griddle](https://g
   apply plugin: 'com.raizlabs.griddle'
 
   dependencies {
-    mod 'com.raizlabs.android:UniversalAdapter:2.2.0'
+    mod 'com.raizlabs:UniversalAdapter:2.2.0.1'
   }
 
 ```
@@ -51,7 +51,7 @@ or by standard Gradle use (without linking sources support):
 ```groovy
 
   dependencies {
-    compile "com.raizlabs.android:UniversalAdapter:2.2.0"
+    compile "com.raizlabs:UniversalAdapter:2.2.0.1"
   }
 
 ```
