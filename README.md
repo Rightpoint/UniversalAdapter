@@ -173,9 +173,9 @@ That's it!
 
 ## Maintainers
 
-[agrosner](https://github.com/agrosner) ([agrosner](https://twitter.com/agrosner))
+[Mervyn Anthony](https://github.com/Mervyn-Raizlabs)
 
-[dylanrjames](https://github.com/dylanrjames)
+[Dylan R. James](https://github.com/dylanrjames)
 
 ## Contributors
 
