@@ -1,4 +1,4 @@
-package com.raizlabs.universaladapter.sample.multiple;
+package com.raizlabs.universaladapter.app.multiple;
 
 import android.view.View;
 import android.view.ViewGroup;
@@ -7,7 +7,7 @@ import android.widget.TextView;
 
 import com.raizlabs.universaladapter.ListBasedAdapter;
 import com.raizlabs.universaladapter.ViewHolder;
-import com.raizlabs.universaladapter.sample.R;
+import com.raizlabs.universaladapter.app.R;
 
 /**
  * Description: Tests multiple different item types.

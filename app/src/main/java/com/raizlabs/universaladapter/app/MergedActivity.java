@@ -1,4 +1,4 @@
-package com.raizlabs.universaladapter.sample;
+package com.raizlabs.universaladapter.app;
 
 import android.content.Context;
 import android.content.Intent;
@@ -15,7 +15,6 @@ import com.raizlabs.universaladapter.ListBasedAdapter;
 import com.raizlabs.universaladapter.ViewHolder;
 import com.raizlabs.universaladapter.converter.MergedUniversalAdapter;
 import com.raizlabs.universaladapter.converter.UniversalConverterFactory;
-
 
 public class MergedActivity extends ActionBarActivity {
 

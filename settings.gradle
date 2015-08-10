@@ -1,1 +1,1 @@
-include ':sample', ':UniversalAdapter'
+include ':app', ':UniversalAdapter'

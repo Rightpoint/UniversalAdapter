@@ -26,8 +26,7 @@ public class UniversalConverterFactory {
      * the given view group.
      */
     @SuppressWarnings("unchecked")
-    public static <Item, Holder extends ViewHolder>
-    UniversalConverter<Item, Holder> createGeneric(UniversalAdapter<Item, Holder> adapter, ViewGroup viewGroup) {
+    public static <Item, Holder extends ViewHolder> UniversalConverter<Item, Holder> createGeneric(UniversalAdapter<Item, Holder> adapter, ViewGroup viewGroup) {
         if (viewGroup instanceof RecyclerView) {
             return create(adapter, (RecyclerView) viewGroup);
         } else if (viewGroup instanceof AdapterView) {
@@ -52,8 +51,7 @@ public class UniversalConverterFactory {
      * @return A {@link ViewGroupAdapterConverter} created to bind the given adapter to
      * the given view group.
      */
-    public static <Item, Holder extends ViewHolder>
-    ViewGroupAdapterConverter<Item, Holder> create(UniversalAdapter<Item, Holder> adapter, ViewGroup viewGroup) {
+    public static <Item, Holder extends ViewHolder> ViewGroupAdapterConverter<Item, Holder> create(UniversalAdapter<Item, Holder> adapter, ViewGroup viewGroup) {
         return new ViewGroupAdapterConverter<>(adapter, viewGroup);
     }
 
@@ -66,8 +64,7 @@ public class UniversalConverterFactory {
      * @return A {@link RecyclerViewAdapterConverter} created to bind the given
      * adapter to the given recycler view.
      */
-    public static <Item, Holder extends ViewHolder>
-    RecyclerViewAdapterConverter<Item, Holder> create(UniversalAdapter<Item, Holder> adapter, RecyclerView recyclerView) {
+    public static <Item, Holder extends ViewHolder> RecyclerViewAdapterConverter<Item, Holder> create(UniversalAdapter<Item, Holder> adapter, RecyclerView recyclerView) {
         return new RecyclerViewAdapterConverter<>(adapter, recyclerView);
     }
 
@@ -80,8 +77,7 @@ public class UniversalConverterFactory {
      * @return A {@link PagerAdapterConverter} created to bind the given
      * adapter to the given view pager.
      */
-    public static <Item, Holder extends ViewHolder>
-    PagerAdapterConverter<Item, Holder> create(UniversalAdapter<Item, Holder> adapter, ViewPager viewPager) {
+    public static <Item, Holder extends ViewHolder> PagerAdapterConverter<Item, Holder> create(UniversalAdapter<Item, Holder> adapter, ViewPager viewPager) {
         return new PagerAdapterConverter<>(adapter, viewPager);
     }
 
@@ -94,8 +90,7 @@ public class UniversalConverterFactory {
      * @return A {@link BaseAdapterConverter} created to bind the given adapter
      * to the given adapter view.
      */
-    public static <Item, Holder extends ViewHolder>
-    BaseAdapterConverter<Item, Holder> create(UniversalAdapter<Item, Holder> adapter, AdapterView<? super BaseAdapter> adapterView) {
+    public static <Item, Holder extends ViewHolder> BaseAdapterConverter<Item, Holder> create(UniversalAdapter<Item, Holder> adapter, AdapterView<? super BaseAdapter> adapterView) {
         return new BaseAdapterConverter<>(adapter, adapterView);
     }
 }

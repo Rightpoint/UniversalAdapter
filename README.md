@@ -12,49 +12,13 @@ Its underlying implementation is based on the `ViewHolder` pattern and abstracts
 
 ### Gradle
 
-Add the maven repo url to your root build.gradle in the ```buildscript{}``` and ```allProjects{}``` blocks:
-
-```groovy
-
-  buildscript {
-    repositories {
-        maven { url "https://raw.github.com/Raizlabs/maven-releases/master/releases" }
-    }
-    dependencies {
-      classpath 'com.raizlabs:Griddle:1.0.3'
-    }
-  }
-
-  allprojects {
-    repositories {
-        maven { url "https://raw.github.com/Raizlabs/maven-releases/master/releases" }
-    }
-  }
-
-
-```
-
-Add the library to the project-level build.gradle, using the [Griddle](https://github.com/Raizlabs/Griddle) plugin to simplify your build.gradle and link sources:
-
-```groovy
-
-  apply plugin: 'com.raizlabs.griddle'
+By standard Gradle use:
 
   dependencies {
-    mod 'com.raizlabs.android:UniversalAdapter:2.2.0'
+    compile 'com.raizlabs:UniversalAdapter:2.2.0'
   }
 
-```
 
-or by standard Gradle use (without linking sources support):
-
-```groovy
-
-  dependencies {
-    compile "com.raizlabs.android:UniversalAdapter:2.2.0"
-  }
-
-```
 
 ## Usage
 

@@ -4,9 +4,9 @@ import android.support.annotation.NonNull;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.raizlabs.android.coreutils.util.observable.lists.ListObserver;
-import com.raizlabs.android.coreutils.util.observable.lists.ListObserverListener;
-import com.raizlabs.android.coreutils.util.observable.lists.SimpleListObserverListener;
+import com.raizlabs.coreutils.util.observable.lists.ListObserver;
+import com.raizlabs.coreutils.util.observable.lists.ListObserverListener;
+import com.raizlabs.coreutils.util.observable.lists.SimpleListObserverListener;
 import com.raizlabs.universaladapter.UniversalAdapterUtils;
 import com.raizlabs.universaladapter.ViewHolder;
 
@@ -38,7 +38,9 @@ public class ViewGroupAdapterConverter<Item, Holder extends ViewHolder> implemen
      * @param viewGroup The view group which will be populated with views.
      * @param adapter   The list adapter to use to populate views.
      */
-    ViewGroupAdapterConverter(@NonNull UniversalAdapter<Item, Holder> adapter, @NonNull ViewGroup viewGroup) {
+    ViewGroupAdapterConverter(@NonNull
+    UniversalAdapter<Item, Holder> adapter, @NonNull
+    ViewGroup viewGroup) {
         adapter.checkIfBoundAndSet();
         setAdapter(adapter);
         this.viewGroup = viewGroup;
@@ -95,7 +97,8 @@ public class ViewGroupAdapterConverter<Item, Holder extends ViewHolder> implemen
     }
 
     @Override
-    public void setAdapter(@NonNull UniversalAdapter<Item, Holder> adapter) {
+    public void setAdapter(@NonNull
+    UniversalAdapter<Item, Holder> adapter) {
         if (getAdapter() != null) {
             getAdapter().getListObserver().removeListener(listChangeListener);
         }

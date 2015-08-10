@@ -1,4 +1,4 @@
-package com.raizlabs.universaladapter.sample;
+package com.raizlabs.universaladapter.app;
 
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;

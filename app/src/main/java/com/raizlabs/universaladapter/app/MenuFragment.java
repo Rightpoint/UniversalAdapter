@@ -1,4 +1,4 @@
-package com.raizlabs.universaladapter.sample;
+package com.raizlabs.universaladapter.app;
 
 import android.content.Context;
 import android.os.Bundle;
@@ -12,12 +12,12 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.raizlabs.universaladapter.ListBasedAdapter;
-import com.raizlabs.universaladapter.converter.UniversalAdapter;
 import com.raizlabs.universaladapter.ViewHolder;
 import com.raizlabs.universaladapter.converter.ItemClickedListener;
+import com.raizlabs.universaladapter.converter.UniversalAdapter;
 import com.raizlabs.universaladapter.converter.UniversalConverter;
 import com.raizlabs.universaladapter.converter.UniversalConverterFactory;
-import com.raizlabs.universaladapter.sample.multiple.MultipleItemTypesHFActivity;
+import com.raizlabs.universaladapter.app.multiple.MultipleItemTypesHFActivity;
 
 /**
  * Description:
@@ -65,7 +65,8 @@ public class MenuFragment extends Fragment {
 
         public abstract String getKeyForType();
 
-        public @LayoutRes int getLayoutResourceId() {
+        public @LayoutRes
+        int getLayoutResourceId() {
             return R.layout.activity_listview;
         }
 

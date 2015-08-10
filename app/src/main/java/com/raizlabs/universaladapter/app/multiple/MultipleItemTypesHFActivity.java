@@ -1,9 +1,9 @@
-package com.raizlabs.universaladapter.sample;
+package com.raizlabs.universaladapter.app.multiple;
 
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.v4.app.FragmentActivity;
+import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -14,25 +14,29 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.raizlabs.universaladapter.ListBasedAdapter;
-import com.raizlabs.universaladapter.converter.UniversalAdapter;
 import com.raizlabs.universaladapter.ViewHolder;
 import com.raizlabs.universaladapter.converter.ItemClickedListener;
 import com.raizlabs.universaladapter.converter.ItemLongClickedListener;
+import com.raizlabs.universaladapter.converter.UniversalAdapter;
 import com.raizlabs.universaladapter.converter.UniversalConverter;
 import com.raizlabs.universaladapter.converter.UniversalConverterFactory;
+import com.raizlabs.universaladapter.app.R;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Random;
 
-
-public class AdapterActivity extends FragmentActivity {
+/**
+ * Description: Provides multiple kinds of adapters with headers and footers of all kinds.
+ */
+public class MultipleItemTypesHFActivity extends AppCompatActivity {
 
     static final String INTENT_LAYOUT_RESOURCE = "LayoutResource";
 
     static final String INTENT_USE_HF = "UseHF";
 
     public static Intent getLaunchIntent(Context context, int layoutResId) {
-        Intent intent = new Intent(context, AdapterActivity.class);
+        Intent intent = new Intent(context, MultipleItemTypesHFActivity.class);
         intent.putExtra(INTENT_LAYOUT_RESOURCE, layoutResId);
         return intent;
     }
@@ -43,7 +47,7 @@ public class AdapterActivity extends FragmentActivity {
         return intent;
     }
 
-    private UniversalConverter<Object, UniversalHolder> converter;
+    private UniversalConverter<Object, ViewHolder> converter;
 
     private ListBasedAdapter<Object, ? extends ViewHolder> adapter;
 
@@ -53,80 +57,56 @@ public class AdapterActivity extends FragmentActivity {
         int layout = getIntent().getIntExtra(INTENT_LAYOUT_RESOURCE, R.layout.activity_viewpager);
         setContentView(layout);
 
-        adapter = new ListBasedAdapter<Object, UniversalHolder>() {
-            @Override
-            protected void onBindViewHolder(UniversalHolder viewHolder, Object s, int position) {
-                viewHolder.Gibberish.setText(s.toString());
-            }
+        adapter = new MultipleItemTypesAdapter();
 
-            @Override
-            protected UniversalHolder onCreateViewHolder(ViewGroup parent, int itemType) {
-                return new UniversalHolder(inflateView(parent, R.layout.list_item_adapter));
+        List<Object> itemsList = new ArrayList<>();
+        Random random = new Random();
+        for(int i = 0; i < 50; i++) {
+            int type = random.nextInt(2);
+            if(type == MultipleItemTypesAdapter.VIEW_TYPE_ICON) {
+                itemsList.add(R.drawable.abc_ic_ab_back_mtrl_am_alpha);
+            } else {
+                itemsList.add("" + i);
             }
-
-            @Override
-            protected void onBindHeaderViewHolder(ViewHolder holder, int position) {
-                HeaderHolder headerHolder = (HeaderHolder) holder;
-                headerHolder.Image.setImageResource(R.drawable.abc_ic_ab_back_mtrl_am_alpha);
-            }
-
-            @Override
-            protected void onBindFooterViewHolder(ViewHolder holder, int position) {
-                FooterHolder footerHolder = (FooterHolder) holder;
-                footerHolder.Dummy.setText("Footer: " + position);
-            }
-        };
+        }
 
         if (getIntent().hasExtra(INTENT_USE_HF)) {
             for (int i = 0; i < 5; i++) {
                 HeaderHolder headerHolder = new HeaderHolder(LayoutInflater.from(this).inflate(R.layout.list_item_image, null));
+                headerHolder.Image.setImageResource(R.drawable.abc_ic_ab_back_mtrl_am_alpha);
                 adapter.addHeaderHolder(headerHolder);
             }
 
             for (int i = 0; i < 5; i++) {
                 FooterHolder footerHolder = new FooterHolder(LayoutInflater.from(this).inflate(R.layout.list_item_text, null));
+                footerHolder.Dummy.setText(i + "");
                 adapter.addFooterHolder(footerHolder);
             }
         }
 
-        List<Object> dummyTitles = new ArrayList<>();
-        for (int i = 0; i < 50; i++) {
-            dummyTitles.add(String.valueOf(i));
-        }
-
-        adapter.loadItemList(dummyTitles);
+        adapter.loadItemList(itemsList);
 
         ViewGroup viewGroup = (ViewGroup) findViewById(R.id.content);
         if (viewGroup instanceof RecyclerView) {
             ((RecyclerView) viewGroup).setLayoutManager(new LinearLayoutManager(viewGroup.getContext()));
         }
 
-        converter = (UniversalConverter<Object, UniversalHolder>) UniversalConverterFactory.createGeneric(adapter, viewGroup);
-        converter.setItemClickedListener(new ItemClickedListener<Object, UniversalHolder>() {
+        converter = (UniversalConverter<Object, ViewHolder>) UniversalConverterFactory.createGeneric(adapter, viewGroup);
+        converter.setItemClickedListener(new ItemClickedListener<Object, ViewHolder>() {
             @Override
-            public void onItemClicked(UniversalAdapter<Object, UniversalHolder> adapter, Object o,
-                                      UniversalHolder holder, int position) {
+            public void onItemClicked(UniversalAdapter<Object, ViewHolder> adapter, Object o,
+                                      ViewHolder holder, int position) {
                 Toast.makeText(holder.itemView.getContext(), "Clicked on :" + position, Toast.LENGTH_SHORT).show();
             }
         });
-        converter.setItemLongClickedListener(new ItemLongClickedListener<Object, UniversalHolder>() {
+        converter.setItemLongClickedListener(new ItemLongClickedListener<Object, ViewHolder>() {
             @Override
-            public boolean onItemLongClicked(UniversalAdapter<Object, UniversalHolder> adapter, Object o,
-                                             UniversalHolder holder, int position) {
+            public boolean onItemLongClicked(UniversalAdapter<Object, ViewHolder> adapter, Object o,
+                                             ViewHolder holder, int position) {
                 Toast.makeText(holder.itemView.getContext(), "Long clicked on: " + position, Toast.LENGTH_SHORT).show();
                 return false;
             }
         });
-    }
-
-    private static class UniversalHolder extends ViewHolder {
-
-        TextView Gibberish;
-
-        public UniversalHolder(View itemView) {
-            super(itemView);
-            Gibberish = ((TextView) itemView);
-        }
     }
 
     private static class HeaderHolder extends ViewHolder {

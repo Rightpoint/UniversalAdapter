@@ -6,10 +6,10 @@ import android.support.v4.view.ViewPager;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.raizlabs.android.coreutils.threading.ThreadingUtils;
-import com.raizlabs.android.coreutils.util.observable.lists.ListObserver;
-import com.raizlabs.android.coreutils.util.observable.lists.ListObserverListener;
-import com.raizlabs.android.coreutils.util.observable.lists.SimpleListObserverListener;
+import com.raizlabs.coreutils.threading.ThreadingUtils;
+import com.raizlabs.coreutils.util.observable.lists.ListObserver;
+import com.raizlabs.coreutils.util.observable.lists.ListObserverListener;
+import com.raizlabs.coreutils.util.observable.lists.SimpleListObserverListener;
 import com.raizlabs.universaladapter.UniversalAdapterUtils;
 import com.raizlabs.universaladapter.ViewHolder;
 
@@ -33,7 +33,8 @@ public class PagerAdapterConverter<Item, Holder extends ViewHolder>
 
     // endregion Members
 
-    PagerAdapterConverter(@NonNull UniversalAdapter<Item, Holder> listBasedAdapter, ViewPager viewPager) {
+    PagerAdapterConverter(@NonNull
+    UniversalAdapter<Item, Holder> listBasedAdapter, ViewPager viewPager) {
         listBasedAdapter.checkIfBoundAndSet();
         setAdapter(listBasedAdapter);
         viewPager.setAdapter(this);
@@ -79,7 +80,8 @@ public class PagerAdapterConverter<Item, Holder extends ViewHolder>
     }
 
     @Override
-    public void setAdapter(@NonNull UniversalAdapter<Item, Holder> listAdapter) {
+    public void setAdapter(@NonNull
+    UniversalAdapter<Item, Holder> listAdapter) {
         if (getAdapter() != null) {
             getAdapter().getListObserver().removeListener(internalListObserverListener);
         }
