@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.raizlabs.universaladapter.app" >
+    package="com.raizlabs.universaladapter.sample" >
 
     <application
         android:allowBackup="true"
@@ -8,7 +8,7 @@
         android:label="@string/app_name"
         android:theme="@style/AppTheme" >
         <activity
-            android:name=".MainActivity"
+            android:name="com.raizlabs.universaladapter.sample.MainActivity"
             android:label="@string/title_activity_main" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -17,14 +17,14 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".AdapterActivity"
+            android:name="com.raizlabs.universaladapter.sample.AdapterActivity"
             android:label="@string/title_activity_adapter" >
         </activity>
         <activity
-            android:name=".MergedActivity"
+            android:name="com.raizlabs.universaladapter.sample.MergedActivity"
             android:label="@string/title_activity_merged" >
         </activity>
-        <activity android:name=".multiple.MultipleItemTypesHFActivity"
+        <activity android:name="com.raizlabs.universaladapter.sample.multiple.MultipleItemTypesHFActivity"
                   android:label="Multiple Item Types"/>
     </application>
 

@@ -1,4 +1,4 @@
-package com.raizlabs.universaladapter.app;
+package com.raizlabs.universaladapter.sample;
 
 import android.content.Context;
 import android.content.Intent;

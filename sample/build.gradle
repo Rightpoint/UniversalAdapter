@@ -5,7 +5,7 @@ android {
     buildToolsVersion "22.0.1"
 
     defaultConfig {
-        applicationId "com.raizlabs.universaladapter.app"
+        applicationId "com.raizlabs.universaladapter.sample"
         minSdkVersion 15
         targetSdkVersion 22
         versionCode 1

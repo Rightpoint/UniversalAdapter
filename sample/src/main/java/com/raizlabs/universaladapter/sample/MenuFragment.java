@@ -1,4 +1,4 @@
-package com.raizlabs.universaladapter.app;
+package com.raizlabs.universaladapter.sample;
 
 import android.content.Context;
 import android.os.Bundle;
@@ -17,7 +17,7 @@ import com.raizlabs.universaladapter.converter.ItemClickedListener;
 import com.raizlabs.universaladapter.converter.UniversalAdapter;
 import com.raizlabs.universaladapter.converter.UniversalConverter;
 import com.raizlabs.universaladapter.converter.UniversalConverterFactory;
-import com.raizlabs.universaladapter.app.multiple.MultipleItemTypesHFActivity;
+import com.raizlabs.universaladapter.sample.multiple.MultipleItemTypesHFActivity;
 
 /**
  * Description:

@@ -1,4 +1,4 @@
-package com.raizlabs.universaladapter.app.multiple;
+package com.raizlabs.universaladapter.sample.multiple;
 
 import android.content.Context;
 import android.content.Intent;
@@ -20,7 +20,7 @@ import com.raizlabs.universaladapter.converter.ItemLongClickedListener;
 import com.raizlabs.universaladapter.converter.UniversalAdapter;
 import com.raizlabs.universaladapter.converter.UniversalConverter;
 import com.raizlabs.universaladapter.converter.UniversalConverterFactory;
-import com.raizlabs.universaladapter.app.R;
+import com.raizlabs.universaladapter.sample.R;
 
 import java.util.ArrayList;
 import java.util.List;
