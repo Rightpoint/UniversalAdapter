@@ -7,10 +7,10 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 
-import com.raizlabs.android.coreutils.threading.ThreadingUtils;
-import com.raizlabs.android.coreutils.util.observable.lists.ListObserver;
-import com.raizlabs.android.coreutils.util.observable.lists.ListObserverListener;
-import com.raizlabs.android.coreutils.util.observable.lists.SimpleListObserver;
+import com.raizlabs.coreutils.threading.ThreadingUtils;
+import com.raizlabs.coreutils.util.observable.lists.ListObserver;
+import com.raizlabs.coreutils.util.observable.lists.ListObserverListener;
+import com.raizlabs.coreutils.util.observable.lists.SimpleListObserver;
 import com.raizlabs.universaladapter.R;
 import com.raizlabs.universaladapter.ViewHolder;
 
@@ -52,6 +52,8 @@ public abstract class UniversalAdapter<Item, Holder extends ViewHolder> {
     private FooterLongClickedListener footerLongClickedListener;
     private HeaderLongClickListener headerLongClickListener;
 
+    private boolean isBound;
+
     // endregion Members
 
     // region Constructors
@@ -90,6 +92,13 @@ public abstract class UniversalAdapter<Item, Holder extends ViewHolder> {
 
     public void setHeaderLongClickListener(HeaderLongClickListener headerLongClickListener) {
         this.headerLongClickListener = headerLongClickListener;
+    }
+
+    /**
+     * @param isBound if true, we cannot any longer add header and footer views to this adapter. As well as bind to other adapters.
+     */
+    void setBound(boolean isBound) {
+        this.isBound = true;
     }
 
     // endregion Accessors
@@ -228,6 +237,8 @@ public abstract class UniversalAdapter<Item, Holder extends ViewHolder> {
      * @param headerView The view to add to the list of headers.
      */
     public void addHeaderView(View headerView) {
+        tryThrowAlreadyBoundException(
+                "Cannot bind a header view post-bind due to limitations of view types and recycling.");
         addHeaderHolder(new ViewHolder(headerView));
     }
 
@@ -237,6 +248,8 @@ public abstract class UniversalAdapter<Item, Holder extends ViewHolder> {
      * @param viewHolder The view holder to add as a header to this adapter.
      */
     public void addHeaderHolder(ViewHolder viewHolder) {
+        tryThrowAlreadyBoundException(
+                "Cannot bind a header holder post-bind due to limitations of view types and recycling.");
         headerHolders.add(viewHolder);
         onItemRangeInserted(getHeadersCount() - 1, 1);
     }
@@ -247,6 +260,8 @@ public abstract class UniversalAdapter<Item, Holder extends ViewHolder> {
      * @param footerView The view to add to list of headers.
      */
     public void addFooterView(View footerView) {
+        tryThrowAlreadyBoundException(
+                "Cannot bind a footer view post-bind due to limitations of view types and recycling.");
         addFooterHolder(new ViewHolder(footerView));
     }
 
@@ -256,6 +271,8 @@ public abstract class UniversalAdapter<Item, Holder extends ViewHolder> {
      * @param viewHolder The viewh holder to add as a footer to this adapter.
      */
     public void addFooterHolder(ViewHolder viewHolder) {
+        tryThrowAlreadyBoundException(
+                "Cannot bind a footer holder post-bind due to limitations of view types and recycling.");
         footerHolders.add(viewHolder);
         onItemRangeInserted(getFooterStartIndex() + getFootersCount(), 1);
     }
@@ -272,6 +289,33 @@ public abstract class UniversalAdapter<Item, Holder extends ViewHolder> {
      */
     public int getFootersCount() {
         return footerHolders.size();
+    }
+
+    /**
+     * @param rawPosition The raw position the binded to {@link ViewGroup} reports.
+     * @return The position offset by the headers. This is useful when you respond to a custom view that returns a
+     * position that does not take into account the headers of this adapter. For example if you add logic to a ListView
+     * that has no knowledge of the headers in this adapter. Call this method to resolve its actual position. It will return
+     * a position < 0 if the passed in position is a header or a number larger than the {@link #getCount()} method for a footer.
+     */
+    public int getAdjustedPosition(int rawPosition) {
+        return rawPosition - getHeadersCount();
+    }
+
+    /**
+     * @param rawPosition The raw position that the binded {@link ViewGroup} reports.
+     * @return true if the raw position is a header.
+     */
+    public boolean isHeaderPosition(int rawPosition) {
+        return rawPosition < getHeadersCount();
+    }
+
+    /**
+     * @param rawPosition The raw position that the binded {@link ViewGroup} reports.
+     * @return true if the raw position is a footer.
+     */
+    public boolean isFooterPosition(int rawPosition) {
+        return rawPosition > getFooterStartIndex();
     }
 
     /**
@@ -298,6 +342,15 @@ public abstract class UniversalAdapter<Item, Holder extends ViewHolder> {
             }
         } else {
             throw new IllegalStateException("Tried to end a transaction when no transaction was running!");
+        }
+    }
+
+    /**
+     * If this {@link UniversalAdapter} is already bound, an {@link IllegalStateException} is thrown if you try to add headers or footers
+     */
+    void checkIfBoundAndSet() {
+        if (!isBound) {
+            setBound(true);
         }
     }
 
@@ -415,9 +468,9 @@ public abstract class UniversalAdapter<Item, Holder extends ViewHolder> {
         if (position < getHeadersCount()) {
             return isHeaderEnabled(position);
         } else if (position > getFooterStartIndex()) {
-            return isFooterEnabled(position);
+            return isFooterEnabled(position - getFooterStartIndex() - 1);
         } else {
-            return isEnabled(position);
+            return isEnabled(getAdjustedPosition(position));
         }
     }
 
@@ -452,7 +505,7 @@ public abstract class UniversalAdapter<Item, Holder extends ViewHolder> {
                 }
             } else {
                 if (itemClickedListener != null) {
-                    int adjusted = position - getHeadersCount();
+                    int adjusted = getAdjustedPosition(position);
                     itemClickedListener.onItemClicked(this, get(adjusted), (Holder) holder, adjusted);
                 }
             }
@@ -491,7 +544,7 @@ public abstract class UniversalAdapter<Item, Holder extends ViewHolder> {
                 }
             } else {
                 if (itemLongClickedListener != null) {
-                    int adjusted = position - getHeadersCount();
+                    int adjusted = getAdjustedPosition(position);
                     return itemLongClickedListener.onItemLongClicked(this, get(adjusted), (Holder) holder, adjusted);
                 }
             }
@@ -629,6 +682,12 @@ public abstract class UniversalAdapter<Item, Holder extends ViewHolder> {
             return false;
         }
         return true;
+    }
+
+    private void tryThrowAlreadyBoundException(String message) {
+        if (isBound) {
+            throw new IllegalStateException(message);
+        }
     }
 
     // endregion Instance Methods

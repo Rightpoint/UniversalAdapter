@@ -14,16 +14,15 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.raizlabs.universaladapter.ListBasedAdapter;
-import com.raizlabs.universaladapter.converter.UniversalAdapter;
 import com.raizlabs.universaladapter.ViewHolder;
 import com.raizlabs.universaladapter.converter.ItemClickedListener;
 import com.raizlabs.universaladapter.converter.ItemLongClickedListener;
+import com.raizlabs.universaladapter.converter.UniversalAdapter;
 import com.raizlabs.universaladapter.converter.UniversalConverter;
 import com.raizlabs.universaladapter.converter.UniversalConverterFactory;
 
 import java.util.ArrayList;
 import java.util.List;
-
 
 public class AdapterActivity extends FragmentActivity {
 

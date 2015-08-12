@@ -1,6 +1,6 @@
 # UniversalAdapter
 
-[![Raizlabs Repository](http://img.shields.io/badge/Raizlabs%20Repository-2.1.0-blue.svg?style=flat)](https://github.com/Raizlabs/maven-releases)
+[![Raizlabs Repository](http://img.shields.io/badge/Raizlabs%20Repository-2.2.0-blue.svg?style=flat)](https://github.com/Raizlabs/maven-releases)
 
 A single adapter implementation for any scrolling view or `ViewGroup`.
 
@@ -12,49 +12,13 @@ Its underlying implementation is based on the `ViewHolder` pattern and abstracts
 
 ### Gradle
 
-Add the maven repo url to your root build.gradle in the ```buildscript{}``` and ```allProjects{}``` blocks:
-
-```groovy
-
-  buildscript {
-    repositories {
-        maven { url "https://raw.github.com/Raizlabs/maven-releases/master/releases" }
-    }
-    dependencies {
-      classpath 'com.raizlabs:Griddle:1.0.3'
-    }
-  }
-
-  allprojects {
-    repositories {
-        maven { url "https://raw.github.com/Raizlabs/maven-releases/master/releases" }
-    }
-  }
-
-
-```
-
-Add the library to the project-level build.gradle, using the [Griddle](https://github.com/Raizlabs/Griddle) plugin to simplify your build.gradle and link sources:
-
-```groovy
-
-  apply plugin: 'com.raizlabs.griddle'
+By standard Gradle use:
 
   dependencies {
-    mod 'com.raizlabs.android:UniversalAdapter:2.1.0'
+    compile 'com.raizlabs:UniversalAdapter:2.2.0'
   }
 
-```
 
-or by standard Gradle use (without linking sources support):
-
-```groovy
-
-  dependencies {
-    compile "com.raizlabs.android:UniversalAdapter:2.1.0"
-  }
-
-```
 
 ## Usage
 
@@ -187,6 +151,8 @@ UniversalConverterFactory.create(adapter, viewGroup);
 
 ```
 
+Please _note_ that these must be added __before__ binding the adapter to the `ViewGroup`. This is because the adapter treats headers and footers as different item types. Unfortunately, `ListView` and `RecyclerView` do not treat dynamic viewtypes too kindly. 
+
 ### ViewGroup adapter
 
 Sometimes we want to simply add a homogenous set of data to a `LinearLayout` or parent `ViewGroup` and don't want to or can't use a `ListView`. Instead of having to create a `BaseAdapter`, write methods to bind the views to the `ViewGroup`, and handle changes to the adapter, we wrote `ViewGroupAdapter`.
@@ -207,9 +173,9 @@ That's it!
 
 ## Maintainers
 
-[agrosner](https://github.com/agrosner) ([agrosner](https://twitter.com/agrosner))
+[Mervyn Anthony](https://github.com/Mervyn-Raizlabs)
 
-[dylanrjames](https://github.com/dylanrjames)
+[Dylan R. James](https://github.com/dylanrjames)
 
 ## Contributors
 

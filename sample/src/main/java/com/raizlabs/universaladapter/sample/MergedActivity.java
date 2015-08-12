@@ -16,7 +16,6 @@ import com.raizlabs.universaladapter.ViewHolder;
 import com.raizlabs.universaladapter.converter.MergedUniversalAdapter;
 import com.raizlabs.universaladapter.converter.UniversalConverterFactory;
 
-
 public class MergedActivity extends ActionBarActivity {
 
     static final String INTENT_LAYOUT_RES = "LayoutResId";

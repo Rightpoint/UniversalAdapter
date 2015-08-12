@@ -48,8 +48,10 @@ public class RecyclerViewAdapterConverter<Item, Holder extends ViewHolder>
 
     // endregion Members
 
-    RecyclerViewAdapterConverter(@NonNull UniversalAdapter<Item, Holder> universalAdapter, RecyclerView recyclerView) {
+    RecyclerViewAdapterConverter(@NonNull
+    UniversalAdapter<Item, Holder> universalAdapter, RecyclerView recyclerView) {
         observerListener = new RecyclerViewListObserverListener<>(this);
+        universalAdapter.checkIfBoundAndSet();
         setAdapter(universalAdapter);
         recyclerView.setAdapter(this);
         recyclerView.addOnItemTouchListener(internalOnItemTouchListener);
@@ -113,7 +115,8 @@ public class RecyclerViewAdapterConverter<Item, Holder extends ViewHolder>
     }
 
     @Override
-    public void setAdapter(@NonNull UniversalAdapter<Item, Holder> listAdapter) {
+    public void setAdapter(@NonNull
+    UniversalAdapter<Item, Holder> listAdapter) {
         if(getAdapter() != null) {
             getAdapter().getListObserver().removeListener(observerListener);
         }
@@ -154,6 +157,11 @@ public class RecyclerViewAdapterConverter<Item, Holder extends ViewHolder>
     // region Anonymous Classes
 
     private final RecyclerViewItemClickListener internalOnItemTouchListener = new RecyclerViewItemClickListener() {
+        @Override
+        public void onRequestDisallowInterceptTouchEvent(boolean disallowIntercept) {
+            //TODO
+        }
+
         @SuppressWarnings("unchecked")
         @Override
         public void onItemClick(ViewHolder viewHolder, RecyclerView parent, int position, float x, float y) {

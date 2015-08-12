@@ -4,15 +4,18 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.LinearLayout;
 
-import com.raizlabs.android.coreutils.util.observable.lists.ListObserver;
-import com.raizlabs.android.coreutils.util.observable.lists.ListObserverListener;
+import com.raizlabs.coreutils.util.observable.lists.ListObserver;
+import com.raizlabs.coreutils.util.observable.lists.ListObserverListener;
 import com.raizlabs.universaladapter.converter.UniversalAdapter;
 import com.raizlabs.universaladapter.converter.UniversalAdapterTestCase;
 import com.raizlabs.universaladapter.test.MultipleItemTypeAdapter;
 import com.raizlabs.universaladapter.test.SimpleFooterHolder;
 import com.raizlabs.universaladapter.test.SimpleHeaderHolder;
 
-import static com.raizlabs.universaladapter.test.Constants.*;
+import static com.raizlabs.universaladapter.test.Constants.INDEX_CHANGED;
+import static com.raizlabs.universaladapter.test.Constants.INDEX_GENERIC;
+import static com.raizlabs.universaladapter.test.Constants.INDEX_INSERTED;
+import static com.raizlabs.universaladapter.test.Constants.INDEX_REMOVED;
 
 /**
  * Description: Test multiple item types

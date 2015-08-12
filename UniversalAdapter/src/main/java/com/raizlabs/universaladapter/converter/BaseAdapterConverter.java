@@ -7,10 +7,10 @@ import android.widget.AdapterView;
 import android.widget.BaseAdapter;
 import android.widget.Spinner;
 
-import com.raizlabs.android.coreutils.threading.ThreadingUtils;
-import com.raizlabs.android.coreutils.util.observable.lists.ListObserver;
-import com.raizlabs.android.coreutils.util.observable.lists.ListObserverListener;
-import com.raizlabs.android.coreutils.util.observable.lists.SimpleListObserverListener;
+import com.raizlabs.coreutils.threading.ThreadingUtils;
+import com.raizlabs.coreutils.util.observable.lists.ListObserver;
+import com.raizlabs.coreutils.util.observable.lists.ListObserverListener;
+import com.raizlabs.coreutils.util.observable.lists.SimpleListObserverListener;
 import com.raizlabs.universaladapter.UniversalAdapterUtils;
 import com.raizlabs.universaladapter.ViewHolder;
 
@@ -29,8 +29,10 @@ public class BaseAdapterConverter<Item, Holder extends ViewHolder>
 
     private UniversalAdapter<Item, Holder> universalAdapter;
 
-    BaseAdapterConverter(@NonNull UniversalAdapter<Item, Holder> universalAdapter,
+    BaseAdapterConverter(@NonNull
+    UniversalAdapter<Item, Holder> universalAdapter,
                          AdapterView<? super BaseAdapter> adapterView) {
+        universalAdapter.checkIfBoundAndSet();
         setAdapter(universalAdapter);
         adapterView.setAdapter(this);
 
@@ -89,7 +91,8 @@ public class BaseAdapterConverter<Item, Holder extends ViewHolder>
     }
 
     @Override
-    public void setAdapter(@NonNull UniversalAdapter<Item, Holder> universalAdapter) {
+    public void setAdapter(@NonNull
+    UniversalAdapter<Item, Holder> universalAdapter) {
         if(getAdapter() != null) {
             getAdapter().getListObserver().removeListener(internalListObserverListener);
         }

@@ -3,9 +3,9 @@ package com.raizlabs.universaladapter;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.RecyclerView.Adapter;
 
-import com.raizlabs.android.coreutils.threading.ThreadingUtils;
-import com.raizlabs.android.coreutils.util.observable.lists.ListObserver;
-import com.raizlabs.android.coreutils.util.observable.lists.ListObserverListener;
+import com.raizlabs.coreutils.threading.ThreadingUtils;
+import com.raizlabs.coreutils.util.observable.lists.ListObserver;
+import com.raizlabs.coreutils.util.observable.lists.ListObserverListener;
 
 /**
  * Helper class which delegates {@link ListObserverListener} calls back to a

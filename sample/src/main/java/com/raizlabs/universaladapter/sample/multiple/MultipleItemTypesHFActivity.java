@@ -20,7 +20,6 @@ import com.raizlabs.universaladapter.converter.ItemLongClickedListener;
 import com.raizlabs.universaladapter.converter.UniversalAdapter;
 import com.raizlabs.universaladapter.converter.UniversalConverter;
 import com.raizlabs.universaladapter.converter.UniversalConverterFactory;
-import com.raizlabs.universaladapter.sample.AdapterActivity;
 import com.raizlabs.universaladapter.sample.R;
 
 import java.util.ArrayList;
@@ -92,8 +91,7 @@ public class MultipleItemTypesHFActivity extends AppCompatActivity {
             ((RecyclerView) viewGroup).setLayoutManager(new LinearLayoutManager(viewGroup.getContext()));
         }
 
-        converter = (UniversalConverter<Object, ViewHolder>) UniversalConverterFactory.createGeneric(adapter,
-                                                                                                          viewGroup);
+        converter = (UniversalConverter<Object, ViewHolder>) UniversalConverterFactory.createGeneric(adapter, viewGroup);
         converter.setItemClickedListener(new ItemClickedListener<Object, ViewHolder>() {
             @Override
             public void onItemClicked(UniversalAdapter<Object, ViewHolder> adapter, Object o,

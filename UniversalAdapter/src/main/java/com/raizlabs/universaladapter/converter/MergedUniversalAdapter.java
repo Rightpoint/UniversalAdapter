@@ -2,8 +2,8 @@ package com.raizlabs.universaladapter.converter;
 
 import android.view.ViewGroup;
 
-import com.raizlabs.android.coreutils.util.observable.lists.ListObserver;
-import com.raizlabs.android.coreutils.util.observable.lists.ListObserverListener;
+import com.raizlabs.coreutils.util.observable.lists.ListObserver;
+import com.raizlabs.coreutils.util.observable.lists.ListObserverListener;
 import com.raizlabs.universaladapter.ViewHolder;
 
 import java.util.ArrayList;

@@ -63,7 +63,9 @@ public interface UniversalConverter<Item, Holder extends ViewHolder> {
      *
      * @param listAdapter The adapter to use to populate the view group.
      */
-    void setAdapter(@NonNull UniversalAdapter<Item, Holder> listAdapter);
+    void setAdapter(
+            @NonNull
+            UniversalAdapter<Item, Holder> listAdapter);
 
     /**
      * @return The {@link UniversalAdapter} that this adapter uses to populate
