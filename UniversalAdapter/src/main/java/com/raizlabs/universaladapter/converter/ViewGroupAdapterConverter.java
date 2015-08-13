@@ -38,7 +38,7 @@ public class ViewGroupAdapterConverter<Item, Holder extends ViewHolder> implemen
      * @param viewGroup The view group which will be populated with views.
      * @param adapter   The list adapter to use to populate views.
      */
-    ViewGroupAdapterConverter(@NonNull
+    public ViewGroupAdapterConverter(@NonNull
     UniversalAdapter<Item, Holder> adapter, @NonNull
     ViewGroup viewGroup) {
         adapter.checkIfBoundAndSet();

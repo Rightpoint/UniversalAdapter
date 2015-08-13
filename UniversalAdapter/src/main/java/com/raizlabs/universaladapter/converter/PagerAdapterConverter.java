@@ -33,11 +33,20 @@ public class PagerAdapterConverter<Item, Holder extends ViewHolder>
 
     // endregion Members
 
-    PagerAdapterConverter(@NonNull
-    UniversalAdapter<Item, Holder> listBasedAdapter, ViewPager viewPager) {
+    /**
+     * Creates a {@link PagerAdapterConverter} converting the given {@link UniversalAdapter} into a
+     * {@link PagerAdapter}.
+     *
+     * @param listBasedAdapter The adapter to convert.
+     * @param viewPager        The {@link ViewPager} to bind to. This may be null, but it is heavily recommended that
+     *                         it isn't. If null is passed, you'll likely want to call
+     *                         {@link #bindToViewPager(ViewPager)} - see its documentation for more details.
+     */
+    public PagerAdapterConverter(@NonNull
+                                 UniversalAdapter<Item, Holder> listBasedAdapter, ViewPager viewPager) {
         listBasedAdapter.checkIfBoundAndSet();
         setAdapter(listBasedAdapter);
-        viewPager.setAdapter(this);
+        bindToViewPager(viewPager);
         superNotifyDataSetChanged();
         itemClickedWrapper = new ItemClickWrapper<>(this);
     }
@@ -81,7 +90,7 @@ public class PagerAdapterConverter<Item, Holder extends ViewHolder>
 
     @Override
     public void setAdapter(@NonNull
-    UniversalAdapter<Item, Holder> listAdapter) {
+                           UniversalAdapter<Item, Holder> listAdapter) {
         if (getAdapter() != null) {
             getAdapter().getListObserver().removeListener(internalListObserverListener);
         }
@@ -102,7 +111,7 @@ public class PagerAdapterConverter<Item, Holder extends ViewHolder>
     @Override
     public Object instantiateItem(ViewGroup container, int position) {
         ViewHolder holder = getAdapter().createViewHolder(container,
-                                                          getAdapter().getInternalItemViewType(position));
+                getAdapter().getInternalItemViewType(position));
         getAdapter().bindViewHolder(holder, position);
         View view = holder.itemView;
         UniversalAdapterUtils.setViewHolder(view, holder);
@@ -129,6 +138,20 @@ public class PagerAdapterConverter<Item, Holder extends ViewHolder>
     // endregion Inherited Methods
 
     // region Instance Methods
+
+    /**
+     * Binds this adapter to the given {@link ViewPager}, setting it as its adapter. This should be done by
+     * construction or immediately after, before this adapter is used. This mechanism sets this class as the pager's
+     * adapter and permits certain functionality. Without it, this class will still function as a normal
+     * {@link PagerAdapter}, but additional functionality may not work. Ignore this step at your own risk.
+     *
+     * @param viewPager The {@link ViewPager} to bind to.
+     */
+    public void bindToViewPager(ViewPager viewPager) {
+        if (viewPager != null) {
+            viewPager.setAdapter(this);
+        }
+    }
 
     protected void superNotifyDataSetChanged() {
         super.notifyDataSetChanged();

@@ -48,13 +48,21 @@ public class RecyclerViewAdapterConverter<Item, Holder extends ViewHolder>
 
     // endregion Members
 
-    RecyclerViewAdapterConverter(@NonNull
-    UniversalAdapter<Item, Holder> universalAdapter, RecyclerView recyclerView) {
+    /**
+     * Creates a {@link RecyclerViewAdapterConverter} converting the given {@link UniversalAdapter} into a
+     * {@link android.support.v7.widget.RecyclerView.Adapter}.
+     *
+     * @param universalAdapter The adapter to convert.
+     * @param recyclerView     The {@link RecyclerView} to bind to. This may be null, but it is heavily recommended
+     *                         that it isn't. If null is passed, you'll likely want to call
+     *                         {@link #bindToRecyclerView(RecyclerView)} - see its documentation for more details.
+     */
+    public RecyclerViewAdapterConverter(@NonNull
+                                        UniversalAdapter<Item, Holder> universalAdapter, RecyclerView recyclerView) {
         observerListener = new RecyclerViewListObserverListener<>(this);
         universalAdapter.checkIfBoundAndSet();
         setAdapter(universalAdapter);
-        recyclerView.setAdapter(this);
-        recyclerView.addOnItemTouchListener(internalOnItemTouchListener);
+        bindToRecyclerView(recyclerView);
         universalAdapter.notifyDataSetChanged();
     }
 
@@ -116,8 +124,8 @@ public class RecyclerViewAdapterConverter<Item, Holder extends ViewHolder>
 
     @Override
     public void setAdapter(@NonNull
-    UniversalAdapter<Item, Holder> listAdapter) {
-        if(getAdapter() != null) {
+                           UniversalAdapter<Item, Holder> listAdapter) {
+        if (getAdapter() != null) {
             getAdapter().getListObserver().removeListener(observerListener);
         }
 
@@ -153,6 +161,24 @@ public class RecyclerViewAdapterConverter<Item, Holder extends ViewHolder>
     }
 
     // endregion Inherited Methods
+
+    // region Instance Methods
+
+    /**
+     * Binds this adapter to the given {@link RecyclerView}, setting it as its adapter. This should be done by
+     * construction or immediately after, before this adapter is used. This mechanism sets this class as the view's
+     * adapter and permits certain functionality such as click events. Without it, this class will still function as
+     * a normal {@link android.support.v7.widget.RecyclerView.Adapter}, but additional functionality may not work.
+     * Ignore this step at your own risk.
+     *
+     * @param recyclerView The {@link RecyclerView} to bind to.
+     */
+    public void bindToRecyclerView(RecyclerView recyclerView) {
+        if (recyclerView != null) {
+            recyclerView.setAdapter(this);
+            recyclerView.addOnItemTouchListener(internalOnItemTouchListener);
+        }
+    }
 
     // region Anonymous Classes
 
