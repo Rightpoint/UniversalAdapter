@@ -50,7 +50,7 @@ public abstract class UniversalAdapter<Item, Holder extends ViewHolder> {
 
     private ItemLongClickedListener<Item, Holder> itemLongClickedListener;
     private FooterLongClickedListener footerLongClickedListener;
-    private HeaderLongClickListener headerLongClickListener;
+    private HeaderLongClickedListener headerLongClickedListener;
 
     private boolean isBound;
 
@@ -90,8 +90,8 @@ public abstract class UniversalAdapter<Item, Holder extends ViewHolder> {
         this.footerLongClickedListener = footerLongClickedListener;
     }
 
-    public void setHeaderLongClickListener(HeaderLongClickListener headerLongClickListener) {
-        this.headerLongClickListener = headerLongClickListener;
+    public void setHeaderLongClickedListener(HeaderLongClickedListener headerLongClickedListener) {
+        this.headerLongClickedListener = headerLongClickedListener;
     }
 
     /**
@@ -496,12 +496,12 @@ public abstract class UniversalAdapter<Item, Holder extends ViewHolder> {
     void onItemClicked(int position, ViewHolder holder) {
         if (internalIsEnabled(position)) {
             if (position < getHeadersCount()) {
-                if (footerClickedListener != null) {
-                    footerClickedListener.onFooterClicked(this, holder, position);
+                if (headerClickedListener != null) {
+                    headerClickedListener.onHeaderClicked(this, holder, position);
                 }
             } else if (position > getFooterStartIndex()) {
-                if (headerClickedListener != null) {
-                    headerClickedListener.onHeaderClicked(this, holder, position - getFooterStartIndex() - 1);
+                if (footerClickedListener != null) {
+                    footerClickedListener.onFooterClicked(this, holder, position - getFooterStartIndex() - 1);
                 }
             } else {
                 if (itemClickedListener != null) {
@@ -534,12 +534,12 @@ public abstract class UniversalAdapter<Item, Holder extends ViewHolder> {
     boolean onItemLongClicked(int position, ViewHolder holder) {
         if (internalIsEnabled(position)) {
             if (position < getHeadersCount()) {
-                if (footerLongClickedListener != null) {
-                    return footerLongClickedListener.onFooterLongClicked(this, holder, position);
+                if (headerLongClickedListener != null) {
+                    return headerLongClickedListener.onHeaderLongClicked(this, holder, position);
                 }
             } else if (position > getFooterStartIndex()) {
-                if (headerLongClickListener != null) {
-                    return headerLongClickListener.onHeaderLongClicked(this, holder,
+                if (footerLongClickedListener != null) {
+                    return footerLongClickedListener.onFooterLongClicked(this, holder,
                                                                        position - getFooterStartIndex() - 1);
                 }
             } else {

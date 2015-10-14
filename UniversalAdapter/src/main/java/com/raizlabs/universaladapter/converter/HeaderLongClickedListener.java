@@ -6,7 +6,7 @@ import com.raizlabs.universaladapter.ViewHolder;
  * Interface for a listener which is called when a {@link ViewGroupAdapterConverter} or {@link PagerAdapterConverter} header
  * view is long clicked.
  */
-public interface HeaderLongClickListener {
+public interface HeaderLongClickedListener {
 
     /**
      * Called when a header within an adapter is long clicked.

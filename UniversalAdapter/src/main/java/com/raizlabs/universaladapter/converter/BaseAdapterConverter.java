@@ -29,22 +29,22 @@ public class BaseAdapterConverter<Item, Holder extends ViewHolder>
 
     private UniversalAdapter<Item, Holder> universalAdapter;
 
-    BaseAdapterConverter(@NonNull
-    UniversalAdapter<Item, Holder> universalAdapter,
-                         AdapterView<? super BaseAdapter> adapterView) {
+    /**
+     * Creates a {@link BaseAdapterConverter} converting the given {@link UniversalAdapter} into a {@link BaseAdapter}.
+     *
+     * @param universalAdapter The adapter to convert.
+     * @param adapterView      The {@link AdapterView} to bind to. This may be null, but it is heavily recommended that
+     *                         it isn't. If null is passed, you'll likely want to call
+     *                         {@link #bindToAdapterView(AdapterView)} - see its documentation for more details.
+     */
+    public BaseAdapterConverter(@NonNull
+                                UniversalAdapter<Item, Holder> universalAdapter,
+                                AdapterView<? super BaseAdapter> adapterView) {
         universalAdapter.checkIfBoundAndSet();
         setAdapter(universalAdapter);
-        adapterView.setAdapter(this);
 
-        // Spinners don't like on item click listeners.
-        // We will still delegate calls to it since you're clicking on an item to select it...
-        if(!(adapterView instanceof Spinner)) {
-            adapterView.setOnItemClickListener(internalItemClickListener);
-        } else {
-            adapterView.setOnItemSelectedListener(internalItemSelectedListener);
-        }
+        bindToAdapterView(adapterView);
 
-        adapterView.setOnItemLongClickListener(internalLongClickListener);
         notifyDataSetChanged();
     }
 
@@ -81,8 +81,8 @@ public class BaseAdapterConverter<Item, Holder extends ViewHolder>
     }
 
     @Override
-    public void setHeaderLongClickedListener(HeaderLongClickListener headerLongClickedListener) {
-        getAdapter().setHeaderLongClickListener(headerLongClickedListener);
+    public void setHeaderLongClickedListener(HeaderLongClickedListener headerLongClickedListener) {
+        getAdapter().setHeaderLongClickedListener(headerLongClickedListener);
     }
 
     @Override
@@ -92,8 +92,8 @@ public class BaseAdapterConverter<Item, Holder extends ViewHolder>
 
     @Override
     public void setAdapter(@NonNull
-    UniversalAdapter<Item, Holder> universalAdapter) {
-        if(getAdapter() != null) {
+                           UniversalAdapter<Item, Holder> universalAdapter) {
+        if (getAdapter() != null) {
             getAdapter().getListObserver().removeListener(internalListObserverListener);
         }
 
@@ -180,6 +180,30 @@ public class BaseAdapterConverter<Item, Holder extends ViewHolder>
     // endregion Inherited Methods
 
     // region Instance Methods
+
+    /**
+     * Binds this adapter to the given {@link AdapterView}, setting it as its adapter. This should be done by
+     * construction or immediately after, before this adapter is used. This mechanism sets this class as the view's
+     * adapter and permits certain functionality such as click events. Without it, this class will still function as
+     * a normal {@link BaseAdapter}, but additional functionality may not work. Ignore this step at your own risk.
+     *
+     * @param adapterView The {@link AdapterView} to bind to.
+     */
+    public void bindToAdapterView(AdapterView<? super BaseAdapter> adapterView) {
+        if (adapterView != null) {
+            adapterView.setAdapter(this);
+
+            // Spinners don't like on item click listeners.
+            // We will still delegate calls to it since you're clicking on an item to select it...
+            if (!(adapterView instanceof Spinner)) {
+                adapterView.setOnItemClickListener(internalItemClickListener);
+            } else {
+                adapterView.setOnItemSelectedListener(internalItemSelectedListener);
+            }
+
+            adapterView.setOnItemLongClickListener(internalLongClickListener);
+        }
+    }
 
     protected void superNotifyDataSetChanged() {
         super.notifyDataSetChanged();

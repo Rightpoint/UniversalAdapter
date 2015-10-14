@@ -48,7 +48,7 @@ public interface UniversalConverter<Item, Holder extends ViewHolder> {
      *
      * @param headerLongClickedListener The listener to call.
      */
-    void setHeaderLongClickedListener(HeaderLongClickListener headerLongClickedListener);
+    void setHeaderLongClickedListener(HeaderLongClickedListener headerLongClickedListener);
 
     /**
      * Sets listener to get called when a footer is long clicked.
