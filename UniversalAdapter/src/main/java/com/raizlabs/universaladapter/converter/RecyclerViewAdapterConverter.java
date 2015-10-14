@@ -108,8 +108,8 @@ public class RecyclerViewAdapterConverter<Item, Holder extends ViewHolder>
     }
 
     @Override
-    public void setHeaderLongClickedListener(HeaderLongClickListener headerLongClickedListener) {
-        getAdapter().setHeaderLongClickListener(headerLongClickedListener);
+    public void setHeaderLongClickedListener(HeaderLongClickedListener headerLongClickedListener) {
+        getAdapter().setHeaderLongClickedListener(headerLongClickedListener);
     }
 
     @Override

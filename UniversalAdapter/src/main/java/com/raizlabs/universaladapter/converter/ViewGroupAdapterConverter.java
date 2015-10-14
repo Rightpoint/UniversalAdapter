@@ -87,8 +87,8 @@ public class ViewGroupAdapterConverter<Item, Holder extends ViewHolder> implemen
     }
 
     @Override
-    public void setHeaderLongClickedListener(HeaderLongClickListener headerLongClickedListener) {
-        getAdapter().setHeaderLongClickListener(headerLongClickedListener);
+    public void setHeaderLongClickedListener(HeaderLongClickedListener headerLongClickedListener) {
+        getAdapter().setHeaderLongClickedListener(headerLongClickedListener);
     }
 
     @Override
