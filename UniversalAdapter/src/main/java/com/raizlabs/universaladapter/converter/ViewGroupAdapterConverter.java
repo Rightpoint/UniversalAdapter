@@ -39,8 +39,8 @@ public class ViewGroupAdapterConverter<Item, Holder extends ViewHolder> implemen
      * @param adapter   The list adapter to use to populate views.
      */
     public ViewGroupAdapterConverter(@NonNull
-    UniversalAdapter<Item, Holder> adapter, @NonNull
-    ViewGroup viewGroup) {
+                                     UniversalAdapter<Item, Holder> adapter, @NonNull
+                                     ViewGroup viewGroup) {
         adapter.checkIfBoundAndSet();
         setAdapter(adapter);
         this.viewGroup = viewGroup;
@@ -69,11 +69,13 @@ public class ViewGroupAdapterConverter<Item, Holder extends ViewHolder> implemen
     @Override
     public void setItemClickedListener(ItemClickedListener<Item, Holder> listener) {
         getAdapter().setItemClickedListener(listener);
+        checkAllClickListeners();
     }
 
     @Override
     public void setItemLongClickedListener(ItemLongClickedListener<Item, Holder> listener) {
         getAdapter().setItemLongClickedListener(listener);
+        checkAllClickListeners();
     }
 
     @Override
@@ -98,7 +100,7 @@ public class ViewGroupAdapterConverter<Item, Holder extends ViewHolder> implemen
 
     @Override
     public void setAdapter(@NonNull
-    UniversalAdapter<Item, Holder> adapter) {
+                           UniversalAdapter<Item, Holder> adapter) {
         if (getAdapter() != null) {
             getAdapter().getListObserver().removeListener(listChangeListener);
         }
@@ -141,14 +143,44 @@ public class ViewGroupAdapterConverter<Item, Holder extends ViewHolder> implemen
 
     private void addItem(int position) {
         ViewHolder holder = getAdapter().createViewHolder(getViewGroup(),
-                                                          universalAdapter.getInternalItemViewType(position));
+                universalAdapter.getInternalItemViewType(position));
         getAdapter().bindViewHolder(holder, position);
 
         View view = holder.itemView;
         UniversalAdapterUtils.setViewHolder(view, holder);
-        itemClickWrapper.register(view);
+        bindClickListeners(view);
 
         getViewGroup().addView(view, position);
+    }
+
+    private void checkAllClickListeners() {
+        final boolean bindClick = (getAdapter().getItemClickedListener() != null);
+        final boolean bindLongClick = (getAdapter().getItemLongClickedListener() != null);
+
+        final ViewGroup viewGroup = getViewGroup();
+        final int childCount = viewGroup.getChildCount();
+
+        for (int i = 0; i < childCount; i++) {
+            View child = viewGroup.getChildAt(i);
+
+            if (bindClick) {
+                itemClickWrapper.registerClick(child);
+            }
+
+            if (bindLongClick) {
+                itemClickWrapper.unregisterLongClick(child);
+            }
+        }
+    }
+
+    private void bindClickListeners(View view) {
+        if (getAdapter().getItemClickedListener() != null) {
+            itemClickWrapper.registerClick(view);
+        }
+
+        if (getAdapter().getItemLongClickedListener() != null) {
+            itemClickWrapper.registerLongClick(view);
+        }
     }
 
     private ListObserverListener<Item> listChangeListener = new SimpleListObserverListener<Item>() {

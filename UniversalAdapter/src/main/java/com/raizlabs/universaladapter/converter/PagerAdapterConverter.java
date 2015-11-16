@@ -29,7 +29,7 @@ public class PagerAdapterConverter<Item, Holder extends ViewHolder>
     // region Members
 
     private UniversalAdapter<Item, Holder> universalAdapter;
-    private ItemClickWrapper<Item, Holder> itemClickedWrapper;
+    private ItemClickWrapper<Item, Holder> itemClickWrapper;
 
     // endregion Members
 
@@ -48,7 +48,7 @@ public class PagerAdapterConverter<Item, Holder extends ViewHolder>
         setAdapter(listBasedAdapter);
         bindToViewPager(viewPager);
         superNotifyDataSetChanged();
-        itemClickedWrapper = new ItemClickWrapper<>(this);
+        itemClickWrapper = new ItemClickWrapper<>(this);
     }
 
     // region Inherited Methods
@@ -115,7 +115,7 @@ public class PagerAdapterConverter<Item, Holder extends ViewHolder>
         getAdapter().bindViewHolder(holder, position);
         View view = holder.itemView;
         UniversalAdapterUtils.setViewHolder(view, holder);
-        itemClickedWrapper.register(view);
+        bindClickListeners(view);
         container.addView(view);
         return holder.itemView;
     }
@@ -162,6 +162,16 @@ public class PagerAdapterConverter<Item, Holder extends ViewHolder>
      */
     protected void superNotifyDataSetChangedOnUIThread() {
         ThreadingUtils.runOnUIThread(superDataSetChangedRunnable);
+    }
+
+    private void bindClickListeners(View view) {
+        if (getAdapter().getItemClickedListener() != null) {
+            itemClickWrapper.registerClick(view);
+        }
+
+        if (getAdapter().getItemLongClickedListener() != null) {
+            itemClickWrapper.registerLongClick(view);
+        }
     }
 
     // endregion Instance Methods

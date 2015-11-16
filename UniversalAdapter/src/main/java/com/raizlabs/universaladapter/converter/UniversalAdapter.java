@@ -70,24 +70,48 @@ public abstract class UniversalAdapter<Item, Holder extends ViewHolder> {
         return listObserver;
     }
 
+    ItemClickedListener<Item, Holder> getItemClickedListener() {
+        return this.itemClickedListener;
+    }
+
     public void setItemClickedListener(ItemClickedListener<Item, Holder> itemClickedListener) {
         this.itemClickedListener = itemClickedListener;
     }
 
-    public void setFooterClickedListener(FooterClickedListener footerClickedListener) {
-        this.footerClickedListener = footerClickedListener;
-    }
-
-    public void setHeaderClickedListener(HeaderClickedListener headerClickedListener) {
-        this.headerClickedListener = headerClickedListener;
+    ItemLongClickedListener<Item, Holder> getItemLongClickedListener() {
+        return this.itemLongClickedListener;
     }
 
     public void setItemLongClickedListener(ItemLongClickedListener<Item, Holder> itemLongClickedListener) {
         this.itemLongClickedListener = itemLongClickedListener;
     }
 
+    FooterClickedListener getFooterClickedListener() {
+        return this.footerClickedListener;
+    }
+
+    public void setFooterClickedListener(FooterClickedListener footerClickedListener) {
+        this.footerClickedListener = footerClickedListener;
+    }
+
+    HeaderClickedListener getHeaderClickedListener() {
+        return this.headerClickedListener;
+    }
+
+    public void setHeaderClickedListener(HeaderClickedListener headerClickedListener) {
+        this.headerClickedListener = headerClickedListener;
+    }
+
+    FooterLongClickedListener getFooterLongClickedListener() {
+        return this.footerLongClickedListener;
+    }
+
     public void setFooterLongClickedListener(FooterLongClickedListener footerLongClickedListener) {
         this.footerLongClickedListener = footerLongClickedListener;
+    }
+
+    HeaderLongClickedListener getHeaderLongClickedListener() {
+        return this.headerLongClickedListener;
     }
 
     public void setHeaderLongClickedListener(HeaderLongClickedListener headerLongClickedListener) {
@@ -496,17 +520,17 @@ public abstract class UniversalAdapter<Item, Holder extends ViewHolder> {
     void onItemClicked(int position, ViewHolder holder) {
         if (internalIsEnabled(position)) {
             if (position < getHeadersCount()) {
-                if (headerClickedListener != null) {
-                    headerClickedListener.onHeaderClicked(this, holder, position);
+                if (getHeaderClickedListener() != null) {
+                    getHeaderClickedListener().onHeaderClicked(this, holder, position);
                 }
             } else if (position > getFooterStartIndex()) {
-                if (footerClickedListener != null) {
-                    footerClickedListener.onFooterClicked(this, holder, position - getFooterStartIndex() - 1);
+                if (getFooterClickedListener() != null) {
+                    getFooterClickedListener().onFooterClicked(this, holder, position - getFooterStartIndex() - 1);
                 }
             } else {
-                if (itemClickedListener != null) {
+                if (getItemClickedListener() != null) {
                     int adjusted = getAdjustedPosition(position);
-                    itemClickedListener.onItemClicked(this, get(adjusted), (Holder) holder, adjusted);
+                    getItemClickedListener().onItemClicked(this, get(adjusted), (Holder) holder, adjusted);
                 }
             }
         }
@@ -534,18 +558,18 @@ public abstract class UniversalAdapter<Item, Holder extends ViewHolder> {
     boolean onItemLongClicked(int position, ViewHolder holder) {
         if (internalIsEnabled(position)) {
             if (position < getHeadersCount()) {
-                if (headerLongClickedListener != null) {
-                    return headerLongClickedListener.onHeaderLongClicked(this, holder, position);
+                if (getHeaderLongClickedListener() != null) {
+                    return getHeaderLongClickedListener().onHeaderLongClicked(this, holder, position);
                 }
             } else if (position > getFooterStartIndex()) {
-                if (footerLongClickedListener != null) {
-                    return footerLongClickedListener.onFooterLongClicked(this, holder,
+                if (getFooterLongClickedListener() != null) {
+                    return getFooterLongClickedListener().onFooterLongClicked(this, holder,
                                                                        position - getFooterStartIndex() - 1);
                 }
             } else {
-                if (itemLongClickedListener != null) {
+                if (getItemLongClickedListener() != null) {
                     int adjusted = getAdjustedPosition(position);
-                    return itemLongClickedListener.onItemLongClicked(this, get(adjusted), (Holder) holder, adjusted);
+                    return getItemLongClickedListener().onItemLongClicked(this, get(adjusted), (Holder) holder, adjusted);
                 }
             }
         }

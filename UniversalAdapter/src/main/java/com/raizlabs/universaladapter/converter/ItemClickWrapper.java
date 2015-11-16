@@ -17,9 +17,20 @@ class ItemClickWrapper<Item, Holder extends ViewHolder> implements View.OnClickL
         this.universalConverter = converter;
     }
 
-    public void register(View view) {
+    public void registerClick(View view) {
         view.setOnClickListener(this);
+    }
+
+    public void unregisterClick(View view) {
+        view.setOnClickListener(null);
+    }
+
+    public void registerLongClick(View view) {
         view.setOnLongClickListener(this);
+    }
+
+    public void unregisterLongClick(View view) {
+        view.setOnLongClickListener(null);
     }
 
     @Override
