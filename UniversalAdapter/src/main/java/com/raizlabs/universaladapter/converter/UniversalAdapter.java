@@ -297,8 +297,9 @@ public abstract class UniversalAdapter<Item, Holder extends ViewHolder> {
     public void addFooterHolder(ViewHolder viewHolder) {
         tryThrowAlreadyBoundException(
                 "Cannot bind a footer holder post-bind due to limitations of view types and recycling.");
+        final int insertPosition = getFirstFooterIndex() + getFootersCount();
         footerHolders.add(viewHolder);
-        onItemRangeInserted(getFooterStartIndex() + getFootersCount(), 1);
+        onItemRangeInserted(insertPosition, 1);
     }
 
     /**
@@ -339,7 +340,7 @@ public abstract class UniversalAdapter<Item, Holder extends ViewHolder> {
      * @return true if the raw position is a footer.
      */
     public boolean isFooterPosition(int rawPosition) {
-        return rawPosition > getFooterStartIndex();
+        return rawPosition >= getFirstFooterIndex();
     }
 
     /**
@@ -426,10 +427,10 @@ public abstract class UniversalAdapter<Item, Holder extends ViewHolder> {
      * @param position   The position of the data in the list.
      */
     void bindViewHolder(ViewHolder viewHolder, int position) {
-        if (position < getHeadersCount()) {
+        if (isHeaderPosition(position)) {
             onBindHeaderViewHolder(viewHolder, position);
-        } else if (position > getFooterStartIndex()) {
-            onBindFooterViewHolder(viewHolder, position - getFooterStartIndex() - 1);
+        } else if (isFooterPosition(position)) {
+            onBindFooterViewHolder(viewHolder, getFooterIndex(position));
         } else {
             int adjusted = position - getHeadersCount();
             viewHolder.itemView.setTag(R.id.com_raizlabs_viewholderIndexID, adjusted);
@@ -447,8 +448,8 @@ public abstract class UniversalAdapter<Item, Holder extends ViewHolder> {
     void bindDropDownViewHolder(ViewHolder viewHolder, int position) {
         if (position < getHeadersCount()) {
             onBindHeaderViewHolder(viewHolder, position);
-        } else if (position > getFooterStartIndex()) {
-            onBindFooterViewHolder(viewHolder, position - getFooterStartIndex() - 1);
+        } else if (isFooterPosition(position)) {
+            onBindFooterViewHolder(viewHolder, getFooterIndex(position));
         } else {
             onBindDropDownViewHolder((Holder) viewHolder, position - getHeadersCount());
         }
@@ -469,8 +470,8 @@ public abstract class UniversalAdapter<Item, Holder extends ViewHolder> {
         int viewType;
         if (position < getHeadersCount()) {
             viewType = position;
-        } else if (position > getFooterStartIndex()) {
-            viewType = position - getFooterStartIndex() + getHeadersCount() + getItemViewTypeCount() - 1;
+        } else if (isFooterPosition(position)) {
+            viewType = getHeadersCount() + getItemViewTypeCount() + getFooterIndex(position);
         } else {
             viewType = getItemViewType(position - getHeadersCount()) + getHeadersCount();
         }
@@ -489,10 +490,10 @@ public abstract class UniversalAdapter<Item, Holder extends ViewHolder> {
      * @return true if the view is enabled and clickable.
      */
     boolean internalIsEnabled(int position) {
-        if (position < getHeadersCount()) {
+        if (isHeaderPosition(position)) {
             return isHeaderEnabled(position);
-        } else if (position > getFooterStartIndex()) {
-            return isFooterEnabled(position - getFooterStartIndex() - 1);
+        } else if (isFooterPosition(position)) {
+            return isFooterEnabled(getFooterIndex(position));
         } else {
             return isEnabled(getAdjustedPosition(position));
         }
@@ -519,13 +520,13 @@ public abstract class UniversalAdapter<Item, Holder extends ViewHolder> {
      */
     void onItemClicked(int position, ViewHolder holder) {
         if (internalIsEnabled(position)) {
-            if (position < getHeadersCount()) {
+            if (isHeaderPosition(position)) {
                 if (getHeaderClickedListener() != null) {
                     getHeaderClickedListener().onHeaderClicked(this, holder, position);
                 }
-            } else if (position > getFooterStartIndex()) {
+            } else if (isFooterPosition(position)) {
                 if (getFooterClickedListener() != null) {
-                    getFooterClickedListener().onFooterClicked(this, holder, position - getFooterStartIndex() - 1);
+                    getFooterClickedListener().onFooterClicked(this, holder, getFooterIndex(position));
                 }
             } else {
                 if (getItemClickedListener() != null) {
@@ -557,14 +558,13 @@ public abstract class UniversalAdapter<Item, Holder extends ViewHolder> {
      */
     boolean onItemLongClicked(int position, ViewHolder holder) {
         if (internalIsEnabled(position)) {
-            if (position < getHeadersCount()) {
+            if (isHeaderPosition(position)) {
                 if (getHeaderLongClickedListener() != null) {
                     return getHeaderLongClickedListener().onHeaderLongClicked(this, holder, position);
                 }
-            } else if (position > getFooterStartIndex()) {
+            } else if (isFooterPosition(position)) {
                 if (getFooterLongClickedListener() != null) {
-                    return getFooterLongClickedListener().onFooterLongClicked(this, holder,
-                                                                       position - getFooterStartIndex() - 1);
+                    return getFooterLongClickedListener().onFooterLongClicked(this, holder, getFooterIndex(position));
                 }
             } else {
                 if (getItemLongClickedListener() != null) {
@@ -687,10 +687,21 @@ public abstract class UniversalAdapter<Item, Holder extends ViewHolder> {
     }
 
     /**
-     * @return The starting index of footer views (if any exist)
+     * Gets the 0-based footer index based on the given adapter position.
+     * I.E. If this is passed the adapter position which matches the second footer to be added, this will return 1.
+     * Results are undefined if a non-footer position is passed.
+     * @param position The position in the adapter to get the footer position of.
+     * @return The index of the footer at the given position.
      */
-    private int getFooterStartIndex() {
-        return getHeadersCount() + getCount() - 1;
+    private int getFooterIndex(int position) {
+        return position - getFirstFooterIndex();
+    }
+
+    /**
+     * @return The index where the first footer view should go
+     */
+    private int getFirstFooterIndex() {
+        return getHeadersCount() + getCount();
     }
 
     /**
@@ -725,17 +736,17 @@ public abstract class UniversalAdapter<Item, Holder extends ViewHolder> {
 
         @Override
         public void onItemRangeChanged(ListObserver<Item> observer, int startPosition, int itemCount) {
-            UniversalAdapter.this.onItemRangeChanged(startPosition, itemCount);
+            UniversalAdapter.this.onItemRangeChanged(startPosition + getHeadersCount(), itemCount);
         }
 
         @Override
         public void onItemRangeInserted(ListObserver<Item> observer, int startPosition, int itemCount) {
-            UniversalAdapter.this.onItemRangeInserted(startPosition, itemCount);
+            UniversalAdapter.this.onItemRangeInserted(startPosition + getHeadersCount(), itemCount);
         }
 
         @Override
         public void onItemRangeRemoved(ListObserver<Item> observer, int startPosition, int itemCount) {
-            UniversalAdapter.this.onItemRangeRemoved(startPosition, itemCount);
+            UniversalAdapter.this.onItemRangeRemoved(startPosition + getHeadersCount(), itemCount);
         }
 
         @Override
