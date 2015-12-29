@@ -4,6 +4,12 @@ import android.support.annotation.NonNull;
 import android.view.ViewGroup;
 
 import com.raizlabs.universaladapter.ViewHolder;
+import com.raizlabs.universaladapter.converter.listeners.FooterClickedListener;
+import com.raizlabs.universaladapter.converter.listeners.FooterLongClickedListener;
+import com.raizlabs.universaladapter.converter.listeners.HeaderClickedListener;
+import com.raizlabs.universaladapter.converter.listeners.HeaderLongClickedListener;
+import com.raizlabs.universaladapter.converter.listeners.ItemClickedListener;
+import com.raizlabs.universaladapter.converter.listeners.ItemLongClickedListener;
 
 /**
  * A unified interface that all converters such as {@link BaseAdapterConverter}, {@link PagerAdapterConverter},

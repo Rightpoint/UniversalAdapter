@@ -13,6 +13,16 @@ import com.raizlabs.coreutils.util.observable.lists.ListObserverListener;
 import com.raizlabs.coreutils.util.observable.lists.SimpleListObserver;
 import com.raizlabs.universaladapter.R;
 import com.raizlabs.universaladapter.ViewHolder;
+import com.raizlabs.universaladapter.converter.listeners.FooterClickedListener;
+import com.raizlabs.universaladapter.converter.listeners.FooterLongClickedListener;
+import com.raizlabs.universaladapter.converter.listeners.FooterSelectedListener;
+import com.raizlabs.universaladapter.converter.listeners.HeaderClickedListener;
+import com.raizlabs.universaladapter.converter.listeners.HeaderLongClickedListener;
+import com.raizlabs.universaladapter.converter.listeners.HeaderSelectedListener;
+import com.raizlabs.universaladapter.converter.listeners.ItemClickedListener;
+import com.raizlabs.universaladapter.converter.listeners.ItemLongClickedListener;
+import com.raizlabs.universaladapter.converter.listeners.ItemSelectedListener;
+import com.raizlabs.universaladapter.converter.listeners.NothingSelectedListener;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -51,6 +61,11 @@ public abstract class UniversalAdapter<Item, Holder extends ViewHolder> {
     private ItemLongClickedListener<Item, Holder> itemLongClickedListener;
     private FooterLongClickedListener footerLongClickedListener;
     private HeaderLongClickedListener headerLongClickedListener;
+
+    private ItemSelectedListener<Item, Holder> itemSelectedListener;
+    private FooterSelectedListener footerSelectedListener;
+    private HeaderSelectedListener headerSelectedListener;
+    private NothingSelectedListener nothingSelectedListener;
 
     private boolean isBound;
 
@@ -116,6 +131,38 @@ public abstract class UniversalAdapter<Item, Holder extends ViewHolder> {
 
     public void setHeaderLongClickedListener(HeaderLongClickedListener headerLongClickedListener) {
         this.headerLongClickedListener = headerLongClickedListener;
+    }
+
+    ItemSelectedListener<Item, Holder> getItemSelectedListener() {
+        return itemSelectedListener;
+    }
+
+    public void setItemSelectedListener(ItemSelectedListener<Item, Holder> itemSelectedListener) {
+        this.itemSelectedListener = itemSelectedListener;
+    }
+
+    FooterSelectedListener getFooterSelectedListener() {
+        return footerSelectedListener;
+    }
+
+    public void setFooterSelectedListener(FooterSelectedListener footerSelectedListener) {
+        this.footerSelectedListener = footerSelectedListener;
+    }
+
+    HeaderSelectedListener getHeaderSelectedListener() {
+        return headerSelectedListener;
+    }
+
+    public void setHeaderSelectedListener(HeaderSelectedListener headerSelectedListener) {
+        this.headerSelectedListener = headerSelectedListener;
+    }
+
+    NothingSelectedListener getNothingSelectedListener() {
+        return nothingSelectedListener;
+    }
+
+    public void setNothingSelectedListener(NothingSelectedListener nothingSelectedListener) {
+        this.nothingSelectedListener = nothingSelectedListener;
     }
 
     /**
@@ -574,6 +621,36 @@ public abstract class UniversalAdapter<Item, Holder extends ViewHolder> {
             }
         }
         return false;
+    }
+
+    void onItemSelected(int position, View view) {
+        ViewHolder holder = (ViewHolder) view.getTag(R.id.com_raizlabs_viewholderTagID);
+        onItemSelected(position, holder);
+    }
+
+    void onItemSelected(int position, ViewHolder holder) {
+        if (internalIsEnabled(position)) {
+            if (isHeaderPosition(position)) {
+                if (getHeaderSelectedListener() != null) {
+                    getHeaderSelectedListener().onHeaderSelected(this, holder, position);
+                }
+            } else if (isFooterPosition(position)) {
+                if (getFooterSelectedListener() != null) {
+                    getFooterSelectedListener().onFooterSelected(this, holder, getFooterIndex(position));
+                }
+            } else {
+                if (getItemSelectedListener() != null) {
+                    int adjusted = getAdjustedPosition(position);
+                    getItemSelectedListener().onItemSelected(this, get(adjusted), (Holder) holder, getAdjustedPosition(position));
+                }
+            }
+        }
+    }
+
+    void onNothingSelected() {
+        if (getNothingSelectedListener() != null) {
+            getNothingSelectedListener().onNothingSelected(this);
+        }
     }
 
     /**

@@ -13,6 +13,12 @@ import com.raizlabs.coreutils.util.observable.lists.ListObserverListener;
 import com.raizlabs.coreutils.util.observable.lists.SimpleListObserverListener;
 import com.raizlabs.universaladapter.UniversalAdapterUtils;
 import com.raizlabs.universaladapter.ViewHolder;
+import com.raizlabs.universaladapter.converter.listeners.FooterClickedListener;
+import com.raizlabs.universaladapter.converter.listeners.FooterLongClickedListener;
+import com.raizlabs.universaladapter.converter.listeners.HeaderClickedListener;
+import com.raizlabs.universaladapter.converter.listeners.HeaderLongClickedListener;
+import com.raizlabs.universaladapter.converter.listeners.ItemClickedListener;
+import com.raizlabs.universaladapter.converter.listeners.ItemLongClickedListener;
 
 /**
  * Class which dynamically converts a {@link UniversalAdapter} into a
@@ -257,12 +263,17 @@ public class BaseAdapterConverter<Item, Holder extends ViewHolder>
     private final AdapterView.OnItemSelectedListener internalItemSelectedListener = new AdapterView.OnItemSelectedListener() {
         @Override
         public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-            getAdapter().onItemClicked(position, view);
+            // Sometimes this is passed invalid indices, punt them to nothing
+            if (view == null || position < 0 || position >= getAdapter().getCount()) {
+                onNothingSelected(parent);
+            } else {
+                getAdapter().onItemSelected(position, view);
+            }
         }
 
         @Override
         public void onNothingSelected(AdapterView<?> parent) {
-            // ignored.
+            getAdapter().onNothingSelected();
         }
     };
 

@@ -1,8 +1,9 @@
-package com.raizlabs.universaladapter.converter;
+package com.raizlabs.universaladapter.converter.listeners;
 
 import android.view.View;
 
 import com.raizlabs.universaladapter.ViewHolder;
+import com.raizlabs.universaladapter.converter.UniversalAdapter;
 
 /**
  * A unified interface for clicks on a {@link View} within each corresponding adapter.

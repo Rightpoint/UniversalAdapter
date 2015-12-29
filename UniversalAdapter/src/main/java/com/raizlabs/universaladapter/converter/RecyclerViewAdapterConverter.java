@@ -7,6 +7,12 @@ import android.view.ViewGroup;
 import com.raizlabs.universaladapter.RecyclerViewItemClickListener;
 import com.raizlabs.universaladapter.RecyclerViewListObserverListener;
 import com.raizlabs.universaladapter.ViewHolder;
+import com.raizlabs.universaladapter.converter.listeners.FooterClickedListener;
+import com.raizlabs.universaladapter.converter.listeners.FooterLongClickedListener;
+import com.raizlabs.universaladapter.converter.listeners.HeaderClickedListener;
+import com.raizlabs.universaladapter.converter.listeners.HeaderLongClickedListener;
+import com.raizlabs.universaladapter.converter.listeners.ItemClickedListener;
+import com.raizlabs.universaladapter.converter.listeners.ItemLongClickedListener;
 
 /**
  * Class which dynamically converts a {@link UniversalAdapter} into a

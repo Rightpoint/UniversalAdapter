@@ -15,8 +15,8 @@ import android.widget.Toast;
 
 import com.raizlabs.universaladapter.ListBasedAdapter;
 import com.raizlabs.universaladapter.ViewHolder;
-import com.raizlabs.universaladapter.converter.ItemClickedListener;
-import com.raizlabs.universaladapter.converter.ItemLongClickedListener;
+import com.raizlabs.universaladapter.converter.listeners.ItemClickedListener;
+import com.raizlabs.universaladapter.converter.listeners.ItemLongClickedListener;
 import com.raizlabs.universaladapter.converter.UniversalAdapter;
 import com.raizlabs.universaladapter.converter.UniversalConverter;
 import com.raizlabs.universaladapter.converter.UniversalConverterFactory;

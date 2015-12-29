@@ -12,6 +12,12 @@ import com.raizlabs.coreutils.util.observable.lists.ListObserverListener;
 import com.raizlabs.coreutils.util.observable.lists.SimpleListObserverListener;
 import com.raizlabs.universaladapter.UniversalAdapterUtils;
 import com.raizlabs.universaladapter.ViewHolder;
+import com.raizlabs.universaladapter.converter.listeners.FooterClickedListener;
+import com.raizlabs.universaladapter.converter.listeners.FooterLongClickedListener;
+import com.raizlabs.universaladapter.converter.listeners.HeaderClickedListener;
+import com.raizlabs.universaladapter.converter.listeners.HeaderLongClickedListener;
+import com.raizlabs.universaladapter.converter.listeners.ItemClickedListener;
+import com.raizlabs.universaladapter.converter.listeners.ItemLongClickedListener;
 
 /**
  * Class which dynamically converts a {@link UniversalAdapter} into a

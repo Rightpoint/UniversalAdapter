@@ -1,6 +1,9 @@
-package com.raizlabs.universaladapter.converter;
+package com.raizlabs.universaladapter.converter.listeners;
 
 import com.raizlabs.universaladapter.ViewHolder;
+import com.raizlabs.universaladapter.converter.PagerAdapterConverter;
+import com.raizlabs.universaladapter.converter.UniversalAdapter;
+import com.raizlabs.universaladapter.converter.ViewGroupAdapterConverter;
 
 /**
  * Interface for a listener which is called when a {@link ViewGroupAdapterConverter} or {@link PagerAdapterConverter}
