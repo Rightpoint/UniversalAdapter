@@ -14,10 +14,11 @@ Its underlying implementation is based on the `ViewHolder` pattern and abstracts
 
 By standard Gradle use:
 
+```
   dependencies {
     compile 'com.raizlabs:UniversalAdapter:2.2.0'
   }
-
+```
 
 
 ## Usage
