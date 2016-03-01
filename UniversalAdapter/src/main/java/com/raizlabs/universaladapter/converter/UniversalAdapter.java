@@ -427,13 +427,15 @@ public abstract class UniversalAdapter<Item, Holder extends ViewHolder> {
     }
 
     /**
+     * Creates a new view holder.
+     *
      * @param parent   The parent to reference in the {@link ViewHolder}
      * @param viewType The type of holder to return.
      * @return The proper {@link ViewHolder} based on view type. This method takes into account header and footer view
      * holders and properly will adjust this method to either retrieve the header/footer {@link ViewHolder} or call
      * {@link #onCreateViewHolder(ViewGroup, int)} when its a normal holder.
      */
-    ViewHolder createViewHolder(ViewGroup parent, int viewType) {
+    public ViewHolder createViewHolder(ViewGroup parent, int viewType) {
         ViewHolder viewHolder;
         if (viewType < getHeadersCount()) {
             viewHolder = headerHolders.get(viewType);
@@ -447,13 +449,15 @@ public abstract class UniversalAdapter<Item, Holder extends ViewHolder> {
     }
 
     /**
+     * Creates a new view holder.
+     *
      * @param parent   The parent to reference in the {@link ViewHolder}
      * @param viewType The type of holder to return.
      * @return The proper {@link ViewHolder} based on view type. This method takes into account header and footer view
      * holders and properly will adjust this method to either retrieve the header/footer {@link ViewHolder} or call
      * {@link #onCreateDropDownViewHolder(ViewGroup, int)} (ViewGroup, int)} when its a normal holder.
      */
-    ViewHolder createDropDownViewHolder(ViewGroup parent, int viewType) {
+    public ViewHolder createDropDownViewHolder(ViewGroup parent, int viewType) {
         ViewHolder viewHolder;
         if (viewType < getHeadersCount()) {
             viewHolder = headerHolders.get(viewType);
@@ -473,7 +477,7 @@ public abstract class UniversalAdapter<Item, Holder extends ViewHolder> {
      * @param viewHolder The view holder to populate.
      * @param position   The position of the data in the list.
      */
-    void bindViewHolder(ViewHolder viewHolder, int position) {
+    public void bindViewHolder(ViewHolder viewHolder, int position) {
         if (isHeaderPosition(position)) {
             onBindHeaderViewHolder(viewHolder, position);
         } else if (isFooterPosition(position)) {
@@ -492,7 +496,7 @@ public abstract class UniversalAdapter<Item, Holder extends ViewHolder> {
      * @param position   The position in the whole list (including headers and footers)
      */
     @SuppressWarnings("unchecked")
-    void bindDropDownViewHolder(ViewHolder viewHolder, int position) {
+    public void bindDropDownViewHolder(ViewHolder viewHolder, int position) {
         if (position < getHeadersCount()) {
             onBindHeaderViewHolder(viewHolder, position);
         } else if (isFooterPosition(position)) {
